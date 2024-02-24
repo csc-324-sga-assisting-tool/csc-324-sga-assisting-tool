@@ -6,13 +6,21 @@ The top-level README should briefly describe the idea and goals of your project 
 
 ## Idea
 
-Make a web application to improve the workflow and processes of submission, review, and approval of budget proposals to the SGA Treasurer. A web app that allows student organization to submit their event budget, get it approved, schedule credit card pick-up, and all on a timeline by using a calendar application (or API) in one place. The app also has a communication tool between the SGA treasurer and the student organization’s treasurer. The app will enforce SGA’s scheduling timeline making sure that organizations are on time and getting their need met accordingly.
+Make a web application to improve the workflow and processes of submission, review, and approval of budget proposals to the SGA Treasurer. The app would allow student organization to submit their event budget, get it approved, and all on a timeline by using a calendar application (or API) in one place. The app will enforce SGA’s scheduling timeline making sure that organizations are on time and getting their need met accordingly.
 
 
 ## Goals
 
-- Implement web app and interfacethat allows student organization to submit their event budget and get it approved
+- Implement web app and interface that allows student organization to submit their event budget and get it approved.
+- Make a user-friendly, easy to use, and inclusive interface.
+- Simplify and speed the process to make, review, and approve budget requests.
+- Provide resources to help students new to the procedures of submitting budget requests.
+- Provide tools and automated procdeures to 
 
 ## Issue Tracking
 
-https://trello.com/invite/b/hfm58bcT/ATTI6cf82e3a6ed83c2febcd910d11c8363a47A90D48/issue-board
+Link to Issue Tracking Tool: https://trello.com/invite/b/hfm58bcT/ATTI6cf82e3a6ed83c2febcd910d11c8363a47A90D48/issue-board
+
+## Layout 
+
+
