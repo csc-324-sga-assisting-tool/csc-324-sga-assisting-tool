@@ -19,7 +19,7 @@ Make a web application to improve the workflow and processes of submission, revi
 
 ## Issue Tracking
 
-Link to Issue Tracking Tool: https://trello.com/invite/b/hfm58bcT/ATTI6cf82e3a6ed83c2febcd910d11c8363a47A90D48/issue-board
+Link to Issue Tracking Tool: [Trello Board](https://trello.com/invite/b/hfm58bcT/ATTI6cf82e3a6ed83c2febcd910d11c8363a47A90D48/issue-board)
 
 ## Layout 
 
