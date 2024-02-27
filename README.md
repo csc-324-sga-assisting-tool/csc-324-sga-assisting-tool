@@ -13,14 +13,16 @@ Make a web application to improve the workflow and processes of submission, revi
 
 - Implement web app and interface that allows student organization to submit their event budget and get it approved.
 - Make a user-friendly, easy to use, and inclusive interface.
-- Simplify and speed the process to make, review, and approve budget requests.
+- Provide tools and automated procedures to help make the process of creating, submitting, and reviewing budget requests easier and faster.
 - Provide resources to help students new to the procedures of submitting budget requests.
-- Provide tools and automated procdeures to 
 
 ## Issue Tracking
 
 Link to Issue Tracking Tool: [Trello Board](https://trello.com/invite/b/hfm58bcT/ATTI6cf82e3a6ed83c2febcd910d11c8363a47A90D48/issue-board)
 
-## Layout 
+We are going use the Trello Board to track our backlog and the issues we are working on and/or completed for each sprint. 
+## Repo Layout 
 
-
+- `src/` or `lib/` : contains the source code for the app
+- `dist/` : contains output files (like our code after compilation)
+- `test/` : contains tests for our app
