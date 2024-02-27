@@ -21,8 +21,13 @@ Make a web application to improve the workflow and processes of submission, revi
 Link to Issue Tracking Tool: [Trello Board](https://trello.com/invite/b/hfm58bcT/ATTI6cf82e3a6ed83c2febcd910d11c8363a47A90D48/issue-board)
 
 We are going use the Trello Board to track our backlog and the issues we are working on and/or completed for each sprint. 
+
+Our `Backlog` will contain upcoming tasks or work left over from the previous week. Tasks for the current Sprint will be assigned to individual team members and placed in the `In Progress` section. Once each task is done, it'll be moved to the `Done - Sprint X` for that week's Sprint. During Sprint Planning meetings, we will create new issues if our `Backlog` is empty or breakdown issues in our `Backlog` if they are too big
 ## Repo Layout 
 
 - `src/` or `lib/` : contains the source code for the app
 - `dist/` : contains output files (like our code after compilation)
 - `test/` : contains tests for our app
+- `documents/`: contains Sprint documents for our team
+	- `documents/Planning Reports`: contains Sprint Planning reports
+	- `documents/Review Reports`: contains Sprint Review reports
