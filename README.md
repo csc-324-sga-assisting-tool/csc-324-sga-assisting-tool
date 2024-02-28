@@ -1,6 +1,6 @@
-# CSC 324 SGA Assisting Tool
+# CSC 324 GBudget
 
-Repo for SGA Assisting Tool Sp 24 CSC-324 Project.
+Repo for GBudget (formerly SGA Assistant Tool)
 
 The top-level README should briefly describe the idea and goals of your project and explain the layout of the repository. Include a link to your issue tracking tool and a description of how you will use your tool to track issues for each sprint.
 
