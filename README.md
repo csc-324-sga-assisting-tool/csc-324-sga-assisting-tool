@@ -31,3 +31,10 @@ Our `Backlog` will contain upcoming tasks or work left over from the previous we
 - `test/` : contains tests for our app
 
 - Sprint documents can be found in the [wiki](https://github.com/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/wiki)
+
+### Linting rules
+
+We'll be using eslint for our linter, starting with eslint recommended configs (Learn more here https://typescript-eslint.io/users/configs/#recommended)
+
+- To download run `npm install --save-dev eslint typescript typescript-eslint`
+- To run linter `npx eslint`
