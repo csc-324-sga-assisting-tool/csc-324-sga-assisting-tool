@@ -2,4 +2,4 @@
  * Welcome
  */
 
-console.log("Starting GBudget YAY!!!")
+console.log("Starting GBudget YAY!!!");
