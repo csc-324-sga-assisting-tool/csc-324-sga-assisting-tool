@@ -1,5 +1,1 @@
-/**
- * Welcome
- */
-
-console.log("Starting GBudget YAY!!!")
+console.log('YAYYY for GBudget');
