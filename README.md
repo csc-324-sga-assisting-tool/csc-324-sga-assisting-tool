@@ -8,7 +8,6 @@ The top-level README should briefly describe the idea and goals of your project 
 
 Make a web application to improve the workflow and processes of submission, review, and approval of budget proposals to the SGA Treasurer. The app would allow student organization to submit their event budget, get it approved, and all on a timeline by using a calendar application (or API) in one place. The app will enforce SGA’s scheduling timeline making sure that organizations are on time and getting their need met accordingly.
 
-
 ## Goals
 
 - Implement web app and interface that allows student organization to submit their event budget and get it approved.
@@ -20,11 +19,11 @@ Make a web application to improve the workflow and processes of submission, revi
 
 Link to Issue Tracking Tool: [Trello Board](https://trello.com/invite/b/hfm58bcT/ATTI6cf82e3a6ed83c2febcd910d11c8363a47A90D48/issue-board)
 
-We are going use the Trello Board to track our backlog and the issues we are working on and/or completed for each sprint. 
+We are going use the Trello Board to track our backlog and the issues we are working on and/or completed for each sprint.
 
 Our `Backlog` will contain upcoming tasks or work left over from the previous week. Tasks for the current Sprint will be assigned to individual team members and placed in the `In Progress` section. Once each task is done, it'll be moved to the `Done - Sprint X` for that week's Sprint. During Sprint Planning meetings, we will create new issues if our `Backlog` is empty or breakdown issues in our `Backlog` if they are too big
 
-## Repo Layout 
+## Repo Layout
 
 - `src/` or `lib/` : contains the source code for the app
 - `dist/` : contains output files (like our code after compilation)
@@ -32,9 +31,6 @@ Our `Backlog` will contain upcoming tasks or work left over from the previous we
 
 - Sprint documents can be found in the [wiki](https://github.com/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/wiki)
 
-### Linting rules
+## Style
 
-We'll be using eslint for our linter, starting with eslint recommended configs (Learn more here https://typescript-eslint.io/users/configs/#recommended)
-
-- To download run `npm install --save-dev eslint typescript typescript-eslint`
-- To run linter `npx eslint`
+We will be following Google's TypeScript Style Guide for this repo. See more details on the [wiki](https://github.com/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/wiki) which includes instructions on how to set up and use the automated linter
