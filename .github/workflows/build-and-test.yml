@@ -1,0 +1,58 @@
+name: Build and Test 
+
+on: pull_request  # Runs the workflow on pull request events
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest  # Replace with your preferred runner OS
+    steps:
+      - uses: actions/checkout@v4  # Checkout the repository code
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  # Adjust Node.js version as needed
+      - name: Install dependencies
+        run: npm install
+      - name: Build the app
+        run: npm run build
+      - name: Check for build failures  # Block on failures
+        uses: actions/checkout@v4  # Checkout again to ensure clean state
+        run: if [ ! -d .next ]; then exit 1; fi
+
+      - name: Run Tests with Coverage
+        run: npm test --coverage  # Assumes 'test' script runs Vitest
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # Replace with your Codecov token
+          file: ./coverage/coverage-final.json  # Adjust path if your report differs
+
+    # Set outputs for job status and coverage
+    outputs:
+      build_passed: ${{ steps.check_for_build_failures.outcome == 'success' }}
+      test_passed: ${{ steps.run_tests_with_coverage.outcome == 'success' }}
+
+# Enforce required status checks and potentially coverage increase
+env:
+  # Replace with your minimum acceptable coverage percentage
+  MIN_REQUIRED_COVERAGE: 0
+
+conditions:
+  coverage_improved: ${{ (github.event.pull_request.base.head_sha) && (formatPercent(github.event.pull_request.head.coverage) >= formatPercent(env.MIN_REQUIRED_COVERAGE) && formatPercent(github.event.pull_request.base.coverage) < formatPercent(github.event.pull_request.head.coverage)) }}
+
+jobs:
+  enforce_coverage:
+    runs-on: ubuntu-latest  # Same runner OS as build job
+    needs: build-and-test  # This job depends on the build-and-test job
+    steps:
+      - uses: actions/checkout@v4  # Checkout code again
+
+      - name: Fail if coverage not improved (optional)
+        if: ${{ needs.build-and-test.outputs.build_passed == 'success' && needs.build-and-test.outputs.test_passed == 'success' && !env.coverage_improved }}
+        run: exit 1
+
+    # Set the job as a required status check 
+    outputs:
+      all_checks_passed: ${{ steps.fail_if_coverage_not_improved.outcome == 'success' }}
+
