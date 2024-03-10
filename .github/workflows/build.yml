@@ -1,6 +1,6 @@
-name: Build and Test
+name: Build Action
 
-on: pull_request # Runs the workflow on pull request events
+on: [push, pull_request] # Runs the workflow on pull request events
 
 jobs:
   build:
