@@ -1,0 +1,24 @@
+name: Build and Test
+
+on: pull_request # Runs the workflow on pull request events
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Replace with your preferred runner OS
+    steps:
+      - uses: actions/checkout@v4 # Checkout the repository code
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18 # Adjust Node.js version as needed
+      - name: Install dependencies
+        run: npm install
+      - name: Build the app
+        run: npm run build
+      - name: Run Tests with Coverage
+        run: npm test --coverage # Assumes 'test' script runs Vitest
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # Replace with your Codecov token
+          file: ./coverage/coverage-final.json # Adjust path if your report differs
