@@ -1,6 +1,6 @@
 name: Build Action
 
-on: [push, pull_request] # Runs the workflow on pull request events
+on: pull_request # Runs the workflow on pull request events
 
 jobs:
   build:

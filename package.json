@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "npm run fix && npm run coverage",
-    "build": "next build",
+    "build": "next build --no-lint",
     "start": "next start",
     "lint": "eslint */*.ts",
     "fix": "eslint */*.ts --fix",
