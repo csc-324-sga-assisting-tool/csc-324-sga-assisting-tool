@@ -1,22 +1,23 @@
-name: Build Action
+name: Build GBudget
 
-on: pull_request # Runs the workflow on pull request events
+on: pull_request
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Replace with your preferred runner OS
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # Checkout the repository code
-      - name: Use Node.js 18
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18 # Adjust Node.js version as needed
-      - name: Install dependencies
-        run: npm install
+      - name: Checkout
+        uses: actions/checkout@v4 # Checkout the repository code
+
+      - name: Setup Node
+        uses: ./.github/workflows/setup-node
+
       - name: Build the app
         run: npm run build
+
       - name: Run Tests with Coverage
         run: npm run coverage # Assumes 'test' script runs Vitest
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
