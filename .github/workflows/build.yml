@@ -1,26 +1,26 @@
 name: Build GBudget
 
-on: 
+on:
   pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v4 # Checkout the repository code
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4 # Checkout the repository code
 
-    - name: Setup Node
-      uses: ./.github/workflows/setup-node
+      - name: Setup Node
+        uses: ./.github/workflows/setup-node
 
-    - name: Build the app
-      run: npm run build
+      - name: Build the app
+        run: npm run build
 
-    - name: Run Tests with Coverage
-      run: npm run coverage # Assumes 'test' script runs Vitest
+      - name: Run Tests with Coverage
+        run: npm run coverage # Assumes 'test' script runs Vitest
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4.0.1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }} # Replace with your Codecov token
-        file: ./coverage/coverage-final.json # Adjust path if your report differs
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # Replace with your Codecov token
+          file: ./coverage/coverage-final.json # Adjust path if your report differs
