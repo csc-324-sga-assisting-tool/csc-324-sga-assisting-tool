@@ -14,7 +14,17 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      'pallete-1': '#baabcd',
+      'pallete-2': '#947DB1',
+      'pallete-3': '#58058B',
+      'pallete-4': '#430A71',
+      'pallete-5': '#300B59',
+    },
   },
   plugins: [require('flowbite/plugin')],
 };
+
 export default config;
