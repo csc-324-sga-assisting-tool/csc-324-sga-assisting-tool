@@ -7,7 +7,10 @@ import { Button, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle }
 // import { Button, Navbar } from "flowbite-react";
 // className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto md:w-auto p-4"
 
-export function ComponentNav() {
+type childSign = {
+  name: string,
+}
+export function ComponentNav(propC: childSign) {
   return (
     <Navbar fluid className='bg-pallete-1 items-center justify-between mx-auto md:w-auto p-3'>
       <Navbar.Brand href="http://localhost:3000/csc-324-sga-assisting-tool">
@@ -17,7 +20,7 @@ export function ComponentNav() {
         <a href="/csc-324-sga-assisting-tool/help"  className="flex items-center space-x-3 rtl:space-x-reverse"> 
           <Button type="button" className="text-left text-black bg-pallete-1 font-medium text-sm order-1">Help</Button>
         </a>
-        <Button className='bg-pallete-5 font-medium text-sm w-28 h-10'>Log Out</Button>
+        <Button className='bg-pallete-5 font-medium text-sm w-28 h-10'>{propC.name}</Button>
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse className="justify-between hidden w-full md:flex md:w-auto md:order-1">
@@ -39,7 +42,7 @@ export default function Home() {
       {/* <h1 className="text-3xl font-bold underline">
         Hello world!
       </h1> */}
-      <ComponentNav/>
+      <ComponentNav name ="Log Out"/>
       
 
     </main>

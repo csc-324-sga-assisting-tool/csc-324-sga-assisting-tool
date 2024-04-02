@@ -77,7 +77,7 @@ function ComponentAcc() {
 export default function Home() {
   return (
     <main>
-      <ComponentNav/>
+      <ComponentNav name ="Log Out"/>
       <ComponentCard/>
       <ComponentAcc/>
 
