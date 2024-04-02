@@ -1,8 +1,8 @@
-import {getBudget} from 'data';
+import {getBudget} from 'lib/data';
 import {expect, test} from 'vitest';
 
-test('getBudget', () => {
+test('getBudget', async () => {
   const id = '1';
-  const budget = getBudget(id);
+  const budget = await getBudget(id);
   expect(budget.budget_id === id);
 });
