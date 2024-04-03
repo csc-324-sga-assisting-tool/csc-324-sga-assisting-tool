@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Navbar, NavbarBrand, ThemeModeScript } from 'flowbite-react';
+import { ComponentNav } from './navbarComp';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,12 +21,7 @@ export default function RootLayout({
         <ThemeModeScript />
       </head>
       <body className={`${inter.className}`} >
-        <Navbar fluid>
-          <NavbarBrand>
-            <img src="gbudget-logo.png" className="mr-3 sm:h-9" alt="Gbudget Logo" />
-            <span className="self-center whitespace-nowrap text-xl font-bold text-gray"> GBudget </span>
-          </NavbarBrand>
-        </Navbar>
+        <ComponentNav name={'Log Out'}/>
         {children}
       </body>
     </html >

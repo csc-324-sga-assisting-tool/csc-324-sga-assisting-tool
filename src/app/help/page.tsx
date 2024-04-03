@@ -1,6 +1,7 @@
 "use client";
+import { SummaryProps, SummarySidebar } from "app/dashboard/sidebar";
+import { ComponentNav } from "app/navbarComp";
 // import { Button, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
-import { ComponentNav } from "app/page";
 import { Card, Accordion } from "flowbite-react";
 import Image from "next/image";
 
@@ -8,7 +9,7 @@ function ComponentCard() {
   return (
     <Card
       className="items-center justify-between text-center mx-auto md:w-auto h-60 p-5"
-      renderImage={() => <Image width={130} height={115} src="/mascot.png" alt="image 1" className="item-left"/>}
+      renderImage={() => <Image width={100} height={90} src="gbudget-logo.png" alt="image 1" className="item-left"/>}
     >
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         Frequently Asked Questions
@@ -75,9 +76,17 @@ function ComponentAcc() {
 
 
 export default function Home() {
+  const dummyUserSummary: SummaryProps = {
+    total: 1000,
+    remaining: 400,
+    pendingEvents: 5,
+    plannedEvents: 10,
+    completedEvents: 10
+  }
   return (
     <main>
-      <ComponentNav name ="Log Out"/>
+      {/* <ComponentNav name ="Log Out"/> */}
+      {/* <SummarySidebar {...dummyUserSummary}/> */}
       <ComponentCard/>
       <ComponentAcc/>
 
