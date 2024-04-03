@@ -1,10 +1,18 @@
 import type {Config} from 'tailwindcss';
 
 const config: Config = {
+  darkMode: 'selector',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    'node_modules/flowbite-react/lib/esm/**/*.js',
+  ],
+  safelist: [
+    {
+      pattern:
+        /(bg|text|border)-(gray|blue|green|red|yellow|amber|slate|zinc|neutral|stone|orange|lime|emerald|teal|cyan|sky|indigo|violet|purple|fuchsia|pink|rose)./,
+    },
   ],
   theme: {
     extend: {
