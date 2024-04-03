@@ -27,6 +27,12 @@ Collection
 Represents a Firebase Collection of documents keyed by their id
 */
 class Collection {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
   getDocument(id: string): Document {
     return {id: 'id'};
   }
@@ -38,5 +44,17 @@ class Collection {
   }
   deleteDocument(doc: Document): boolean {
     return true;
+  }
+}
+
+class Database {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  getCollection(name: string): Collection {
+    return new Collection(name);
   }
 }
