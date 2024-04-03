@@ -1,11 +1,12 @@
 import { FirebaseProvider } from "lib/data/data_loader.firebase";
 import { BudgetDisplay } from "./budget";
 import { SummaryProps, SummarySidebar } from "./sidebar";
-import { Budget, DataProvider, getUserBudgets } from "lib/data"
+import { Budget, DataProvider } from "lib/data"
 
 
 
 async function Dashboard({ userID, dataProvider }: { userID: string, dataProvider: DataProvider }) {
+  // FIX: Calculate summary stuff using data
   const summaryProps: SummaryProps = {
     total: 1000,
     remaining: 400,
