@@ -28,9 +28,11 @@ Represents a Firebase Collection of documents keyed by their id
 */
 class Collection {
   name: string;
+  private database_name: string;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(collection_name: string, database_name: string) {
+    this.name = collection_name;
+    this.database_name = database_name;
   }
 
   getDocument(id: string): Document {
@@ -50,11 +52,20 @@ class Collection {
 class Database {
   name: string;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(database_name: string) {
+    this.name = database_name;
   }
 
-  getCollection(name: string): Collection {
-    return new Collection(name);
+  getCollection(collection_name: string): Collection {
+    return new Collection(collection_name, this.name);
   }
 }
+
+export {
+  type Document,
+  type FilterOperator,
+  type Filter,
+  type Sort,
+  Collection,
+  Database,
+};
