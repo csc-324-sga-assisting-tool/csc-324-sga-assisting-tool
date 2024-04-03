@@ -29,8 +29,7 @@ function ComponentAcc() {
         </Accordion.Title>
         <Accordion.Content className="bg-white">
           <p className="text-gray-500 dark:text-gray-400">
-            Flowbite is an open-source library of interactive components built on top of Tailwind CSS including buttons,
-            dropdowns, modals, navbars, and more.
+            Check the status of the budget plan! If the status becomes to "Approved", the budget plan is approved by SGA treasure, and you can start the next process! If the status is "Denied", you are able to see the comments from the SGA treasure, modify and resubmit the budget plan. If the status is "Pending", please give SGA treasure more time to go through your budget plan!
           </p>
           <p className="text-gray-500 dark:text-gray-400">
             Check out this guide to learn how to&nbsp;
@@ -44,8 +43,7 @@ function ComponentAcc() {
         </Accordion.Title>
         <Accordion.Content className="bg-white">
           <p className="text-gray-500 dark:text-gray-400 ">
-            Flowbite is first conceptualized and designed using the Figma software so everything you see in the library
-            has a design equivalent in our Figma file.
+            You can click the "Duplicate event" button on the right side of each budget plan to reuse the past budgets. 
           </p>
         </Accordion.Content>
       </Accordion.Panel>
@@ -64,6 +62,48 @@ function ComponentAcc() {
             technical reason stopping you from using the best of two worlds.
           </p>
           <p className="text-gray-500 dark:text-gray-400">Learn more about these technologies:</p>
+          <ul className="list-disc pl-5 text-gray-500 dark:text-gray-400">
+          </ul>
+        </Accordion.Content>
+      </Accordion.Panel>
+      <Accordion.Panel>
+        <Accordion.Title className="flex bg-gray-100 items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 dark:text-gray-400 gap-3">
+          How do I contact the SGA treasure when the budget plan has been under review for a long time?
+        </Accordion.Title>
+        <Accordion.Content className="bg-white">
+          <p className="text-gray-500 dark:text-gray-400">
+            You can click the "Contact" tab on the top of the website to find the contact info for SGA treasure. 
+          </p>
+          <p className="text-gray-500 dark:text-gray-400">
+          Or you can click the "request review" button again to remind the SGA treasure to review the budget plan as soon as possible. 
+          </p>
+          <ul className="list-disc pl-5 text-gray-500 dark:text-gray-400">
+          </ul>
+        </Accordion.Content>
+      </Accordion.Panel>
+      <Accordion.Panel>
+        <Accordion.Title className="flex bg-gray-100 items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 dark:text-gray-400 gap-3">
+          Are there any security measures to protect the privacy?
+        </Accordion.Title>
+        <Accordion.Content className="bg-white">
+          <p className="text-gray-500 dark:text-gray-400">
+            
+          </p>
+          <p className="text-gray-500 dark:text-gray-400">
+          
+          </p>
+          <ul className="list-disc pl-5 text-gray-500 dark:text-gray-400">
+          </ul>
+        </Accordion.Content>
+      </Accordion.Panel>
+      <Accordion.Panel>
+        <Accordion.Title className="flex bg-gray-100 items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 dark:text-gray-400 gap-3">
+          What if the question I want to ask is not covered in the Q&A page?
+        </Accordion.Title>
+        <Accordion.Content className="bg-white">
+          <p className="text-gray-500 dark:text-gray-400">
+            You can upload more questions here (link), and the developingt team will publish the answer as soon as possible. 
+          </p>
           <ul className="list-disc pl-5 text-gray-500 dark:text-gray-400">
           </ul>
         </Accordion.Content>
