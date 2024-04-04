@@ -1,8 +1,10 @@
 # CSC 324 GBudget
 
-Repo for GBudget (formerly SGA Assistant Tool)
+## Demo
 
-The top-level README should briefly describe the idea and goals of your project and explain the layout of the repository. Include a link to your issue tracking tool and a description of how you will use your tool to track issues for each sprint.
+A live demo of the latest code is available [here](https://csc-324-sga-assisting-tool.github.io/csc-324-sga-assisting-tool/)
+
+To run the code locally, `clone` the repository, run `npm install` to install dependencies in the repo directory and run `npm run dev` to start a local server. More detailed instructions are available for building and testing the project are available in the [wiki](https://github.com/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/wiki)
 
 ## Idea
 
@@ -34,3 +36,4 @@ Our `Backlog` will contain upcoming tasks or work left over from the previous we
 ## Style
 
 We will be following Google's TypeScript Style Guide for this repo. See more details on the [wiki](https://github.com/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/wiki) which includes instructions on how to set up and use the automated linter
+
