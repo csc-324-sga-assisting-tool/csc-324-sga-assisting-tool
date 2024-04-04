@@ -114,7 +114,7 @@ export default function Home() {
     completedEvents: 10
   }
   return (
-    <main>
+    <main className="bg-pallete-2">
       {/* <ComponentNav name ="Log Out"/> */}
       {/* <SummarySidebar {...dummyUserSummary}/> */}
       <ComponentCard/>
