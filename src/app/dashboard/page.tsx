@@ -20,9 +20,9 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
   return (
     <>
       <SummarySidebar {...summaryProps} />
-      <div className="w-128">
+      <main className="w-128">
         {
-          userBudgets.map((budget: Budget) => (
+          userBudgets.map((budget: Budget) =>
             <BudgetDisplay
               key={budget.budget_id}
               title={budget.event_name}
@@ -32,9 +32,8 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
               lastStatusDate={budget.status_history[0]!.when}
             />
           )
-          )
         }
-      </div>
+      </main>
     </>
   );
 }
