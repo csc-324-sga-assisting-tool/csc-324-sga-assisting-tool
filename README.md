@@ -6,6 +6,13 @@ A live demo of the latest code is available [here](https://csc-324-sga-assisting
 
 To run the code locally, `clone` the repository, run `npm install` to install dependencies in the repo directory and run `npm run dev` to start a local server. More detailed instructions are available for building and testing the project are available in the [wiki](https://github.com/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/wiki)
 
+### Operational Parts
+
+- The dashboard page which lets users see the budgets they have so far and add new budgets 
+- Help page
+
+*While the components are interactive, the actual data and information in the help page are placeholders*
+
 ## Idea
 
 Make a web application to improve the workflow and processes of submission, review, and approval of budget proposals to the SGA Treasurer. The app would allow student organization to submit their event budget, get it approved, and all on a timeline by using a calendar application (or API) in one place. The app will enforce SGA’s scheduling timeline making sure that organizations are on time and getting their need met accordingly.
