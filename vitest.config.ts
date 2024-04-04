@@ -5,6 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
+    // this was previously set to jsdom which causes problems with the Firebase emulator: check https://stackoverflow.com/questions/63319638/firestore-internal-assertion-failed-unexpected-state-when-unit-testing-with-j
     environment: 'node',
     coverage: {
       provider: 'v8',
