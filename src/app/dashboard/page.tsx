@@ -1,8 +1,42 @@
-
-import { BudgetDisplay, BudgetProps } from "./budget";
+import { FirebaseProvider } from "lib/data/data_loader.firebase";
+import { BudgetDisplay } from "./budget";
 import { SummaryProps, SummarySidebar } from "./sidebar";
-import { Budget, getUserBudgets } from "lib/data"
+import { Budget, DataProvider } from "lib/data"
 
+
+
+async function Dashboard({ userID, dataProvider }: { userID: string, dataProvider: DataProvider }) {
+  // FIX: Calculate summary stuff using data
+  const summaryProps: SummaryProps = {
+    total: 1000,
+    remaining: 400,
+    pendingEvents: 5,
+    plannedEvents: 10,
+    completedEvents: 10
+  }
+
+  const userBudgets = await dataProvider.getUserBudgets(userID);
+
+  return (
+    <>
+      <SummarySidebar {...summaryProps} />
+      <main className="w-128">
+        {
+          userBudgets.map((budget: Budget) =>
+            <BudgetDisplay
+              key={budget.budget_id}
+              title={budget.event_name}
+              description={budget.event_description}
+              total={budget.total_cost}
+              status={budget.current_status}
+              lastStatusDate={budget.status_history[0]!.when}
+            />
+          )
+        }
+      </main>
+    </>
+  );
+}
 
 
 
@@ -13,33 +47,7 @@ export default async function Page({
   params: { slug: string }
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
-  //const dummyProps: BudgetProps = { title: "Cat Party", description: "lorem ipsum dolor", status: "created", lastStatusDate: "01/01/2001", total: 200 }
-  const userBudgets = await getUserBudgets("test_user");
-  const dummyUserSummary: SummaryProps = {
-    total: 1000,
-    remaining: 400,
-    pendingEvents: 5,
-    plannedEvents: 10,
-    completedEvents: 10
-  }
-  return (
-    <>
-      <SummarySidebar {...dummyUserSummary} />
-      <div className="w-128">
-        {
-          userBudgets.map((budget: Budget, index) => (
-            <BudgetDisplay
-              key={index}
-              title={budget.event_name}
-              description={budget.event_description}
-              total={budget.total_cost}
-              status={budget.current_status}
-              lastStatusDate={budget.status_history[0]!.when}
-            />
-          )
-          )
-        }
-      </div>
-    </>
-  );
+
+  return <Dashboard userID="test_user" dataProvider={FirebaseProvider} />
+
 }

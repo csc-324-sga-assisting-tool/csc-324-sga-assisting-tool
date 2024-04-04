@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Navbar, NavbarBrand, ThemeModeScript } from 'flowbite-react';
+import { ThemeModeScript } from 'flowbite-react';
 import { ComponentNav } from './navbarComp';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -21,7 +21,7 @@ export default function RootLayout({
         <ThemeModeScript />
       </head>
       <body className={`${inter.className}`} >
-        <ComponentNav name={'Log Out'}/>
+        <ComponentNav name={'Log Out'} />
         {children}
       </body>
     </html >

@@ -13,7 +13,7 @@ type SummaryProps = {
 
 function SummarySidebar(props: SummaryProps) {
   return (
-    <Sidebar className="h-screen fixed sm:relative" aria-label="RSO Summary Sidebar">
+    <Sidebar className="sidebar h-screen fixed" aria-label="RSO Summary Sidebar">
       <Sidebar.Items>
         <Sidebar.ItemGroup>
 

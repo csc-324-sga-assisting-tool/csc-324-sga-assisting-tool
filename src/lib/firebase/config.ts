@@ -21,6 +21,7 @@ const db = getFirestore(app);
 enum Collection {
   Users = 'users',
   Budgets = 'budgets',
+  Items = 'items',
 }
 
 export {db, Collection};
