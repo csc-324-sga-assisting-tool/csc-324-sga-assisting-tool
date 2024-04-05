@@ -2,11 +2,34 @@ import { FirebaseProvider } from "lib/data/data_loader.firebase";
 import { BudgetDisplay } from "./budget";
 import { SummaryProps, SummarySidebar } from "./sidebar";
 import { Budget, DataProvider } from "lib/data"
-import { PlusBudget } from "./plus";
+import { ComponentPlus  } from "./plus";
 import { doc, deleteDoc } from "firebase/firestore";
 import { db } from "lib/firebase";
 import { Collection } from "lib/firebase/config";
 
+
+import { Alert } from "flowbite-react";
+//Figure out hope/making budget from client side
+// async function SubmitedBud({ userID, dataProvider }: { userID: string, dataProvider: DataProvider }) {
+//   // const editBud: Budget =
+//   // {
+//   //   user_id: userID,
+//   //   budget_id: budgetNew.budget_id,
+//   //   event_name: budgetNew.event_name,
+//   //   event_description: budgetNew.event_description,
+//   //   total_cost: budgetNew.total_cost,
+//   //   current_status: budgetNew.current_status,
+//   //   status_history: budgetNew.status_history,
+//   //   items: budgetNew.items,
+
+//   // }
+//   // await dataProvider.addBudgetId(editBud.budget_id, editBud)
+//   return (
+//     <Alert color="info">
+//       {/* <span className="font-medium">Submited!</span> `${editBud.budget_id}` */}
+//     </Alert>
+//   );
+// }
 
 
 async function Dashboard({ userID, dataProvider }: { userID: string, dataProvider: DataProvider }) {
@@ -24,6 +47,7 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
 
   const userBudgets = await dataProvider.getUserBudgets(userID);
   console.log(userBudgets)
+  
   return (
     <>
       <SummarySidebar {...summaryProps} />
@@ -39,10 +63,12 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
               lastStatusDate={budget.status_history[0]!.when}
             />
           )
+          
         }
         
       </main>
-      <PlusBudget />
+      <ComponentPlus />
+      
 
     </>
   );
