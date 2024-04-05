@@ -27,7 +27,7 @@ interface Budget extends Comments {
   user_id: string; // the user this budget belongs to
   budget_id: string;
   event_name: string;
-  event_description?: string;
+  event_description: string;
   event_datetime?: string;
   event_location?: string;
   event_type?: string; // shouldn't be string but restricted to a specific string like 'food', cultural'... once we know types
@@ -37,4 +37,4 @@ interface Budget extends Comments {
   items: [Item] | [];
 }
 
-export type {Budget, Item, Status};
+export type {Budget, Item, Status, StatusChange};

@@ -12,6 +12,9 @@ jobs:
       - name: Setup Node
         uses: ./.github/workflows/setup-node
 
+      - name: Setup Firebase Emulator Suite
+        uses: ./.github/workflows/setup-firebase-emulator
+
       - name: Build the app
         run: npm run build
 

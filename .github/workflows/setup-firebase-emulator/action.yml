@@ -1,0 +1,24 @@
+name: setup-firebase-emulator
+descrption: 'Setup Firebase Emulator Suite' 
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache Firebase Emulators
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ runner.os }}-${{ hashFiles('**/firebase.json') }}
+          restore-keys: |
+            firebase-emulators-${{ runner.os }}-
+
+      - name: Set Firestore Emulator Host
+        run: echo "FIRESTORE_EMULATOR_HOST=127.0.0.1:8080" >> $GITHUB_ENV
+
+      - name: Run Firestore Emulator Setup
+        run: firebase setup:emulators:firestore
+
+      - name: Start Firestore Emulator
+        run: fFIRESTORE_EMULATOR_HOST="127.0.0.1:8080" firebase emulators:start --only firestore  
