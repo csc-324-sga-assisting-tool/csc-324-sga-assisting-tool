@@ -4,23 +4,22 @@ runs:
   using: 'composite'
   steps:
     - name: Checkout code
-       uses: actions/checkout@v2
+      uses: actions/checkout@v2
 
-      - name: Cache Firebase Emulators
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/firebase/emulators
-          key: firebase-emulators-${{ runner.os }}-${{ hashFiles('**/firebase.json') }}
-          restore-keys: |
-            firebase-emulators-${{ runner.os }}-
-
-      - name: Setup Firebase
-        uses: w9jds/setup-firebase@main
-        with:
-            tools-version: 13.6.0
-            firebase_token: ${{ secrets.FIREBASE_TOKEN }}
+    - name: Cache Firebase Emulators
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/firebase/emulators
+        key: firebase-emulators-${{ runner.os }}-${{ hashFiles('**/firebase.json') }}
+        restore-keys: |
+          firebase-emulators-${{ runner.os }}-
+    - name: Setup Firebase
+      uses: w9jds/setup-firebase@main
+      with:
+          tools-version: 13.6.0
+          firebase_token: ${{ secrets.FIREBASE_TOKEN }}
             
-      - name: Run Firestore Emulator Setup
-        run: firebase setup:emulators:firestore
+    - name: Run Firestore Emulator Setup
+      run: firebase setup:emulators:firestore
 
       
