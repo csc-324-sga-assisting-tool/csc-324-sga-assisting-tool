@@ -9,7 +9,7 @@ import {
   where,
 } from 'firebase/firestore';
 import {Budget} from 'lib/data';
-import {Collection} from './config';
+import {Collections} from './config';
 
 /* getUserBudgets returns 'howMany' of the userID's most recent budgets
  */
@@ -21,7 +21,7 @@ async function getUserBudgetsFirebase(
   const budgets: Budget[] = [];
 
   const q = query(
-    collection(db, Collection.Budgets),
+    collection(db, Collections.Budgets),
     where('user_id', '==', userID),
     limit(howMany)
   );
@@ -39,7 +39,7 @@ async function getBudgetFirebase(
   budget_id: string,
   db: Firestore
 ): Promise<Budget | undefined> {
-  const result = await getDoc(doc(db, Collection.Budgets, `${budget_id}`));
+  const result = await getDoc(doc(db, Collections.Budgets, `${budget_id}`));
   const budget: Budget = result.data() as Budget;
   return budget;
 }

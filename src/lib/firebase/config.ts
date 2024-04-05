@@ -18,10 +18,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-enum Collection {
+enum Collections {
   Users = 'users',
   Budgets = 'budgets',
   Items = 'items',
 }
 
-export {db, Collection};
+export {db, Collections};
