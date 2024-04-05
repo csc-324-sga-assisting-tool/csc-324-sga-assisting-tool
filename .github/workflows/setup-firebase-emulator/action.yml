@@ -1,5 +1,10 @@
 name: setup-firebase-emulator
-descrption: 'Setup Firebase Emulator Suite' 
+descrption: 'Setup Firebase Emulator Suite'
+inputs:
+  firebase_token:
+    description: 'Firebase token'
+    required: true
+    secret: true
 runs:
   using: 'composite'
   steps:
@@ -18,9 +23,6 @@ runs:
       with:
           tools-version: 13.6.0
           firebase_token: ${{ secrets.FIREBASE_TOKEN }}
-      secrets:
-          firebase_token: ${{ secrets.FIREBASE_TOKEN }}
-
     - name: Run Firestore Emulator Setup
       shell: bash
       run: firebase setup:emulators:firestore
