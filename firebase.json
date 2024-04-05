@@ -2,7 +2,7 @@
   "emulators": {
     "singleProjectMode": true,
     "firestore": {
-      "port": 5000
+      "port": 8080
     },
     "ui": {
       "enabled": false

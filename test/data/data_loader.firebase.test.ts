@@ -13,7 +13,7 @@ import {
 } from 'lib/firebase';
 
 const db = getFirestore();
-connectFirestoreEmulator(db, '127.0.0.1', 5000);
+connectFirestoreEmulator(db, '127.0.0.1', 8080);
 
 describe('test firebase getBudget', () => {
   // dummy budgets for testing the getBudget function

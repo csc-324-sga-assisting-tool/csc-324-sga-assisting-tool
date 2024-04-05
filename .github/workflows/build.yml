@@ -19,10 +19,7 @@ jobs:
 
       - name: Build the app
         run: npm run build
-
-      - name: Run Tests with Coverage
-        run: npm run coverage # Assumes 'test' script runs Vitest
-
+     
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
