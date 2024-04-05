@@ -19,7 +19,7 @@ jobs:
         run: npm run build
 
       - name: Run Tests with Coverage
-        run: firebase emulators:exec --only firestore 'npm run coverage' # Assumes 'test' script runs Vitest
+        run: npm run coverage # Assumes 'test' script runs Vitest
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4.0.1

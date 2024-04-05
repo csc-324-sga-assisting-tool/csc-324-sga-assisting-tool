@@ -21,4 +21,4 @@ runs:
         run: firebase setup:emulators:firestore
 
       - name: Start Firestore Emulator
-        run: firebase emulators:start --only firestore  
+        run: fFIRESTORE_EMULATOR_HOST="127.0.0.1:8080" firebase emulators:start --only firestore  
