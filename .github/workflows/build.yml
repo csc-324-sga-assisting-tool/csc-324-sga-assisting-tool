@@ -1,6 +1,6 @@
 name: Build GBudget
 
-on: pull_request
+on: push 
 
 jobs:
   build:
