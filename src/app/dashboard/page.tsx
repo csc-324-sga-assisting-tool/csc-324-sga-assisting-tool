@@ -2,6 +2,7 @@ import { FirebaseProvider } from "lib/data/data_loader.firebase";
 import { BudgetDisplay } from "./budget";
 import { SummaryProps, SummarySidebar } from "./sidebar";
 import { Budget, DataProvider } from "lib/data"
+import { PlusBudget } from "./plus";
 
 
 
@@ -33,7 +34,10 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
             />
           )
         }
+        
       </main>
+      <PlusBudget />
+
     </>
   );
 }
