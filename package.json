@@ -11,8 +11,10 @@
     "lint": "eslint */*.ts",
     "fix": "eslint */*.ts --fix",
     "clean": "gts clean",
-    "coverage": "vitest run * --coverage",
-    "test": "vitest",
+    "coverage-command": "vitest run * --coverage",
+    "coverage": "firebase emulators:exec \"npm run coverage-command\"",
+    "test-command": "vitest",
+    "test": "firebase emulators:exec \"npm run test-command\"",
     "prepare": "husky"
   },
   "dependencies": {

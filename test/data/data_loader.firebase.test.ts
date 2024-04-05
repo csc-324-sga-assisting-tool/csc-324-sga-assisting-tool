@@ -34,13 +34,14 @@ describe('test firebase getBudget', () => {
       items: [],
     };
   });
+
   testBudgets.map(async budget => {
     await setDoc(doc(db, Collection.Budgets, budget.budget_id), budget);
   });
 
   it('wrapper function gets correct budget', async () => {
     const budget = await getBudget('budget_1', db);
-    assert.equal(budget.budget_id, 'budget_1');
+    assert.equal(budget!.budget_id, 'budget_1');
   });
 
   it('wrapper function gets correct budget', async () => {
@@ -51,7 +52,7 @@ describe('test firebase getBudget', () => {
   it('firebase function gets correct budget and not the same budget everytime', async () => {
     const id = 'test_b1';
     const budget = await getBudgetFirebase('budget_2', db);
-    assert.equal(budget.budget_id, 'budget_2');
+    assert.equal(budget!.budget_id, 'budget_2');
   });
 });
 
@@ -74,6 +75,7 @@ describe('test firebase getUserBudget', () => {
       items: [],
     };
   });
+
   testBudgets.push({
     budget_id: 'budget_user_2',
     user_id: 'user_2',
