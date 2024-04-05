@@ -14,6 +14,10 @@ jobs:
 
       - name: Setup Firebase Emulator Suite
         uses: ./.github/workflows/setup-firebase-emulator
+        with:
+            firebase_token: ${{ secrets.FIREBASE_TOKEN }}
+        secrets:
+            firebase_token: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: Build the app
         run: npm run build
@@ -26,7 +30,3 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # Replace with your Codecov token
           file: ./coverage/coverage-final.json # Adjust path if your report differs
-on:
-  workflow_call:
-    secrets:
-    firebase_token: ${{ secrets.FIREBASE_TOKEN }}
