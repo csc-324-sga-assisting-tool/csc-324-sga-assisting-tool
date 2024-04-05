@@ -4,7 +4,7 @@ runs:
   using: 'composite'
   steps:
     - name: Checkout code
-        uses: actions/checkout@v2
+       uses: actions/checkout@v2
 
       - name: Cache Firebase Emulators
         uses: actions/cache@v2
@@ -15,7 +15,10 @@ runs:
             firebase-emulators-${{ runner.os }}-
 
       - name: Setup Firebase
-        uses: w9jds/setup-firebase@v1.0.0
+        uses: w9jds/setup-firebase@main
+        with:
+            tools-version: 13.6.0
+            firebase_token: ${{ secrets.FIREBASE_TOKEN }}
             
       - name: Run Firestore Emulator Setup
         run: firebase setup:emulators:firestore
