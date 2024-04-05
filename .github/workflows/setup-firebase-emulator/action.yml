@@ -17,6 +17,8 @@ runs:
       uses: w9jds/setup-firebase@main
       with:
           tools-version: 13.6.0
+          firebase_token: ${{ secrets.FIREBASE_TOKEN }}
+
     - name: Run Firestore Emulator Setup
       shell: bash
       run: firebase setup:emulators:firestore
