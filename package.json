@@ -9,7 +9,7 @@
     "quick-build": "next build --no-lint",
     "start": "next start",
     "lint": "eslint */*.ts",
-    "fix": "eslint */*.ts --fix",
+    "fix": "npx eslint */*.ts --fix",
     "clean": "gts clean",
     "coverage-command": "vitest run * --coverage",
     "coverage": "firebase emulators:exec \"npm run coverage-command\"",
