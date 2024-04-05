@@ -1,11 +1,5 @@
 import {getBudgetFirebase, getUserBudgetsFirebase} from './get_budget';
-import {addBudgetFirebase, addBudgetFirebaseNoId} from './set_budget';
+import {addBudgetFirebase} from './set_budget';
 import {db} from './config';
 
-export {
-  db,
-  getBudgetFirebase,
-  getUserBudgetsFirebase,
-  addBudgetFirebase,
-  addBudgetFirebaseNoId,
-};
+export {db, getBudgetFirebase, getUserBudgetsFirebase, addBudgetFirebase};
