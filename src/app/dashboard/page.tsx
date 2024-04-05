@@ -3,6 +3,9 @@ import { BudgetDisplay } from "./budget";
 import { SummaryProps, SummarySidebar } from "./sidebar";
 import { Budget, DataProvider } from "lib/data"
 import { PlusBudget } from "./plus";
+import { doc, deleteDoc } from "firebase/firestore";
+import { db } from "lib/firebase";
+import { Collection } from "lib/firebase/config";
 
 
 
@@ -15,9 +18,12 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
     plannedEvents: 10,
     completedEvents: 10
   }
+  // await dataProvider.addBudgetId("test_budget_1", dataProvider.makeBudget(
+  //   userID, "test_budget_1", "dance party" ,"Fun dance party", 1000, []
+  // ))
 
   const userBudgets = await dataProvider.getUserBudgets(userID);
-
+  console.log(userBudgets)
   return (
     <>
       <SummarySidebar {...summaryProps} />
