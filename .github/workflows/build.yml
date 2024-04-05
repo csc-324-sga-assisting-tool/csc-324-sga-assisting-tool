@@ -26,3 +26,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # Replace with your Codecov token
           file: ./coverage/coverage-final.json # Adjust path if your report differs
+on:
+  workflow_call:
+    secrets:
+    firebase_token: ${{ secrets.FIREBASE_TOKEN }}
