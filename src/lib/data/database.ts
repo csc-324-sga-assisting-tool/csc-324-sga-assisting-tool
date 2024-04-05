@@ -1,6 +1,30 @@
 import {OpenGraph} from 'next/dist/lib/metadata/types/opengraph-types';
 
 /*
+Database
+Represents a Firebase Database.  The name field identifies the database
+*/
+interface Database {
+  name: string;
+
+  getCollection(collection_name: string): Collection;
+}
+
+/*
+Collection
+Represents a Firebase Collection of documents keyed by their id
+The name field identifies the collection in its parent databse
+*/
+interface Collection {
+  name: string;
+
+  getDocument(id: string): Document;
+  getDocuments(filters: Array<Filter>, sort: Sort): Array<Document>;
+  addDocument(doc: Document): boolean;
+  deleteDocument(doc: Document): boolean;
+}
+
+/*
 Document Type
 Represents a Firebase Document (list of key/value pairs)
 Every document must have an id.  Oher fields will represent
@@ -10,62 +34,20 @@ interface Document {
   id: string;
 }
 
+/*
+Filter and Sort types describe how to filter and sort data
+from the database
+*/
 type FilterOperator = '==' | '<' | '>' | '<=' | '>=';
-interface Filter {
+type Filter = {
   field: string;
   operator: FilterOperator;
   value: string;
-}
+};
 
-interface Sort {
+type Sort = {
   field: string;
   isAscending: boolean;
-}
-
-/*
-Collection
-Represents a Firebase Collection of documents keyed by their id
-*/
-class Collection {
-  name: string;
-  private database_name: string;
-
-  constructor(collection_name: string, database_name: string) {
-    this.name = collection_name;
-    this.database_name = database_name;
-  }
-
-  getDocument(id: string): Document {
-    return {id: 'id'};
-  }
-  getDocuments(filters: Array<Filter>, sort: Sort): Array<Document> {
-    return [{id: 'id'}];
-  }
-  addDocument(doc: Document): boolean {
-    return true;
-  }
-  deleteDocument(doc: Document): boolean {
-    return true;
-  }
-}
-
-class Database {
-  name: string;
-
-  constructor(database_name: string) {
-    this.name = database_name;
-  }
-
-  getCollection(collection_name: string): Collection {
-    return new Collection(collection_name, this.name);
-  }
-}
-
-export {
-  type Document,
-  type FilterOperator,
-  type Filter,
-  type Sort,
-  Collection,
-  Database,
 };
+
+export type {Document, FilterOperator, Filter, Sort, Collection, Database};
