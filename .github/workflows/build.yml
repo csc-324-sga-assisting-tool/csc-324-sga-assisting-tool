@@ -14,8 +14,6 @@ jobs:
 
       - name: Setup Firebase Emulator Suite
         uses: ./.github/workflows/setup-firebase-emulator
-        with:
-            firebase_token: ${{ secrets.FIREBASE_TOKEN }}
         secrets:
             firebase_token: ${{ secrets.FIREBASE_TOKEN }}
 
