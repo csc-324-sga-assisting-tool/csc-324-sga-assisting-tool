@@ -1,4 +1,4 @@
 import {getBudgetFirebase, getUserBudgetsFirebase} from './get_budget';
-import {db} from './config';
+import {Collection, db} from './config';
 
-export {db, getBudgetFirebase, getUserBudgetsFirebase};
+export {Collection, db, getBudgetFirebase, getUserBudgetsFirebase};

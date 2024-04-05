@@ -38,7 +38,7 @@ async function getUserBudgetsFirebase(
 async function getBudgetFirebase(
   budget_id: string,
   db: Firestore
-): Promise<Budget> {
+): Promise<Budget | undefined> {
   const result = await getDoc(doc(db, Collection.Budgets, `${budget_id}`));
   const budget: Budget = result.data() as Budget;
   return budget;
