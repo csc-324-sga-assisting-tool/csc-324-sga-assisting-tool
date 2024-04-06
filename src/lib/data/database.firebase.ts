@@ -1,4 +1,4 @@
-import {Database, Collection, Document, Sort, Filter} from './database';
+import {IDatabase, ICollection, Document, Sort, Filter} from './database';
 import {Collections, db} from '../firebase/config';
 import {
   collection,
@@ -12,7 +12,7 @@ import {
   where,
 } from 'firebase/firestore';
 
-class FirestoreDatabase implements Database {
+export class FirestoreDatabase implements IDatabase {
   name: string;
   private firestore: Firestore;
   constructor(databaseName: string, firestore: Firestore = db) {
@@ -20,12 +20,12 @@ class FirestoreDatabase implements Database {
     this.firestore = firestore;
   }
 
-  getCollection(collectionName: string): Collection {
+  getCollection(collectionName: string): ICollection {
     return new FirestoreCollection(collectionName, this, this.firestore);
   }
 }
 
-class FirestoreCollection implements Collection {
+export class FirestoreCollection implements ICollection {
   name: string;
   private database: FirestoreDatabase;
   private fbCollection;
@@ -39,15 +39,15 @@ class FirestoreCollection implements Collection {
     this.fbCollection = collection(firestore, collectionName);
   }
 
-  async getDocument(id: string): Promise<Document> {
+  async getDocument<T extends Document>(id: string): Promise<T> {
     const result = await getDoc(doc(db, this.name, id));
-    return result.data() as Document;
+    return result.data() as T;
   }
-  async getDocuments(
+  async getDocuments<T extends Document>(
     filters: Filter[],
     sort: Sort,
     howMany = 25
-  ): Promise<Document[]> {
+  ): Promise<T[]> {
     // Create a firebase query
     let q = query(this.fbCollection, limit(howMany));
 
@@ -64,9 +64,9 @@ class FirestoreCollection implements Collection {
     const result = await getDocs(q);
 
     // Collect the data from those documents in an array
-    const documents: Document[] = [];
+    const documents: T[] = [];
     result.forEach(doc => {
-      const data = doc.data() as Document;
+      const data = doc.data() as T;
       documents.push(data);
     });
 
