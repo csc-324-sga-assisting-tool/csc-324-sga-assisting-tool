@@ -1,9 +1,5 @@
 # CSC 324 GBudget
 
-## Demo
-
-A live demo of the latest code is available [here](https://csc-324-sga-assisting-tool.github.io/csc-324-sga-assisting-tool/)
-
 To run the code locally, `clone` the repository, run `npm install` to install dependencies in the repo directory and run `npm run dev` to start a local server. More detailed instructions are available for building and testing the project are available in the [wiki](https://github.com/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/wiki)
 
 ### Operational Parts
