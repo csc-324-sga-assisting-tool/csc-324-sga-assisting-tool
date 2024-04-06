@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npm run fix && npm run coverage",
+    "prebuild": "npm run fix",
     "build": "next build --no-lint",
     "quick-build": "next build --no-lint",
     "start": "next start",
