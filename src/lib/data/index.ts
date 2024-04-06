@@ -1,8 +1,9 @@
 export {
   getBudget,
   getUserBudgets,
-  addBudgetId,
   addBudget,
+  FirebaseModifier,
+  FirebaseProvider,
 } from './data_loader.firebase';
 export type {Budget, Status, Item} from './data_types';
-export type {DataProvider} from './data_loader';
+export type {DataModifier, DataProvider} from './data_loader';

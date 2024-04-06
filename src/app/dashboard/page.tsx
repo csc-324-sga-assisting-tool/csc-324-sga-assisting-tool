@@ -2,35 +2,7 @@ import { FirebaseProvider } from "lib/data/data_loader.firebase";
 import { BudgetDisplay } from "./budget";
 import { SummaryProps, SummarySidebar } from "./sidebar";
 import { Budget, DataProvider } from "lib/data"
-import { ComponentPlus  } from "./plus";
-import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "lib/firebase";
-import { Collection } from "lib/firebase/config";
-
-
-import { Alert } from "flowbite-react";
-//Figure out hope/making budget from client side
-// async function SubmitedBud({ userID, dataProvider }: { userID: string, dataProvider: DataProvider }) {
-//   // const editBud: Budget =
-//   // {
-//   //   user_id: userID,
-//   //   budget_id: budgetNew.budget_id,
-//   //   event_name: budgetNew.event_name,
-//   //   event_description: budgetNew.event_description,
-//   //   total_cost: budgetNew.total_cost,
-//   //   current_status: budgetNew.current_status,
-//   //   status_history: budgetNew.status_history,
-//   //   items: budgetNew.items,
-
-//   // }
-//   // await dataProvider.addBudgetId(editBud.budget_id, editBud)
-//   return (
-//     <Alert color="info">
-//       {/* <span className="font-medium">Submited!</span> `${editBud.budget_id}` */}
-//     </Alert>
-//   );
-// }
-
+import { NewBudgetForm } from "./create_budget_form";
 
 async function Dashboard({ userID, dataProvider }: { userID: string, dataProvider: DataProvider }) {
   // FIX: Calculate summary stuff using data
@@ -41,13 +13,9 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
     plannedEvents: 10,
     completedEvents: 10
   }
-  // await dataProvider.addBudgetId("test_budget_1", dataProvider.makeBudget(
-  //   userID, "test_budget_1", "dance party" ,"Fun dance party", 1000, []
-  // ))
-
   const userBudgets = await dataProvider.getUserBudgets(userID);
   console.log(userBudgets)
-  
+
   return (
     <>
       <SummarySidebar {...summaryProps} />
@@ -63,13 +31,11 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
               lastStatusDate={budget.status_history[0]!.when}
             />
           )
-          
-        }
-        
-      </main>
-      <ComponentPlus />
-      
 
+        }
+
+      </main>
+      <NewBudgetForm user_id={userID} />
     </>
   );
 }
