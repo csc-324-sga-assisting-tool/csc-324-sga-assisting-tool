@@ -13,7 +13,7 @@ export function ComponentNav(propC: childSign) {
       fluid
       className="bg-pallete-1 items-center justify-between mx-auto md:w-auto p-3"
     >
-      <Navbar.Brand href="/csc-324-sga-assisting-tool">
+      <Navbar.Brand href="/">
         <Image
           src="gbudget-logo.png"
           className="mr-3 sm:h-9"
@@ -25,7 +25,7 @@ export function ComponentNav(propC: childSign) {
       </Navbar.Brand>
       <div className="flex md:order-2">
         <a
-          href="/csc-324-sga-assisting-tool/help"
+          href="/help"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <Button
@@ -42,7 +42,7 @@ export function ComponentNav(propC: childSign) {
       </div>
       <Navbar.Collapse className="justify-between hidden w-full md:flex md:w-auto md:order-1">
         <Navbar.Link
-          href="/csc-324-sga-assisting-tool/dashboard"
+          href="/dashboard"
           active
           className="text-black text-base font-medium"
         >
