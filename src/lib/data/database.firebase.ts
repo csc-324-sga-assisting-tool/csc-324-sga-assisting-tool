@@ -39,11 +39,15 @@ class FirestoreCollection implements Collection {
     this.fbCollection = collection(firestore, collectionName);
   }
 
-  getDocument(id: string): Document {
+  async getDocument(id: string): Promise<Document> {
     const result = await getDoc(doc(db, this.name, id));
     return result.data() as Document;
   }
-  getDocuments(filters: Filter[], sort: Sort, howMany = 25): Document[] {
+  async getDocuments(
+    filters: Filter[],
+    sort: Sort,
+    howMany = 25
+  ): Promise<Document[]> {
     // Create a firebase query
     let q = query(this.fbCollection, limit(howMany));
 
@@ -68,10 +72,10 @@ class FirestoreCollection implements Collection {
 
     return documents;
   }
-  addDocument(doc: Document): boolean {
+  addDocument(doc: Document): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
-  deleteDocument(doc: Document): boolean {
+  deleteDocument(doc: Document): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
 }
