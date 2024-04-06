@@ -12,9 +12,9 @@
     "fix": "eslint */*.ts --fix",
     "clean": "gts clean",
     "coverage-command": "vitest run * --coverage --test-timeout=10000",
-    "coverage": "firebase emulators:exec \"npm run coverage-command\"",
+    "coverage": "firebase emulators:exec --only firestore \"npm run coverage-command\"",
     "test-command": "vitest",
-    "test": "firebase emulators:exec \"npm run test-command\"",
+    "test": "firebase emulators:exec --only firestore \"npm run test-command\"",
     "prepare": "husky"
   },
   "dependencies": {
