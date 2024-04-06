@@ -18,10 +18,10 @@ The name field identifies the collection in its parent databse
 interface Collection {
   name: string;
 
-  getDocument(id: string): Document;
-  getDocuments(filters: Array<Filter>, sort: Sort): Array<Document>;
-  addDocument(doc: Document): boolean;
-  deleteDocument(doc: Document): boolean;
+  getDocument(id: string): Promise<Document>;
+  getDocuments(filters: Array<Filter>, sort: Sort): Promise<Array<Document>>;
+  addDocument(doc: Document): Promise<boolean>;
+  deleteDocument(doc: Document): Promise<boolean>;
 }
 
 /*
