@@ -1,4 +1,4 @@
-import {Budget, Item} from './data_types';
+import {Budget} from './data_types';
 import {
   db,
   getBudgetFirebase,

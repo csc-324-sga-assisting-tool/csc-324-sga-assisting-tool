@@ -1,25 +1,27 @@
-"use client"
+'use client';
 
-import { Button, Label, Modal, TextInput } from "flowbite-react";
-import { useState } from 'react';
-import { createBudget } from "./actions";
-import { HiPlusCircle } from "react-icons/hi";
+import {Button, Label, Modal, TextInput} from 'flowbite-react';
+import {useState} from 'react';
+import {createBudget} from './actions';
+import {HiPlusCircle} from 'react-icons/hi';
 
-
-export function NewBudgetForm({ user_id }: { user_id: string }) {
+export function NewBudgetForm({user_id}: {user_id: string}) {
   const [openModal, setOpenModal] = useState(false);
 
-  const [name, setName] = useState("Dance Party");
-  const [description, setDescription] = useState("Lots of Dancing and Fun");
+  const [name, setName] = useState('Dance Party');
+  const [description, setDescription] = useState('Lots of Dancing and Fun');
 
   const submit = () => {
     setOpenModal(false);
     createBudget(user_id, name, description);
-  }
+  };
 
   return (
     <>
-      <Button className="fixed bottom-0 right-0 p-6" onClick={() => setOpenModal(true)}>
+      <Button
+        className="fixed bottom-0 right-0 p-6"
+        onClick={() => setOpenModal(true)}
+      >
         <HiPlusCircle className="w-24 h-24" />
       </Button>
       <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
@@ -33,9 +35,10 @@ export function NewBudgetForm({ user_id }: { user_id: string }) {
                 </div>
                 <TextInput
                   id="event_name"
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={e => setName(e.target.value)}
                   value={name}
-                  required />
+                  required
+                />
               </div>
               <div>
                 <div className="m-2 block">
@@ -43,11 +46,14 @@ export function NewBudgetForm({ user_id }: { user_id: string }) {
                 </div>
                 <TextInput
                   id="description"
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={e => setDescription(e.target.value)}
                   value={description}
-                  required />
+                  required
+                />
               </div>
-              <Button onClick={submit} className='bg-pallete-5'>Submit</Button>
+              <Button onClick={submit} className="bg-pallete-5">
+                Submit
+              </Button>
             </form>
           </div>
         </Modal.Body>

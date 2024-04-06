@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import type {Metadata} from 'next';
+import {Inter} from 'next/font/google';
 import './globals.css';
-import { ThemeModeScript } from 'flowbite-react';
-import { ComponentNav } from './navbarComp';
+import {ThemeModeScript} from 'flowbite-react';
+import {ComponentNav} from './navbarComp';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({subsets: ['latin']});
 
 export const metadata: Metadata = {
   title: 'Gbudget',
@@ -20,10 +20,10 @@ export default function RootLayout({
       <head>
         <ThemeModeScript />
       </head>
-      <body className={`${inter.className}`} >
+      <body className={`${inter.className}`}>
         <ComponentNav name={'Log Out'} />
         {children}
       </body>
-    </html >
+    </html>
   );
 }

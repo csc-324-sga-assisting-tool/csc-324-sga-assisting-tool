@@ -1,13 +1,11 @@
-import Image from 'next/image';
-import { Component } from 'react';
-import { ComponentLog } from './logIn';
+import {ComponentLog} from './logIn';
 
 export default function Home() {
   return (
-    <main className='bg-white'>
-      <ComponentLog/>
+    <main className="bg-white">
+      <ComponentLog />
     </main>
-  )
+  );
 }
 
 // export default function Home() {
