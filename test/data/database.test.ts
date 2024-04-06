@@ -1,13 +1,17 @@
-import {Database, Collection} from '../../src/data/database';
+import {Database, Collection, Document} from '../../src/lib/data/database';
+import {
+  FirestoreDatabase,
+  FirestoreCollection,
+} from '../../src/lib/data/database.firebase';
 import {expect, test} from 'vitest';
 
 // Test database, collection, and document names
 const database_name = 'test_database';
 const collection_name = 'test_collection';
+const database = new Database(database_name);
 
 test('Test Database class', () => {
-  // Test the constructor
-  const database = new Database(database_name);
+  // Test that the database was correctly constructed
   expect(database.name).toBe(database_name);
 
   // Test getCollection
@@ -15,12 +19,15 @@ test('Test Database class', () => {
   expect(collection.name).toBe(collection_name);
 });
 
-test('Test Collection class', () => {
-  // Test the constructor
-  const collection = new Collection(collection_name, database_name);
-  expect(collection.name).toBe(collection_name);
+test('Test Collection class', async () => {
+  // Get a collection
+  const collection = database.getCollection(collection_name);
 
   // Test addDocument( ID )
+  type TestDocument = {
+    id: string;
+    field: string;
+  };
   const testDocument1 = {
     id: 'testDocument1',
     field: 'testField1',
@@ -31,14 +38,19 @@ test('Test Collection class', () => {
   };
   collection.addDocument(testDocument1);
   collection.addDocument(testDocument2);
-  // TODO? I don't know if there's a way to test if this works other than
-  // by simply testing if getDocument now works
 
   // Test getDocument
-  // TODO: Obviously since getDocument returns a Document, it won't
-  // have a 'field' field, even though it should.  Fix.
-  const doc1 = collection.getDocument(testDocument1.id);
-  const doc2 = collection.getDocument(testDocument2.id);
+  const doc1 = await collection.getDocument<TestDocument>(testDocument1.id);
+  const doc2 = await collection.getDocument<TestDocument>(testDocument2.id);
   expect(doc1.field).toBe(testDocument1.field);
   expect(doc2.field).toBe(testDocument2.field);
+
+  // Test deleteDocument
+  collection.deleteDocument(doc1);
+  collection.deleteDocument(doc2);
+
+  // Ensure that trying to get those documents fails
+  expect(() => {
+    collection.getDocument<TestDocument>(testDocument1.id);
+  }).toThrowError();
 });
