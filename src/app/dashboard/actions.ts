@@ -24,6 +24,5 @@ export async function createBudget(
       },
     ],
   };
-  console.log(budget);
   return await dataModifier.addBudget(budget);
 }

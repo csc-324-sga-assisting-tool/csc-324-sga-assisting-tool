@@ -14,7 +14,6 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
     completedEvents: 10
   }
   const userBudgets = await dataProvider.getUserBudgets(userID);
-  console.log(userBudgets)
 
   return (
     <>
