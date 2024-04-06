@@ -5,4 +5,8 @@ interface DataProvider {
   getUserBudgets(userID: string): Promise<Budget[]>;
 }
 
-export type {DataProvider};
+interface DataModifier {
+  addBudget(budget: Budget): Promise<void>;
+}
+
+export type {DataProvider, DataModifier};

@@ -2,8 +2,7 @@ import { FirebaseProvider } from "lib/data/data_loader.firebase";
 import { BudgetDisplay } from "./budget";
 import { SummaryProps, SummarySidebar } from "./sidebar";
 import { Budget, DataProvider } from "lib/data"
-
-
+import { NewBudgetForm } from "./create_budget_form";
 
 async function Dashboard({ userID, dataProvider }: { userID: string, dataProvider: DataProvider }) {
   // FIX: Calculate summary stuff using data
@@ -14,8 +13,8 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
     plannedEvents: 10,
     completedEvents: 10
   }
-
   const userBudgets = await dataProvider.getUserBudgets(userID);
+  console.log(userBudgets)
 
   return (
     <>
@@ -32,8 +31,11 @@ async function Dashboard({ userID, dataProvider }: { userID: string, dataProvide
               lastStatusDate={budget.status_history[0]!.when}
             />
           )
+
         }
+
       </main>
+      <NewBudgetForm user_id={userID} />
     </>
   );
 }

@@ -1,15 +1,11 @@
 import Image from 'next/image';
-import { ComponentNav } from './navbarComp';
+import { Component } from 'react';
+import { ComponentLog } from './logIn';
 
 export default function Home() {
   return (
-    <main >
-      {/* <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1> */}
-      {/* <ComponentNav name ="Log Out"/> */}
-      
-
+    <main className='bg-white'>
+      <ComponentLog/>
     </main>
   )
 }
