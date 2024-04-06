@@ -15,6 +15,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4 # Checkout the repository code
 
+      - name: Setup Node
+        uses: ./.github/workflows/setup-node
+
       - name: Setup Firebase Emulator Suite
         uses: ./.github/workflows/setup-firebase-emulator
         with:
