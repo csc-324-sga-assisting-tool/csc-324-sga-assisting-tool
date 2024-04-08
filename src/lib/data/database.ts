@@ -55,4 +55,5 @@ export type Sort = {
 };
 
 // Here's where we decide which implementation of Database the rest of the program uses
+// TODO: Expose FirestoreDatabase instead of using a Database alias
 export {FirestoreDatabase as Database, FirestoreCollection as Collection};
