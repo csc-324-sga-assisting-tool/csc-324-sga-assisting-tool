@@ -4,15 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npm run fix && npm run coverage",
-    "build": "next build --no-lint",
+    "prebuild": "npm run fix",
+    "build": "next build",
     "quick-build": "next build --no-lint",
     "start": "next start",
-    "lint": "eslint */*.ts",
-    "fix": "eslint */*.ts --fix",
+    "lint": "eslint -- src",
+    "fix": "eslint src --fix",
     "clean": "gts clean",
-    "coverage": "vitest run * --coverage",
-    "test": "vitest",
+    "coverage-command": "vitest run * --coverage --test-timeout=10000",
+    "coverage": "firebase emulators:exec --only firestore \"npm run coverage-command\"",
+    "test-command": "vitest",
+    "test": "firebase emulators:exec --only firestore \"npm run test-command\"",
     "prepare": "husky"
   },
   "dependencies": {
@@ -21,7 +23,8 @@
     "flowbite-react": "^0.7.3",
     "next": "14.1.2",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-icons": "^5.0.1"
   },
   "devDependencies": {
     "@testing-library/react": "^14.2.1",
@@ -33,6 +36,7 @@
     "autoprefixer": "^10.4.18",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.1.2",
+    "firebase-tools": "^13.6.0",
     "gts": "^5.2.0",
     "husky": "^9.0.11",
     "jsdom": "^24.0.0",

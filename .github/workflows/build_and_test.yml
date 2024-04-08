@@ -1,9 +1,12 @@
-name: Build GBudget
-
-on: pull_request
-
+name: Build and test code
+'on': pull_request
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
 jobs:
-  build:
+  build_and_preview:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -12,14 +15,20 @@ jobs:
       - name: Setup Node
         uses: ./.github/workflows/setup-node
 
+      - name: Setup Firebase Emulator Suite
+        uses: ./.github/workflows/setup-firebase-emulator
+        with:
+            firebase_token: ${{ secrets.FIREBASE_TOKEN }}
+
       - name: Build the app
         run: npm run build
 
-      - name: Run Tests with Coverage
-        run: npm run coverage # Assumes 'test' script runs Vitest
+      - name: Run tests
+        run: npm run coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # Replace with your Codecov token
           file: ./coverage/coverage-final.json # Adjust path if your report differs
+

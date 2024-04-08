@@ -1,0 +1,32 @@
+name: setup-firebase-emulator
+descrption: 'Setup Firebase Emulator Suite'
+inputs:
+  firebase_token:
+    description: 'Firebase token'
+    required: true
+    secret: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Cache Firebase Emulators
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/firebase/emulators
+        key: firebase-emulators-${{ runner.os }}-${{ hashFiles('**/firebase.json') }}
+        restore-keys: |
+          firebase-emulators-${{ runner.os }}-
+    - name: Setup Firebase
+      uses: w9jds/setup-firebase@main
+      with:
+          tools-version: 13.6.0
+          firebase_token: ${{ inputs.FIREBASE_TOKEN }}
+    - name: Run Firestore Emulator Setup
+      shell: bash
+      run: firebase setup:emulators:firestore
+
+    - name: Enable experimental webframeworks for hosting
+      shell: bash
+      run: firebase experiments:enable webframeworks
+
+
+      
