@@ -18,6 +18,8 @@ export function ComponentNav(propC: childSign) {
           src="gbudget-logo.png"
           className="mr-3 sm:h-9"
           alt="Gbudget Logo"
+          width={7}
+          height={10}
         />
         <span className="self-center whitespace-nowrap text-xl font-semibold text-black">
           GBudget
