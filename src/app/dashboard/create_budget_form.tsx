@@ -10,10 +10,15 @@ export function NewBudgetForm({user_id}: {user_id: string}) {
 
   const [name, setName] = useState('Dance Party');
   const [description, setDescription] = useState('Lots of Dancing and Fun');
+  const [location, setLocation] = useState('HSSC N114');
+  const [date, setDate] = useState('2024-MM-DD');
+  const [type, setType] = useState('SEPC');
+  const [cost, setCost] = useState('$500');
+
 
   const submit = () => {
     setOpenModal(false);
-    createBudget(user_id, name, description);
+    createBudget(user_id, name, description, location, date, type);
   };
 
   return (
@@ -36,7 +41,7 @@ export function NewBudgetForm({user_id}: {user_id: string}) {
                 <TextInput
                   id="event_name"
                   onChange={e => setName(e.target.value)}
-                  value={name}
+                  value = {name}
                   required
                 />
               </div>
@@ -47,7 +52,51 @@ export function NewBudgetForm({user_id}: {user_id: string}) {
                 <TextInput
                   id="description"
                   onChange={e => setDescription(e.target.value)}
-                  value={description}
+                  value = {description}
+                  required
+                />
+              </div>
+              <div>
+               <div className="m-2 block">
+                  <Label htmlFor="event-location" value="Event Location" />
+                </div>
+                <TextInput
+                  id="event_location"
+                  onChange={e => setLocation(e.target.value)}
+                  value = {location}
+                  required
+                />
+              </div>
+              <div>
+               <div className="m-2 block">
+                  <Label htmlFor="event-date" value="Event Date" />
+                </div>
+                <TextInput
+                  id="event_date"
+                  onChange={e => setDate(e.target.value)}
+                  value = {date}
+                  required
+                />
+              </div>
+              <div>
+               <div className="m-2 block">
+                  <Label htmlFor="event-type" value="Event Type" />
+                </div>
+                <TextInput
+                  id="event_type"
+                  onChange={e => setType(e.target.value)}
+                  value = {type}
+                  required
+                />
+              </div>
+              <div>
+               <div className="m-2 block">
+                  <Label htmlFor="total-cost" value="Total Cost" />
+                </div>
+                <TextInput
+                  id="total_cost"
+                  onChange={e => setCost(e.target.value)}
+                  value = {cost}
                   required
                 />
               </div>
