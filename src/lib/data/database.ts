@@ -1,6 +1,3 @@
-import {OpenGraph} from 'next/dist/lib/metadata/types/opengraph-types';
-import {FirestoreDatabase, FirestoreCollection} from './database.firebase';
-
 /*
 Database
 Represents a Firebase Database.  The name field identifies the database
@@ -8,24 +5,14 @@ Represents a Firebase Database.  The name field identifies the database
 export interface IDatabase {
   name: string;
 
-  getCollection(collection_name: string): ICollection;
-}
-
-/*
-Collection
-Represents a Firebase Collection of documents keyed by their id
-The name field identifies the collection in its parent databse
-*/
-export interface ICollection {
-  name: string;
-
-  getDocument<T extends Document>(id: string): Promise<T>;
+  getDocument<T extends Document>(collection: string, id: string): Promise<T>;
   getDocuments<T extends Document>(
+    collection: string,
     filters: Array<Filter>,
     sort: Sort
   ): Promise<Array<T>>;
-  addDocument(doc: Document): Promise<boolean>;
-  deleteDocument(doc: Document): Promise<boolean>;
+  addDocument(collection: string, doc: Document): Promise<boolean>;
+  deleteDocument(collection: string, doc: Document): Promise<boolean>;
 }
 
 /*
@@ -41,6 +28,12 @@ export type Document = {
 /*
 Filter and Sort types describe how to filter and sort data
 from the database
+
+Examples:
+
+* A filter to check if a document's `name` field is equal
+to "Pet Lover's United":
+ - { field: "name", operator: "==", value: "Pet Lover's United" }
 */
 export type FilterOperator = '==' | '<' | '>' | '<=' | '>=';
 export type Filter = {
@@ -53,7 +46,3 @@ export type Sort = {
   field: string;
   isAscending: boolean;
 };
-
-// Here's where we decide which implementation of Database the rest of the program uses
-// TODO: Expose FirestoreDatabase instead of using a Database alias
-export {FirestoreDatabase as Database, FirestoreCollection as Collection};

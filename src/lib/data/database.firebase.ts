@@ -1,7 +1,6 @@
-import {IDatabase, ICollection, Document, Sort, Filter} from './database';
-import {Collections, db} from '../firebase/config';
+import {IDatabase, Document, Sort, Filter} from './database';
 import {
-  collection,
+  collection as getCollection,
   doc,
   Firestore,
   getDoc,
@@ -20,36 +19,22 @@ export class FirestoreDatabase implements IDatabase {
     this.firestore = firestore;
   }
 
-  getCollection(collectionName: string): ICollection {
-    return new FirestoreCollection(collectionName, this, this.firestore);
-  }
-}
-
-export class FirestoreCollection implements ICollection {
-  name: string;
-  private database: FirestoreDatabase;
-  private fbCollection;
-  constructor(
-    collectionName: string,
-    database: FirestoreDatabase,
-    firestore: Firestore = db
-  ) {
-    this.name = collectionName;
-    this.database = database;
-    this.fbCollection = collection(firestore, collectionName);
-  }
-
-  async getDocument<T extends Document>(id: string): Promise<T> {
-    const result = await getDoc(doc(db, this.name, id));
+  async getDocument<T extends Document>(
+    collection: string,
+    id: string
+  ): Promise<T> {
+    const result = await getDoc(doc(this.firestore, collection, id));
     return result.data() as T;
   }
   async getDocuments<T extends Document>(
+    collection: string,
     filters: Filter[],
     sort: Sort,
     howMany = 25
   ): Promise<T[]> {
     // Create a firebase query
-    let q = query(this.fbCollection, limit(howMany));
+    const coll = getCollection(this.firestore, collection);
+    let q = query(coll, limit(howMany));
 
     // Sort the query
     if (sort.isAscending) q = query(q, orderBy(sort.field));
@@ -72,10 +57,10 @@ export class FirestoreCollection implements ICollection {
 
     return documents;
   }
-  addDocument(doc: Document): Promise<boolean> {
+  addDocument(collection: string, doc: Document): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
-  deleteDocument(doc: Document): Promise<boolean> {
+  deleteDocument(collection: string, doc: Document): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
 }
