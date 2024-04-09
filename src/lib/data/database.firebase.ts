@@ -13,12 +13,11 @@ import {
   query,
   where,
 } from 'firebase/firestore';
+import {db} from 'lib/firebase';
 
 export class FirestoreDatabase implements IDatabase {
-  name: string;
   private firestore: Firestore;
-  constructor(databaseName: string, firestore: Firestore = db) {
-    this.name = databaseName;
+  constructor(firestore: Firestore = db) {
     this.firestore = firestore;
   }
 

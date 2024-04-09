@@ -1,3 +1,4 @@
+import {Document} from './database';
 // utility types to reduce redudancy
 interface Comments {
   rso_comment?: string;
@@ -23,9 +24,9 @@ type StatusChange = {
 
 // Budget represents a single budget request
 // some fields are allowed to be undefined so users can work on budgets without knowing all the details
-interface Budget extends Comments {
+interface Budget extends Comments, Document {
+  id: string; // the budget id (from Document type)
   user_id: string; // the user this budget belongs to
-  budget_id: string;
   event_name: string;
   event_description: string;
   event_datetime?: string;
