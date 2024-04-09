@@ -11,7 +11,8 @@ export interface IDatabase {
     filters: Array<Filter>,
     sort: Sort
   ): Promise<Array<T>>;
-  addDocument(collection: string, doc: Document): Promise<boolean>;
+  addDocumentById(collection: string, doc: Document): Promise<boolean>;
+  addDocument(collection: string, doc: object): Promise<string>;
   deleteDocument(collection: string, doc: Document): Promise<boolean>;
 }
 

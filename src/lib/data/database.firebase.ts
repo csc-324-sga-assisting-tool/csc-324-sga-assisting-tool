@@ -5,6 +5,9 @@ import {
   Firestore,
   getDoc,
   getDocs,
+  deleteDoc,
+  addDoc,
+  setDoc,
   limit,
   orderBy,
   query,
@@ -57,10 +60,33 @@ export class FirestoreDatabase implements IDatabase {
 
     return documents;
   }
-  addDocument(collection: string, doc: Document): Promise<boolean> {
-    throw new Error('Method not implemented.');
+
+  // Adds the given document with an id
+  // If a document with the same id already exists in the collection, it is overwritten
+  async addDocumentById(
+    collection: string,
+    new_doc: Document
+  ): Promise<boolean> {
+    // Add the document to firebase
+    await setDoc(doc(this.firestore, collection, new_doc.id), doc);
+    return true;
   }
-  deleteDocument(collection: string, doc: Document): Promise<boolean> {
-    throw new Error('Method not implemented.');
+
+  // Adds the given document without reference to an id
+  // Returns the id assigned to the document
+  async addDocument(collection: string, new_doc: object): Promise<string> {
+    const docRef = await addDoc(
+      getCollection(this.firestore, collection),
+      new_doc
+    );
+    return docRef.id;
+  }
+  async deleteDocument(
+    collection: string,
+    delete_doc: Document
+  ): Promise<boolean> {
+    // Delete the firebase document
+    await deleteDoc(doc(this.firestore, collection, delete_doc.id));
+    return true;
   }
 }
