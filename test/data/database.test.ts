@@ -1,56 +1,140 @@
-import {Database, Collection, Document} from '../../src/lib/data/database';
+import {FirestoreDatabase} from '../../src/lib/data/database.firebase';
+import {Sort, Filter} from '../../src/lib/data/database';
+import {beforeAll, describe, expect, test} from 'vitest';
 import {
-  FirestoreDatabase,
-  FirestoreCollection,
-} from '../../src/lib/data/database.firebase';
-import {expect, test} from 'vitest';
+  connectFirestoreEmulator,
+  getFirestore,
+  doc,
+  writeBatch,
+} from 'firebase/firestore';
 
-// Test database, collection, and document names
-const database_name = 'test_database';
-const collection_name = 'test_collection';
-const database = new Database(database_name);
-
-test('Test Database class', () => {
-  // Test that the database was correctly constructed
-  expect(database.name).toBe(database_name);
-
-  // Test getCollection
-  const collection = database.getCollection(collection_name);
-  expect(collection.name).toBe(collection_name);
+// Set up a Firestore Database for testing
+const db = getFirestore();
+beforeAll(async () => {
+  connectFirestoreEmulator(db, '127.0.0.1', 8080);
 });
 
-test('Test Collection class', async () => {
-  // Get a collection
-  const collection = database.getCollection(collection_name);
+const database_name = 'test_database';
+const collection_name = 'test_collection';
 
-  // Test addDocument( ID )
+describe('Test FirestoreDatabase class', async () => {
+  // Create a database
+  const database = new FirestoreDatabase(database_name, db);
+  expect(database.name).toBe(database_name);
+
+  // Initialize the database with some test documents
   type TestDocument = {
     id: string;
     field: string;
+    number: number;
   };
   const testDocument1 = {
     id: 'testDocument1',
-    field: 'testField1',
+    field: 'xenophobia',
+    number: 1,
   };
   const testDocument2 = {
     id: 'testDocument2',
-    field: 'testField2',
+    field: 'aardvark',
+    number: 2,
   };
-  collection.addDocument(testDocument1);
-  collection.addDocument(testDocument2);
+  const testDocument3 = {
+    id: 'testDocument3',
+    field: 'baby',
+    number: 3,
+  };
+  database.addDocument(collection_name, testDocument1);
+  database.addDocument(collection_name, testDocument2);
+  database.addDocument(collection_name, testDocument3);
 
   // Test getDocument
-  const doc1 = await collection.getDocument<TestDocument>(testDocument1.id);
-  const doc2 = await collection.getDocument<TestDocument>(testDocument2.id);
-  expect(doc1.field).toBe(testDocument1.field);
-  expect(doc2.field).toBe(testDocument2.field);
+  const doc1 = await database.getDocument<TestDocument>(
+    collection_name,
+    testDocument1.id
+  );
+  const doc2 = await database.getDocument<TestDocument>(
+    collection_name,
+    testDocument2.id
+  );
+  const doc3 = await database.getDocument<TestDocument>(
+    collection_name,
+    testDocument3.id
+  );
+  test('Database.addDocument/Database.getDocument', () => {
+    expect(doc1.field).toBe(testDocument1.field);
+    expect(doc2.field).toBe(testDocument2.field);
+    expect(doc3.field).toBe(testDocument3.field);
+  });
+
+  // Test getDocuments
+  test('Database.getDocuments', () => {
+    // No Filters, Sort by id
+    expect(async () => {
+      await database.getDocuments<TestDocument>(
+        collection_name,
+        [],
+        new Sort('id')
+      );
+    }).toEqual([testDocument1, testDocument2, testDocument3]);
+
+    // No Filters, Sort by id descending
+    expect(async () => {
+      await database.getDocuments<TestDocument>(
+        collection_name,
+        [],
+        new Sort('id', false)
+      );
+    }).toEqual([testDocument3, testDocument2, testDocument1]);
+
+    // No Filters, Sort by field
+    expect(async () => {
+      await database.getDocuments<TestDocument>(
+        collection_name,
+        [],
+        new Sort('field')
+      );
+    }).toEqual([testDocument2, testDocument3, testDocument1]);
+
+    // Filter number > 1, Sort by id
+    expect(async () => {
+      await database.getDocuments<TestDocument>(
+        collection_name,
+        [new Filter('number', '>', 1)],
+        new Sort('id')
+      );
+    }).toEqual([testDocument2, testDocument3]);
+
+    // Filter number > 1 and field == aardvark, Sort by id
+    expect(async () => {
+      await database.getDocuments<TestDocument>(
+        collection_name,
+        [new Filter('number', '>', 1), new Filter('field', '==', 'aardvark')],
+        new Sort('id')
+      );
+    }).toEqual([testDocument2]);
+
+    // Filter number > 2 and field == aardvark, Sort by id
+    expect(async () => {
+      await database.getDocuments<TestDocument>(
+        collection_name,
+        [new Filter('number', '>', 2), new Filter('field', '==', 'aardvark')],
+        new Sort('id')
+      );
+    }).toEqual([]);
+  });
 
   // Test deleteDocument
-  collection.deleteDocument(doc1);
-  collection.deleteDocument(doc2);
-
-  // Ensure that trying to get those documents fails
-  expect(() => {
-    collection.getDocument<TestDocument>(testDocument1.id);
-  }).toThrowError();
+  database.deleteDocument(collection_name, doc1);
+  database.deleteDocument(collection_name, doc2);
+  test('Database.deleteDocument', () => {
+    expect(() => {
+      database.getDocument<TestDocument>(collection_name, testDocument1.id);
+    }).toThrowError();
+    expect(() => {
+      database.getDocument<TestDocument>(collection_name, testDocument2.id);
+    }).toThrowError();
+    expect(() => {
+      database.getDocument<TestDocument>(collection_name, testDocument3.id);
+    }).toBe(testDocument3);
+  });
 });

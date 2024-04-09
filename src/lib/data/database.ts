@@ -36,13 +36,22 @@ to "Pet Lover's United":
  - { field: "name", operator: "==", value: "Pet Lover's United" }
 */
 export type FilterOperator = '==' | '<' | '>' | '<=' | '>=';
-export type Filter = {
+export class Filter {
   field: string;
   operator: FilterOperator;
-  value: string;
-};
+  value;
+  constructor(field: string, operator: FilterOperator, value) {
+    this.field = field;
+    this.operator = operator;
+    this.value = value;
+  }
+}
 
-export type Sort = {
+export class Sort {
   field: string;
   isAscending: boolean;
-};
+  constructor(field: string, isAscending = true) {
+    this.field = field;
+    this.isAscending = isAscending;
+  }
+}
