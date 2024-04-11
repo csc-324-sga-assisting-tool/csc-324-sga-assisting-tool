@@ -1,5 +1,5 @@
 'use server';
-
+import {revalidatePath} from 'next/cache';
 import {Budget, DataModifier, FirebaseModifier} from 'lib/data';
 
 export async function createBudget(
@@ -24,5 +24,7 @@ export async function createBudget(
       },
     ],
   };
+
+  revalidatePath('/dashboard');
   return await dataModifier.addBudget(budget);
 }
