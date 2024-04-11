@@ -23,10 +23,3 @@ runs:
     - name: Run Firestore Emulator Setup
       shell: bash
       run: firebase setup:emulators:firestore
-
-    - name: Enable experimental webframeworks for hosting
-      shell: bash
-      run: firebase experiments:enable webframeworks
-
-
-      
