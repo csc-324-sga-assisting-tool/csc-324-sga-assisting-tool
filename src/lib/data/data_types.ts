@@ -5,8 +5,7 @@ interface Comments {
   sga_treasurer_comment?: string;
 }
 // an Item will represent a single item in a budget
-interface Item extends Comments {
-  item_id: string;
+interface Item extends Comments, Document {
   budget_id: string;
   name: string;
   quantity: number;
