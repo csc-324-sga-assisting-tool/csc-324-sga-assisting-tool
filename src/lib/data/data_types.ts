@@ -5,9 +5,11 @@ interface Comments {
 }
 // an Item will represent a single item in a budget
 interface Item extends Comments {
+  item_id: string;
+  budget_id: string;
   name: string;
   quantity: number;
-  unit_price: number;
+  cost: number;
   vendor: string | undefined;
   url: string;
 }
