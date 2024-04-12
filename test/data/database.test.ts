@@ -11,7 +11,11 @@ import {
 // Set up a Firestore Database for testing
 const db = getFirestore();
 beforeAll(async () => {
-  connectFirestoreEmulator(db, '127.0.0.1', 8080);
+  const host =
+    (db.toJSON() as {settings?: {host?: string}}).settings?.host ?? '';
+  if (process.env.APP_ENV === 'local' && !host.startsWith('localhost')) {
+    connectFirestoreEmulator(db, 'localhost', 8080);
+  }
 });
 
 const collection_name = 'test_collection';
@@ -41,9 +45,9 @@ describe('Test FirestoreDatabase class', async () => {
     field: 'baby',
     number: 3,
   };
-  database.addDocument(collection_name, testDocument1);
-  database.addDocument(collection_name, testDocument2);
-  database.addDocument(collection_name, testDocument3);
+  testDocument1.id = await database.addDocument(collection_name, testDocument1);
+  testDocument2.id = await database.addDocument(collection_name, testDocument2);
+  testDocument3.id = await database.addDocument(collection_name, testDocument3);
 
   // Test getDocument
   const doc1 = await database.getDocument<TestDocument>(

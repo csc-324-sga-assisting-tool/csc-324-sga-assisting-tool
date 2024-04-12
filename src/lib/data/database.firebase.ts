@@ -26,7 +26,11 @@ export class FirestoreDatabase implements IDatabase {
     id: string
   ): Promise<T> {
     const result = await getDoc(doc(this.firestore, collection, id));
-    return result.data() as T;
+    if (result.exists()) return result.data() as T;
+    else
+      throw new Error(
+        `Document with id ${id} does not exist in collection ${collection}`
+      );
   }
   async getDocuments<T extends Document>(
     collection: string,
