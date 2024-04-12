@@ -14,13 +14,11 @@ beforeAll(async () => {
   connectFirestoreEmulator(db, '127.0.0.1', 8080);
 });
 
-const database_name = 'test_database';
 const collection_name = 'test_collection';
 
 describe('Test FirestoreDatabase class', async () => {
   // Create a database
-  const database = new FirestoreDatabase(database_name, db);
-  expect(database.name).toBe(database_name);
+  const database = new FirestoreDatabase(db);
 
   // Initialize the database with some test documents
   type TestDocument = {
