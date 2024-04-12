@@ -16,7 +16,11 @@ class DataProvider {
     return this.database.getDocument<Budget>(Collections.Budgets, budgetID);
   }
   // Get a sorted and filtered list of budgets
-  getBudgets(filters: Filter[], sort: Sort, howMany = 25): Promise<Budget[]> {
+  getBudgets(
+    sort: Sort,
+    filters: Filter[] = [],
+    howMany = 25
+  ): Promise<Budget[]> {
     return this.database.getDocuments<Budget>(
       Collections.Budgets,
       filters,
