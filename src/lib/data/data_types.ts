@@ -37,4 +37,17 @@ interface Budget extends Comments {
   items: [Item] | [];
 }
 
-export type {Budget, Item, Status, StatusChange};
+// User represents a single user
+interface User {
+  user_id: string;
+  is_SEPC: boolean;
+  user_name: string;
+  remaining_budget: number;
+  total_budget: number;
+  user_type: string;
+  pending_event: number;
+  planned_event: number;
+  completed_event: number;
+}
+
+export type {Budget, Item, Status, StatusChange, User};
