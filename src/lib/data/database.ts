@@ -3,13 +3,13 @@ Database
 Represents a Firebase Database.  The name field identifies the database
 */
 export interface IDatabase {
-  name: string;
-
+  // TODO: Should this return undefined if the document doesn't exist? Or throw an error?
   getDocument<T extends Document>(collection: string, id: string): Promise<T>;
   getDocuments<T extends Document>(
     collection: string,
     filters: Array<Filter>,
-    sort: Sort
+    sort: Sort,
+    howMany: number
   ): Promise<Array<T>>;
   addDocumentById(collection: string, doc: Document): Promise<boolean>;
   addDocument(collection: string, doc: object): Promise<string>;
