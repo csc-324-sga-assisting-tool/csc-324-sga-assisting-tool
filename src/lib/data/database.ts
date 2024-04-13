@@ -1,3 +1,5 @@
+import {db} from 'lib/firebase';
+import {FirestoreDatabase} from './database.firebase';
 /*
 Database
 Represents a Firebase Database.  The name field identifies the database
@@ -56,3 +58,6 @@ export class Sort {
     this.isAscending = isAscending;
   }
 }
+
+// The default database used throughout the project
+export const Database = new FirestoreDatabase(db);

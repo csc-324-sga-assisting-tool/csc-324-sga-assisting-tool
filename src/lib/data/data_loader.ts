@@ -1,13 +1,11 @@
 import {Budget} from '.';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
-import {Filter, Sort} from './database';
-import {FirestoreDatabase} from './database.firebase';
-import {db} from 'lib/firebase';
+import {Filter, Sort, Database} from './database';
 
 class DataProvider {
   database: IDatabase;
-  constructor(database: IDatabase = new FirestoreDatabase(db)) {
+  constructor(database: IDatabase = Database) {
     this.database = database;
   }
 
@@ -28,7 +26,7 @@ class DataProvider {
 
 class DataModifier {
   database: IDatabase;
-  constructor(database: IDatabase) {
+  constructor(database: IDatabase = Database) {
     this.database = database;
   }
 
