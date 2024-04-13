@@ -1,11 +1,11 @@
 'use client';
 
-import {Button, Label, Modal, TextInput} from 'flowbite-react';
-import {useState} from 'react';
-import {createBudget} from './actions';
-import {HiPlusCircle} from 'react-icons/hi';
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
+import { useState } from 'react';
+import { createBudget } from './actions';
+import { HiPlusCircle } from 'react-icons/hi';
 
-export function NewBudgetForm({user_id}: {user_id: string}) {
+export function NewBudgetForm({ user_id }: { user_id: string }) {
   const [openModal, setOpenModal] = useState(false);
 
   const [name, setName] = useState('Dance Party');
@@ -19,6 +19,7 @@ export function NewBudgetForm({user_id}: {user_id: string}) {
   return (
     <>
       <Button
+        data-testid="new-budget-form-button"
         className="fixed bottom-0 right-0 p-6"
         onClick={() => setOpenModal(true)}
       >

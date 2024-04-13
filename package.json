@@ -17,6 +17,9 @@
     "test": "firebase emulators:exec --only firestore \"npm run test-command\"",
     "prepare": "husky"
   },
+  "engines": {
+    "node": "^21.7.1"
+  },
   "dependencies": {
     "firebase": "^10.8.1",
     "flowbite": "^2.3.0",
@@ -27,6 +30,7 @@
     "react-icons": "^5.0.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@types/node": "^20",
     "@types/react": "^18",
