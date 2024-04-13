@@ -26,7 +26,7 @@ export class FirestoreDatabase implements IDatabase {
     id: string
   ): Promise<T> {
     const result = await getDoc(doc(this.firestore, collection, id));
-    if (result.exists()) return result.data() as T;
+    if (result.exists()) return {...result.data(), id: result.id} as T;
     else
       throw new Error(
         `Document with id ${id} does not exist in collection ${collection}`
@@ -57,7 +57,7 @@ export class FirestoreDatabase implements IDatabase {
     // Collect the data from those documents in an array
     const documents: T[] = [];
     result.forEach(doc => {
-      const data = doc.data() as T;
+      const data = {...doc.data(), id: doc.id} as T;
       documents.push(data);
     });
 
@@ -66,17 +66,20 @@ export class FirestoreDatabase implements IDatabase {
 
   // Adds the given document with an id
   // If a document with the same id already exists in the collection, it is overwritten
-  async addDocumentById(
+  async addDocumentWithId(
     collection: string,
     new_doc: Document
   ): Promise<boolean> {
     // Add the document to firebase
-    await setDoc(doc(this.firestore, collection, new_doc.id), doc);
+    const {id, ...docData} = new_doc;
+    await setDoc(doc(this.firestore, collection, id), docData);
     return true;
   }
 
   // Adds the given document without reference to an id
   // Returns the id assigned to the document
+  // Note: if the given document contains an "id" field, it will be treated
+  // as data and not as the id of the document
   async addDocument(collection: string, new_doc: object): Promise<string> {
     const docRef = await addDoc(
       getCollection(this.firestore, collection),
