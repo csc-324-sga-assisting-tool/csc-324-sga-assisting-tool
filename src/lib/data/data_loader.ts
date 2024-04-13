@@ -14,11 +14,28 @@ export class DataProvider {
     return this.database.getDocument<Budget>(Collections.Budgets, budgetID);
   }
   // Get a sorted and filtered list of budgets
-  getBudgets(filters: Filter[], sort: Sort, howMany = 25): Promise<Budget[]> {
+  getBudgets(
+    sort: Sort,
+    filters: Filter[] = [],
+    howMany = 25
+  ): Promise<Budget[]> {
     return this.database.getDocuments<Budget>(
       Collections.Budgets,
       filters,
       sort,
+      howMany
+    );
+  }
+  // Get a sorted and filtered list of budgets from a particular user
+  getUserBudgets(
+    user_id: string,
+    sort: Sort = new Sort('id'),
+    filters: Filter[] = [],
+    howMany = 25
+  ): Promise<Budget[]> {
+    return this.getBudgets(
+      sort,
+      filters.concat([new Filter('user_id', '==', user_id)]),
       howMany
     );
   }
