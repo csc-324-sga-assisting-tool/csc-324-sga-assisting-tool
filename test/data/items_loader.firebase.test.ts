@@ -20,7 +20,7 @@ beforeAll(async () => {
     return {
       budget_id: `budget_${number}`,
       cost: 10.0,
-      item_id: 'item_1',
+      id: 'item_1',
       name: 'testing item 1',
       quantity: 2,
       rso_item_comment: null,
@@ -33,7 +33,7 @@ beforeAll(async () => {
   const batch = writeBatch(db);
 
   testItems.map(async (item: Item) => {
-    batch.set(doc(db, Collections.Items, item.item_id), item);
+    batch.set(doc(db, Collections.Items, item.id), item);
   });
 
   await batch.commit();
