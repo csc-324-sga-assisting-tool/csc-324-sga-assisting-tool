@@ -13,7 +13,7 @@ export interface IDatabase {
     sort: Sort,
     howMany: number
   ): Promise<Array<T>>;
-  addDocumentById(collection: string, doc: Document): Promise<boolean>;
+  addDocumentWithId(collection: string, doc: Document): Promise<boolean>;
   addDocument(collection: string, doc: object): Promise<string>;
   deleteDocument(collection: string, doc: Document): Promise<boolean>;
 }

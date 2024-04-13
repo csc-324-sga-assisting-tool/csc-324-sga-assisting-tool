@@ -1,5 +1,5 @@
 import {FirestoreDatabase} from '../../../src/lib/data/database.firebase';
-import {Sort, Filter} from '../../../src/lib/data/database';
+import {Sort, Filter, Document} from '../../../src/lib/data/database';
 import {beforeAll, describe, expect, test} from 'vitest';
 import {connectFirestoreEmulator, getFirestore} from 'firebase/firestore';
 
@@ -18,6 +18,16 @@ const collection_name = 'test_collection';
 describe('Test FirestoreDatabase class', async () => {
   // Create a database
   const database = new FirestoreDatabase(db);
+
+  // Empty the database
+  const leftOverDocs = await database.getDocuments(
+    collection_name,
+    [],
+    new Sort('id')
+  );
+  leftOverDocs.forEach(async (doc: Document) => {
+    await database.deleteDocument(collection_name, doc);
+  });
 
   // Initialize the database with some test documents
   type TestDocument = {
