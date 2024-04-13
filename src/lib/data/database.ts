@@ -1,3 +1,5 @@
+import {db} from 'lib/firebase';
+import {FirestoreDatabase} from './database.firebase';
 /*
 Database
 Represents a Firebase Database.  The name field identifies the database
@@ -11,7 +13,7 @@ export interface IDatabase {
     sort: Sort,
     howMany: number
   ): Promise<Array<T>>;
-  addDocumentById(collection: string, doc: Document): Promise<boolean>;
+  addDocumentWithId(collection: string, doc: Document): Promise<boolean>;
   addDocument(collection: string, doc: object): Promise<string>;
   deleteDocument(collection: string, doc: Document): Promise<boolean>;
 }
@@ -56,3 +58,6 @@ export class Sort {
     this.isAscending = isAscending;
   }
 }
+
+// The default database used throughout the project
+export const Database = new FirestoreDatabase(db);

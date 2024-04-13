@@ -21,7 +21,7 @@ export default function RootLayout({
         <ThemeModeScript />
       </head>
       <body className={`${inter.className}`}>
-        <ComponentNav name={'Log Out'} />
+        <ComponentNav buttonLabel={'Log Out'} />
         {children}
       </body>
     </html>

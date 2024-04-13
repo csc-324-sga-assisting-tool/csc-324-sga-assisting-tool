@@ -1,4 +1,3 @@
-import {FirebaseProvider} from 'lib/data/data_loader.firebase';
 import {BudgetDisplay} from './budget';
 import {SummaryProps, SummarySidebar} from './sidebar';
 import {Budget, DataProvider} from 'lib/data';
@@ -27,7 +26,7 @@ async function Dashboard({
       <main className="w-128">
         {userBudgets.map((budget: Budget) => (
           <BudgetDisplay
-            key={budget.budget_id}
+            key={budget.id}
             title={budget.event_name}
             description={budget.event_description}
             total={budget.total_cost}
@@ -48,5 +47,5 @@ export default async function Page({
   params: {slug: string};
   searchParams: {[key: string]: string | string[] | undefined};
 }) {
-  return <Dashboard userID="test_user" dataProvider={FirebaseProvider} />;
+  return <Dashboard userID="test_user" dataProvider={new DataProvider()} />;
 }

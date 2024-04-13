@@ -1,16 +1,16 @@
 'use server';
-
-import {Budget, DataModifier, FirebaseModifier} from 'lib/data';
+import {revalidatePath} from 'next/cache';
+import {Budget, DataModifier} from 'lib/data';
 
 export async function createBudget(
   user_id: string,
   event_name: string,
   event_description: string
 ): Promise<void> {
-  const dataModifier: DataModifier = FirebaseModifier;
-  const budget_id = `${user_id}-${event_name}-${new Date().getSeconds()}`;
+  const dataModifier: DataModifier = new DataModifier();
+  const id = `${user_id}-${event_name}-${new Date().getSeconds()}`;
   const budget: Budget = {
-    budget_id,
+    id,
     user_id,
     event_name,
     event_description,
@@ -24,5 +24,7 @@ export async function createBudget(
       },
     ],
   };
+
+  revalidatePath('/dashboard');
   return await dataModifier.addBudget(budget);
 }
