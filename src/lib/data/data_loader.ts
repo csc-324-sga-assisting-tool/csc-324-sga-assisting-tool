@@ -3,7 +3,7 @@ import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
 
-class DataProvider {
+export class DataProvider {
   database: IDatabase;
   constructor(database: IDatabase = Database) {
     this.database = database;
@@ -24,7 +24,7 @@ class DataProvider {
   }
 }
 
-class DataModifier {
+export class DataModifier {
   database: IDatabase;
   constructor(database: IDatabase = Database) {
     this.database = database;
@@ -36,5 +36,3 @@ class DataModifier {
     budget.id = id;
   }
 }
-
-export type {DataProvider, DataModifier};
