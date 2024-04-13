@@ -6,7 +6,11 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
     // this was previously set to jsdom which causes problems with the Firebase emulator: check https://stackoverflow.com/questions/63319638/firestore-internal-assertion-failed-unexpected-state-when-unit-testing-with-j
-    environment: 'node',
+    environmentMatchGlobs: [
+      // run front end tests in jsdom
+      ['test/app/**', 'jsdom'],
+      ['test/lib/**', 'node'],
+    ],
     coverage: {
       provider: 'v8',
       reporter: 'json',

@@ -12,9 +12,9 @@ const db = getFirestore();
 
 beforeAll(async () => {
   connectFirestoreEmulator(db, '127.0.0.1', 8080);
-  const testUser: User[] = [1, 2, 3].map(() => {
+  const testUser: User[] = [1, 2, 3].map(number => {
     return {
-      user_id: 'test_user1',
+      user_id: `test_user${number}`,
       total_budget: 2000,
       remaining_budget: 1000,
       pending_event: 5,
@@ -41,7 +41,7 @@ beforeAll(async () => {
   const batch = writeBatch(db);
 
   testUser.map(async user => {
-    batch.set(doc(db, Collection.Budgets, user.user_id), user);
+    batch.set(doc(db, Collection.Users, user.user_id), user);
   });
 
   await batch.commit();
@@ -56,7 +56,7 @@ describe('test firebase getUser', () => {
 
   it('wrapper function gets correct user', async () => {
     const user = await getUser('bad_id', db);
-    assert(user!.user_id === undefined);
+    assert(user === undefined);
   });
 
   it('wrapper function gets correct total budget', async () => {
