@@ -59,35 +59,47 @@ describe('Test FirestoreDatabase class', async () => {
     testDocument3.id
   );
   test('Database.addDocumentWithId/Database.getDocument', () => {
-    expect(doc1.field).toBe(testDocument1.field);
-    expect(doc2.field).toBe(testDocument2.field);
-    expect(doc3.field).toBe(testDocument3.field);
+    expect(doc1).toEqual(testDocument1);
+    expect(doc2).toEqual(testDocument2);
+    expect(doc3).toEqual(testDocument3);
   });
 
   // Test deleteDocument
-  database.deleteDocument(collection_name, doc1);
-  database.deleteDocument(collection_name, doc2);
-  test('Database.deleteDocument', () => {
-    expect(() =>
+  await database.deleteDocument(collection_name, testDocument1);
+  await database.deleteDocument(collection_name, testDocument2);
+  test('Database.deleteDocument', async () => {
+    await expect(() =>
       database.getDocument<TestDocument>(collection_name, testDocument1.id)
-    ).toThrowError();
-    expect(() =>
+    ).rejects.toThrowError();
+    await expect(() =>
       database.getDocument<TestDocument>(collection_name, testDocument2.id)
-    ).toThrowError();
-    const doc = database.getDocument<TestDocument>(
+    ).rejects.toThrowError();
+    const doc = await database.getDocument<TestDocument>(
       collection_name,
       testDocument3.id
     );
-    expect(doc).toBe(testDocument3);
+    expect(doc).toEqual(testDocument3);
   });
 
   // Test addDocument
   const {['id']: _, ...doc1Data} = testDocument1; // This removes the id field
   const {['id']: __, ...doc2Data} = testDocument2;
   const {['id']: ___, ...doc3Data} = testDocument3;
-  testDocument1.id = await database.addDocument(collection_name, doc1Data);
-  testDocument2.id = await database.addDocument(collection_name, doc2Data);
-  testDocument3.id = await database.addDocument(collection_name, doc3Data);
+  const id1 = await database.addDocument(collection_name, doc1Data);
+  const id2 = await database.addDocument(collection_name, doc2Data);
+  const id3 = await database.addDocument(collection_name, doc3Data);
+  const testDocument4 = {
+    id: id1,
+    ...doc1Data,
+  };
+  const testDocument5 = {
+    id: id2,
+    ...doc2Data,
+  };
+  const testDocument6 = {
+    id: id3,
+    ...doc3Data,
+  };
 
   // Test getDocuments
   test('Database.addDocument/Database.getDocuments', async () => {
@@ -97,7 +109,7 @@ describe('Test FirestoreDatabase class', async () => {
       [],
       new Sort('id')
     );
-    expect(docs).toEqual([testDocument1, testDocument2, testDocument3]);
+    expect(docs).toEqual([testDocument4, testDocument5, testDocument6]);
 
     // No Filters, Sort by id descending
     docs = await database.getDocuments<TestDocument>(
@@ -105,7 +117,7 @@ describe('Test FirestoreDatabase class', async () => {
       [],
       new Sort('id', false)
     );
-    expect(docs).toEqual([testDocument3, testDocument2, testDocument1]);
+    expect(docs).toEqual([testDocument6, testDocument5, testDocument4]);
 
     // No Filters, Sort by field
     docs = await database.getDocuments<TestDocument>(
@@ -113,7 +125,7 @@ describe('Test FirestoreDatabase class', async () => {
       [],
       new Sort('field')
     );
-    expect(docs).toEqual([testDocument2, testDocument3, testDocument1]);
+    expect(docs).toEqual([testDocument5, testDocument6, testDocument4]);
 
     // Filter number > 1, Sort by id
     docs = await database.getDocuments<TestDocument>(
@@ -121,7 +133,7 @@ describe('Test FirestoreDatabase class', async () => {
       [new Filter('number', '>', 1)],
       new Sort('id')
     );
-    expect(docs).toEqual([testDocument2, testDocument3]);
+    expect(docs).toEqual([testDocument5, testDocument6]);
 
     // Filter number > 1 and field == aardvark, Sort by id
     docs = await database.getDocuments<TestDocument>(
@@ -129,7 +141,7 @@ describe('Test FirestoreDatabase class', async () => {
       [new Filter('number', '>', 1), new Filter('field', '==', 'aardvark')],
       new Sort('id')
     );
-    expect(docs).toEqual([testDocument2]);
+    expect(docs).toEqual([testDocument5]);
 
     // Filter number > 2 and field == aardvark, Sort by id
     docs = await database.getDocuments<TestDocument>(

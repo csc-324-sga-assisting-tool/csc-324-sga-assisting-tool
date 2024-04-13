@@ -28,8 +28,10 @@ export class FirestoreDatabase implements IDatabase {
     const result = await getDoc(doc(this.firestore, collection, id));
     if (result.exists()) return {...result.data(), id: result.id} as T;
     else
-      throw new Error(
-        `Document with id ${id} does not exist in collection ${collection}`
+      return Promise.reject(
+        new Error(
+          `Document with id ${id} does not exist in collection ${collection}`
+        )
       );
   }
   async getDocuments<T extends Document>(
@@ -92,7 +94,8 @@ export class FirestoreDatabase implements IDatabase {
     delete_doc: Document
   ): Promise<boolean> {
     // Delete the firebase document
-    await deleteDoc(doc(this.firestore, collection, delete_doc.id));
+    const document = doc(this.firestore, collection, delete_doc.id);
+    await deleteDoc(document);
     return true;
   }
 }
