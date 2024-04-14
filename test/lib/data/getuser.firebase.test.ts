@@ -20,22 +20,20 @@ beforeAll(async () => {
       pending_event: 5,
       completed_event: 10,
       planned_event: 5,
-      is_SEPC: false,
       user_name: 'test_user1',
-      user_type: 'test_type1',
+      user_type: 'RSO',
     };
   });
 
   testUser.push({
-    user_id: 'test_user2',
+    user_id: 'test_user4',
     total_budget: 1000,
     remaining_budget: 200,
     pending_event: 5,
     completed_event: 5,
     planned_event: 5,
-    is_SEPC: false,
     user_name: 'test_user2',
-    user_type: 'test_user2',
+    user_type: 'SEPC',
   });
 
   const batch = writeBatch(db);
