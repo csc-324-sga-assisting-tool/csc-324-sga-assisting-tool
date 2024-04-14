@@ -1,10 +1,13 @@
 'use client';
 
 import {Button, Checkbox, Label, TextInput} from 'flowbite-react';
+import { SignUp } from './createAcc';
 
 export function ComponentLog() {
   return (
-    <form className="flex max-w-md flex-col gap-4 h-screen">
+    <div className='block  place-self-center'>
+    
+    <form className="bg-white flex max-w-lg flex-col gap-4  justify-items-center justify-self-center">
       <div>
         <div className="mb-2 block">
           <Label htmlFor="email1" value="Your email" />
@@ -30,8 +33,11 @@ export function ComponentLog() {
         type="submit"
         className="bg-pallete-5 font-medium text-sm w-28 h-10"
       >
-        Submit
+        Log In
       </Button>
+      <SignUp/>
     </form>
+    
+    </div>
   );
 }

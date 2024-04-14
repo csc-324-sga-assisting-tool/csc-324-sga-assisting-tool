@@ -1,8 +1,10 @@
+import { Button } from 'flowbite-react';
 import {ComponentLog} from './logIn';
+// import { SignUp } from './createAcc';
 
 export default function Home() {
   return (
-    <main className="bg-white">
+    <main className="bg-pallete-4 h-screen place-content-center">
       <ComponentLog />
     </main>
   );
