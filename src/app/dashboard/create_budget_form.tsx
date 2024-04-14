@@ -1,11 +1,20 @@
 'use client';
 
-import { Button, Label, Modal, TextInput } from 'flowbite-react';
-import { useState } from 'react';
-import { createBudget } from './actions';
-import { HiPlusCircle } from 'react-icons/hi';
+import {Button, Label, Modal, TextInput} from 'flowbite-react';
+import {useState} from 'react';
+import {HiPlusCircle} from 'react-icons/hi';
 
-export function NewBudgetForm({ user_id }: { user_id: string }) {
+export function NewBudgetForm({
+  user_id,
+  createBudgetAction,
+}: {
+  user_id: string;
+  createBudgetAction: (
+    userID: string,
+    name: string,
+    description: string
+  ) => Promise<void>;
+}) {
   const [openModal, setOpenModal] = useState(false);
 
   const [name, setName] = useState('Dance Party');
@@ -13,13 +22,13 @@ export function NewBudgetForm({ user_id }: { user_id: string }) {
 
   const submit = () => {
     setOpenModal(false);
-    createBudget(user_id, name, description);
+    createBudgetAction(user_id, name, description);
   };
 
   return (
     <>
       <Button
-        data-testid="new-budget-form-button"
+        data-testid="new-budget-form-button-add"
         className="fixed bottom-0 right-0 p-6"
         onClick={() => setOpenModal(true)}
       >
@@ -36,6 +45,7 @@ export function NewBudgetForm({ user_id }: { user_id: string }) {
                 </div>
                 <TextInput
                   id="event_name"
+                  data-testid="new-budget-form-input-name"
                   onChange={e => setName(e.target.value)}
                   value={name}
                   required
@@ -47,12 +57,17 @@ export function NewBudgetForm({ user_id }: { user_id: string }) {
                 </div>
                 <TextInput
                   id="description"
+                  data-testid="new-budget-form-input-description"
                   onChange={e => setDescription(e.target.value)}
                   value={description}
                   required
                 />
               </div>
-              <Button onClick={submit} className="bg-pallete-5">
+              <Button
+                data-testid="new-budget-form-button-submit"
+                onClick={submit}
+                className="bg-pallete-5"
+              >
                 Submit
               </Button>
             </form>

@@ -16,7 +16,6 @@ export async function getBudget(
   return getBudgetFirebase(budget_id, datastore);
 }
 
-// Added
 export async function getUser(
   budget_id: string,
   datastore: Firestore = db
@@ -48,7 +47,6 @@ export const FirebaseProvider: DataProvider = {
   async getUserBudgets(userID: string): Promise<Budget[]> {
     return getUserBudgets(userID);
   },
-  // Added
   async getUser(userID: string): Promise<User | undefined> {
     return getUser(userID);
   },
