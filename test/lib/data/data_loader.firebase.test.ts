@@ -72,7 +72,6 @@ describe('test firebase getBudget', () => {
   });
 
   it('firebase function gets correct budget and not the same budget everytime', async () => {
-    const id = 'test_b1';
     const budget = await getBudgetFirebase('budget_2', db);
     assert.equal(budget!.budget_id, 'budget_2');
   });

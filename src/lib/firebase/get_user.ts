@@ -1,12 +1,4 @@
-// Added
-import {
-  doc,
-  Firestore,
-  getDoc,
-  getDocs,
-  limit,
-  where,
-} from 'firebase/firestore';
+import {doc, Firestore, getDoc} from 'firebase/firestore';
 import {User} from 'lib/data';
 import {Collection} from './config';
 

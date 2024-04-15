@@ -3,7 +3,7 @@ import {User} from '.';
 interface DataProvider {
   getBudget(budgetID: string): Promise<Budget | undefined>;
   getUserBudgets(userID: string): Promise<Budget[]>;
-  getUser(userID: string): Promise<User | undefined>; // Added
+  getUser(userID: string): Promise<User | undefined>;
 }
 
 interface DataModifier {

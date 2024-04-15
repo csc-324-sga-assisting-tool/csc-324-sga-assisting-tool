@@ -2,14 +2,13 @@
 import {revalidatePath} from 'next/cache';
 import {Budget, DataModifier, FirebaseModifier} from 'lib/data';
 
-export async function createBudget(
+function createBudget(
   user_id: string,
   event_name: string,
   event_description: string
-): Promise<void> {
-  const dataModifier: DataModifier = FirebaseModifier;
+): Budget {
   const budget_id = `${user_id}-${event_name}-${new Date().getSeconds()}`;
-  const budget: Budget = {
+  return {
     budget_id,
     user_id,
     event_name,
@@ -24,7 +23,26 @@ export async function createBudget(
       },
     ],
   };
+}
 
+export async function TESTcreateBudgetAction(
+  dataModifier: DataModifier = FirebaseModifier,
+  user_id: string,
+  event_name: string,
+  event_description: string
+): Promise<void> {
+  return dataModifier.addBudget(
+    createBudget(user_id, event_name, event_description)
+  );
+}
+
+export async function createBudgetAction(
+  user_id: string,
+  event_name: string,
+  event_description: string
+): Promise<void> {
+  const budget = createBudget(user_id, event_name, event_description);
+  const result = FirebaseModifier.addBudget(budget);
   revalidatePath('/dashboard');
-  return await dataModifier.addBudget(budget);
+  return result;
 }

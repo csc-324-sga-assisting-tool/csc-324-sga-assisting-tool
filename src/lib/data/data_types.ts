@@ -37,14 +37,14 @@ interface Budget extends Comments {
   items: [Item] | [];
 }
 
+type UserType = 'RSO' | 'SEPC' | 'SGA_Treasurer' | 'SGA_Assistant_Treasurer';
 // User represents a single user
 interface User {
   user_id: string;
-  is_SEPC: boolean;
   user_name: string;
   remaining_budget: number;
   total_budget: number;
-  user_type: string;
+  user_type: UserType;
   pending_event: number;
   planned_event: number;
   completed_event: number;
