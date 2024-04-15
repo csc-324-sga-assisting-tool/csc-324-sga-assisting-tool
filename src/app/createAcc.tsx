@@ -1,9 +1,9 @@
 'use client';
 
 import {Button, Label, Checkbox, Modal, TextInput} from 'flowbite-react';
+import { sep } from 'path';
 import {useState} from 'react';
-// import {createBudget} from './actions';
-// import {HiPlusCircle} from 'react-icons/hi';
+import { createUser } from './auth';
 
 export function SignUp() {
   const [openModal, setOpenModal] = useState(false);
@@ -11,13 +11,23 @@ export function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  // const [password, setPassword] = useState('');
+  const [budget, setBudget] = useState(0);
+  const [sepc, setSEPC] = useState(false);
+  // ...
 
 
-  // const submit = () => {
-  //   setOpenModal(false);
-  //   createBudget(user_id, name, description);
-  // };
+  const submit = () => {
+    setOpenModal(false);
+    createUser(email, name, email, password, sepc, budget);
+    // return (
+    //   <div>
+    //     <a href="/dashboard" ></a>
+    //   </div>
+      
+    // )
+
+    // open dashboard for user
+  };
 
   return (
     <>
@@ -32,6 +42,19 @@ export function SignUp() {
         <Modal.Body>
           <div className="bg-white">
             <form className="flex max-w-md flex-col gap-4 bg-white">
+              <div>
+                <div className="m-2 block">
+                  <Label htmlFor="name" value="Your RSO name" />
+                </div>
+                <TextInput
+                  id="name" 
+                  type="name"
+                  placeholder='CS_SEPC'
+                  onChange={e => setName(e.target.value)}
+                  value={name}
+                  required
+                />
+              </div>
               <div>
                 <div className="m-2 block">
                   <Label htmlFor="email1" value="Your email" />
@@ -60,18 +83,22 @@ export function SignUp() {
               </div>
               <div>
                 <div className="m-2 block">
-                  <Label htmlFor="name" value="Your RSO name" />
+                  <Label htmlFor="budget" value="Your Total budget" />
                 </div>
                 <TextInput
-                  id="name" 
-                  type="name"
-                  placeholder='CS_SEPC'
-                  onChange={e => setName(e.target.value)}
-                  value={name}
+                  id="budget" 
+                  type="budget"
+                  placeholder='$2000'
+                  onChange={e => setBudget(e.target.valueAsNumber)}
+                  value={budget}
                   required
                 />
               </div>
-              <Button className="bg-pallete-5">
+              <div className="flex items-center gap-2">
+                <Checkbox id="sepc" onChange={e => setSEPC(!sepc)}/>
+                <Label htmlFor="sepc">Are you an SEPC</Label>
+              </div>
+              <Button  onClick={submit} className="bg-pallete-5">
                 Create Account
               </Button>
             </form>

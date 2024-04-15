@@ -40,6 +40,8 @@ interface Budget extends Comments {
 // User represents a single user
 interface User {
   user_id: string;
+  email: string;
+  password: string;
   is_SEPC: boolean;
   user_name: string;
   remaining_budget: number;

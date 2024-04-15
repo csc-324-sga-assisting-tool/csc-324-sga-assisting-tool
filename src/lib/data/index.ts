@@ -2,6 +2,7 @@ export {
   getBudget,
   getUserBudgets,
   addBudget,
+  addUser,
   getUser,
   FirebaseModifier,
   FirebaseProvider,

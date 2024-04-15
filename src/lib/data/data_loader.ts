@@ -8,6 +8,7 @@ interface DataProvider {
 
 interface DataModifier {
   addBudget(budget: Budget): Promise<void>;
+  addUser(user: User): Promise<void>;
 }
 
 export type {DataProvider, DataModifier};

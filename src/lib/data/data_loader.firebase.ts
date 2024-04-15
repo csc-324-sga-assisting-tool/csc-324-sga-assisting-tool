@@ -8,6 +8,7 @@ import {
 import {Firestore} from 'firebase/firestore';
 import {DataModifier, DataProvider} from './data_loader';
 import {getUserFirebase} from 'lib/firebase/get_user';
+import {addUserFirebase} from 'lib/firebase/add_user';
 
 export async function getBudget(
   budget_id: string,
@@ -38,6 +39,13 @@ export async function addBudget(
   return addBudgetFirebase(budget.budget_id, budget, datastore);
 }
 
+export async function addUser(
+  user: User,
+  datastore: Firestore = db
+): Promise<void> {
+  return addUserFirebase(user.email, user.password, user, datastore);
+}
+
 /* FirebaseProvider implements data methods using FireBase
  */
 export const FirebaseProvider: DataProvider = {
@@ -57,5 +65,9 @@ export const FirebaseProvider: DataProvider = {
 export const FirebaseModifier: DataModifier = {
   async addBudget(budget: Budget): Promise<void> {
     return addBudget(budget);
+  },
+
+  async addUser(user: User): Promise<void> {
+    return addUser(user);
   },
 };
