@@ -54,7 +54,7 @@ export class FirestoreDatabase implements IDatabase {
     });
 
     // Get all matching documents
-    const result = await getDocs(q);
+    const result = await getDocs(coll);
 
     // Collect the data from those documents in an array
     const documents: T[] = [];
@@ -75,6 +75,7 @@ export class FirestoreDatabase implements IDatabase {
     // Add the document to firebase
     const {id, ...docData} = new_doc;
     await setDoc(doc(this.firestore, collection, id), docData);
+    const d = await this.getDocument<Document>(collection, id);
     return true;
   }
 
