@@ -1,6 +1,6 @@
 import {BudgetDisplay} from './budget';
-import {SummaryProps, SummarySidebar} from './sidebar';
-import {Budget, DataProvider} from 'lib/data';
+import {SummarySidebar} from './sidebar';
+import {Budget, DataProvider, User} from 'lib/data';
 import {NewBudgetForm} from './create_budget_form';
 
 async function Dashboard({
@@ -10,19 +10,18 @@ async function Dashboard({
   userID: string;
   dataProvider: DataProvider;
 }) {
-  // FIX: Calculate summary stuff using data
-  const summaryProps: SummaryProps = {
-    total: 1000,
-    remaining: 400,
-    pendingEvents: 5,
-    plannedEvents: 10,
-    completedEvents: 10,
-  };
+  const user = (await dataProvider.getUser(userID)) as User; // Added
   const userBudgets = await dataProvider.getUserBudgets(userID);
 
   return (
     <>
-      <SummarySidebar {...summaryProps} />
+      <SummarySidebar
+        total={user.total_budget}
+        remaining={user.remaining_budget}
+        pendingEvents={user.pending_event}
+        plannedEvents={user.planned_event}
+        completedEvents={user.completed_event}
+      />
       <main className="w-128">
         {userBudgets.map((budget: Budget) => (
           <BudgetDisplay

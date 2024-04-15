@@ -1,4 +1,4 @@
-import {Budget} from '.';
+import {User, Budget} from '.';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
