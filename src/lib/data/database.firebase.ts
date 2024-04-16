@@ -73,7 +73,6 @@ export class FirestoreDatabase implements IDatabase {
     // Add the document to firebase
     const {id, ...docData} = new_doc;
     await setDoc(doc(this.firestore, collection, id), docData);
-    const d = await this.getDocument<Document>(collection, id);
     return true;
   }
 
