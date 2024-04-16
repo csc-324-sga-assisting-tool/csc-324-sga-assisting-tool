@@ -1,9 +1,24 @@
-import {Budget, Item} from '.';
+import {Budget, Item, User} from '.';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
 
 export class DataProvider {
+  setBudgets(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    arg0: {
+      user_id: string;
+      budget_id: string;
+      event_name: string;
+      event_description: string;
+      current_status: string;
+      total_cost: number;
+      status_history: {status: string; when: string}[];
+      items: never[];
+    }[]
+  ) {
+    throw new Error('Method not implemented.');
+  }
   database: IDatabase;
   constructor(database: IDatabase = Database) {
     this.database = database;
@@ -12,6 +27,10 @@ export class DataProvider {
   // Get a budget by ID
   async getBudget(budgetID: string): Promise<Budget | undefined> {
     return this.database.getDocument<Budget>(Collections.Budgets, budgetID);
+  }
+
+  getUser(userID: string): Promise<User | undefined> {
+    return this.database.getDocument<User>(Collections.Users, userID);
   }
   // Get a sorted and filtered list of budgets
   getBudgets(
@@ -53,7 +72,7 @@ export class DataProvider {
   ): Promise<Budget[]> {
     return this.getBudgets(
       sort,
-      filters.concat([new Filter('user_id', '==', user_id)]),
+      filters.concat([new Filter('id', '==', user_id)]),
       howMany
     );
   }
@@ -69,19 +88,17 @@ export class DataModifier {
   // If budget does not have an ID, assigns it one
   // Else, use ID to get document from database
   async addBudget(budget: Budget): Promise<void> {
-    if (budget.id === '') {
-      const id = await this.database.addDocument(Collections.Budgets, budget);
-      budget.id = id;
-    } else {
-      await this.database.addDocumentWithId(Collections.Budgets, budget);
-    }
+    const id = await this.database.addDocumentWithAutoID(
+      Collections.Budgets,
+      budget
+    );
+    budget.id = id;
   }
   async addItem(item: Item): Promise<void> {
-    if (item.id === '') {
-      const id = await this.database.addDocument(Collections.Items, item);
-      item.id = id;
-    } else {
-      await this.database.addDocumentWithId(Collections.Items, item);
-    }
+    const id = await this.database.addDocumentWithAutoID(
+      Collections.Budgets,
+      item
+    );
+    item.id = id;
   }
 }

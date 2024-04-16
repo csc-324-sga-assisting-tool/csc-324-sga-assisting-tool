@@ -1,5 +1,6 @@
 import {db} from 'lib/firebase';
 import {FirestoreDatabase} from './database.firebase';
+import {Document} from '.';
 /*
 Database
 Represents a Firebase Database.  The name field identifies the database
@@ -10,23 +11,13 @@ export interface IDatabase {
   getDocuments<T extends Document>(
     collection: string,
     filters: Array<Filter>,
-    sort: Sort,
-    howMany: number
+    sort?: Sort,
+    howMany?: number
   ): Promise<Array<T>>;
-  addDocumentWithId(collection: string, doc: Document): Promise<boolean>;
-  addDocument(collection: string, doc: object): Promise<string>;
+  addDocument(collection: string, doc: Document): Promise<boolean>;
+  addDocumentWithAutoID(collection: string, doc: object): Promise<string>;
   deleteDocument(collection: string, doc: Document): Promise<boolean>;
 }
-
-/*
-Document Type
-Represents a Firebase Document (list of key/value pairs)
-Every document must have an id.  Oher fields will represent
-the other key/value pairs
-*/
-export type Document = {
-  id: string;
-};
 
 /*
 Filter and Sort types describe how to filter and sort data
@@ -43,7 +34,7 @@ export class Filter {
   field: string;
   operator: FilterOperator;
   value;
-  constructor(field: string, operator: FilterOperator, value) {
+  constructor(field: string, operator: FilterOperator, value: string | number) {
     this.field = field;
     this.operator = operator;
     this.value = value;

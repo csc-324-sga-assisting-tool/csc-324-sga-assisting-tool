@@ -1,3 +1,1 @@
-import {Collections, db} from './config';
-
-export {Collections, db};
+export * from './config';

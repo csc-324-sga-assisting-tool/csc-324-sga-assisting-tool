@@ -1,163 +1,176 @@
-import {FirestoreDatabase} from '../../../src/lib/data/database.firebase';
-import {Sort, Filter, Document} from '../../../src/lib/data/database';
-import {beforeAll, describe, expect, test} from 'vitest';
-import {connectFirestoreEmulator, getFirestore} from 'firebase/firestore';
+import {Document} from 'lib/data';
+import {beforeEach, describe, expect, test} from 'vitest';
+import {getFirestore} from 'firebase/firestore';
+import {clearCollection, getLocalFirebase} from '../../utils/database.util';
+import {Filter, Sort} from '../../../src/lib/data/database';
 
 // Set up a Firestore Database for testing
 const db = getFirestore();
-beforeAll(async () => {
-  const host =
-    (db.toJSON() as {settings?: {host?: string}}).settings?.host ?? '';
-  if (process.env.APP_ENV === 'local' && !host.startsWith('localhost')) {
-    connectFirestoreEmulator(db, 'localhost', 8080);
-  }
-});
-
+const database = getLocalFirebase(db);
 const collection_name = 'test_collection';
+
+interface TestDocument extends Document {
+  field: string;
+  number: number;
+}
+
+beforeEach(() => {
+  // Make sure test collection is empty for tests
+  clearCollection(database, collection_name);
+});
 
 describe('Test FirestoreDatabase class', async () => {
   // Create a database
-  const database = new FirestoreDatabase(db);
 
-  // Empty the database
-  const leftOverDocs = await database.getDocuments(
-    collection_name,
-    [],
-    new Sort('id')
-  );
-  leftOverDocs.forEach(async (doc: Document) => {
-    await database.deleteDocument(collection_name, doc);
+  const testDocuments: TestDocument[] = [1, 2, 3].map(num => {
+    return {
+      id: `testDocument${num}`,
+      field: `test_document${num}`,
+      number: num,
+    };
   });
 
-  // Initialize the database with some test documents
-  type TestDocument = {
-    id: string;
-    field: string;
-    number: number;
-  };
-  const testDocument1 = {
-    id: 'testDocument1',
-    field: 'xenophobia',
-    number: 1,
-  };
-  const testDocument2 = {
-    id: 'testDocument2',
-    field: 'aardvark',
-    number: 2,
-  };
-  const testDocument3 = {
-    id: 'testDocument3',
-    field: 'baby',
-    number: 3,
-  };
+  test('adding with addDocument and getDocument work', async () => {
+    // Add test documents to collection
+    for (const document of testDocuments) {
+      await database.addDocument(collection_name, document);
+    }
 
-  await database.addDocumentWithId(collection_name, testDocument1);
-  await database.addDocumentWithId(collection_name, testDocument2);
-  await database.addDocumentWithId(collection_name, testDocument3);
+    // Test getDocument
+    const doc1 = await database.getDocument<TestDocument>(
+      collection_name,
+      'testDocument1'
+    );
+    const doc2 = await database.getDocument<TestDocument>(
+      collection_name,
+      'testDocument2'
+    );
+    const doc3 = await database.getDocument<TestDocument>(
+      collection_name,
+      'testDocument3'
+    );
 
-  // Test getDocument
-  const doc1 = await database.getDocument<TestDocument>(
-    collection_name,
-    testDocument1.id
-  );
-  const doc2 = await database.getDocument<TestDocument>(
-    collection_name,
-    testDocument2.id
-  );
-  const doc3 = await database.getDocument<TestDocument>(
-    collection_name,
-    testDocument3.id
-  );
-  test('Database.addDocumentWithId/Database.getDocument', () => {
-    expect(doc1).toEqual(testDocument1);
-    expect(doc2).toEqual(testDocument2);
-    expect(doc3).toEqual(testDocument3);
+    expect(doc1).toEqual(testDocuments[0]);
+    expect(doc2).toEqual(testDocuments[1]);
+    expect(doc3).toEqual(testDocuments[2]);
+
+    // Clear Database
+    clearCollection(database, collection_name);
   });
 
   // Test deleteDocument
-  await database.deleteDocument(collection_name, testDocument1);
-  await database.deleteDocument(collection_name, testDocument2);
-  test('Database.deleteDocument', async () => {
+  test('check that documents are deleted correctly', async () => {
+    // Add dummy documents
+    for (const document of testDocuments) {
+      await database.addDocument(collection_name, document);
+    }
+
+    // Delete them the first two
+    await database.deleteDocument(collection_name, testDocuments[0]);
+    await database.deleteDocument(collection_name, testDocuments[1]);
+
     await expect(() =>
-      database.getDocument<TestDocument>(collection_name, testDocument1.id)
+      database.getDocument<Document>(collection_name, testDocuments[0].id)
     ).rejects.toThrowError();
+
     await expect(() =>
-      database.getDocument<TestDocument>(collection_name, testDocument2.id)
+      database.getDocument<Document>(collection_name, testDocuments[1].id)
     ).rejects.toThrowError();
+
     const doc = await database.getDocument<TestDocument>(
       collection_name,
-      testDocument3.id
+      testDocuments[2].id
     );
-    expect(doc).toEqual(testDocument3);
+    expect(doc).toEqual(testDocuments[2]);
+
+    // Clear the database
+    clearCollection(database, collection_name);
   });
 
-  // Test addDocument
-  const {['id']: _, ...doc1Data} = testDocument1; // This removes the id field
-  const {['id']: __, ...doc2Data} = testDocument2;
-  const {['id']: ___, ...doc3Data} = testDocument3;
-  const id1 = await database.addDocument(collection_name, doc1Data);
-  const id2 = await database.addDocument(collection_name, doc2Data);
-  const id3 = await database.addDocument(collection_name, doc3Data);
-  const testDocument4 = {
-    id: id1,
-    ...doc1Data,
-  };
-  const testDocument5 = {
-    id: id2,
-    ...doc2Data,
-  };
-  const testDocument6 = {
-    id: id3,
-    ...doc3Data,
-  };
+  test('test that autogenerated id works', async () => {
+    // Add test documents to collection
+    const newTestDocuments: TestDocument[] = [];
+    for (let i = 0; i < 3; i++) {
+      const {['id']: _, ...docData} = testDocuments[i]; // This removes the id field
+      const id = await database.addDocumentWithAutoID(collection_name, docData);
+      newTestDocuments.push({
+        id,
+        ...docData,
+      });
+    }
 
-  // Test getDocuments
-  test('Database.addDocument/Database.getDocuments', async () => {
-    // No Filters, Sort by id
-    let docs = await database.getDocuments<TestDocument>(
-      collection_name,
-      [],
-      new Sort('id')
-    );
-    expect(docs).toEqual([testDocument4, testDocument5, testDocument6]);
+    // const newTestDocuments: TestDocument[] = [];
+    // const {['id']: _, ...docData} = testDocuments[0]; // This removes the id field
+    // const {['id']: _, ...docData2} = testDocuments[1]; // This removes the id field
+    // const {['id']: _, ...docData3} = testDocuments[2]; // This removes the id field
+    // const id1 = await database.addDocumentWithAutoID(collection_name, docData);
+    // const id2 = await database.addDocumentWithAutoID(collection_name, docData2);
+    // const id3 = await database.addDocumentWithAutoID(collection_name, docData3);
+    // newTestDocuments.push({
+    //   id: id1,
+    //   ...docData,
+    // });
+    // newTestDocuments.push({
+    //   id: id2,
+    //   ...docData2,
+    // });
+    // newTestDocuments.push({
+    //   id: id3,
+    //   ...docData3,
+    // });
 
-    // No Filters, Sort by id descending
-    docs = await database.getDocuments<TestDocument>(
-      collection_name,
-      [],
-      new Sort('id', false)
-    );
-    expect(docs).toEqual([testDocument6, testDocument5, testDocument4]);
-
+    // Test getDocuments
     // No Filters, Sort by field
-    docs = await database.getDocuments<TestDocument>(
+    let docs = await database.getDocuments<TestDocument>(
       collection_name,
       [],
       new Sort('field')
     );
-    expect(docs).toEqual([testDocument5, testDocument6, testDocument4]);
+    expect(docs).toEqual([
+      newTestDocuments[0],
+      newTestDocuments[1],
+      newTestDocuments[2],
+    ]);
 
-    // Filter number > 1, Sort by id
+    // No Filters, Sort by field descending
+    docs = await database.getDocuments<TestDocument>(
+      collection_name,
+      [],
+      new Sort('flield', false)
+    );
+    expect(docs).toEqual([
+      newTestDocuments[2],
+      newTestDocuments[1],
+      newTestDocuments[0],
+    ]);
+
+    // Filter number > 1, Sort by field
     docs = await database.getDocuments<TestDocument>(
       collection_name,
       [new Filter('number', '>', 1)],
-      new Sort('id')
+      new Sort('field')
     );
-    expect(docs).toEqual([testDocument5, testDocument6]);
+    expect(docs).toEqual([newTestDocuments[1], newTestDocuments[2]]);
 
-    // Filter number > 1 and field == aardvark, Sort by id
+    // Filter number > 1 and field == testDocument2, Sort by field
     docs = await database.getDocuments<TestDocument>(
       collection_name,
-      [new Filter('number', '>', 1), new Filter('field', '==', 'aardvark')],
-      new Sort('id')
+      [
+        new Filter('number', '>', 1),
+        new Filter('field', '==', 'testDocument2'),
+      ],
+      new Sort('field')
     );
-    expect(docs).toEqual([testDocument5]);
+    expect(docs).toEqual([newTestDocuments[2]]);
 
-    // Filter number > 2 and field == aardvark, Sort by id
+    // Filter number > 2 and field == testDocument0 , Sort by field
     docs = await database.getDocuments<TestDocument>(
       collection_name,
-      [new Filter('number', '>', 2), new Filter('field', '==', 'aardvark')],
-      new Sort('id')
+      [
+        new Filter('number', '>', 2),
+        new Filter('field', '==', 'testDocument0'),
+      ],
+      new Sort('field')
     );
     expect(docs).toEqual([]);
   });
