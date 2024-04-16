@@ -1,8 +1,17 @@
 'use client';
 
-import { Button, Label, Modal, Textarea, TextInput } from 'flowbite-react';
-import { FormEvent, FormEventHandler, useState } from 'react';
-import { HiPlusCircle } from 'react-icons/hi';
+import {
+  Button,
+  Datepicker,
+  Label,
+  Modal,
+  Select,
+  Textarea,
+  TextInput,
+} from 'flowbite-react';
+import {EventType, EventTypes} from 'lib/data';
+import {FormEvent, FormEventHandler, useState} from 'react';
+import {HiPlusCircle} from 'react-icons/hi';
 
 export function NewBudgetForm({
   user_id,
@@ -12,21 +21,40 @@ export function NewBudgetForm({
   createBudgetAction: (
     userID: string,
     name: string,
-    description: string
+    description: string,
+    event_location: string,
+    event_date: string,
+    event_type: EventType
   ) => Promise<void>;
 }) {
   const [openModal, setOpenModal] = useState(false);
 
-  const submit: FormEventHandler<HTMLFormElement> = (e: FormEvent<HTMLFormElement>) => {
+  const submit: FormEventHandler<HTMLFormElement> = (
+    e: FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
-    const name = (e.currentTarget.elements.namedItem('event_name') as HTMLInputElement).value
-    const description = (e.currentTarget.elements.namedItem('description') as HTMLInputElement).value
+    const name = (
+      e.currentTarget.elements.namedItem('event_name') as HTMLInputElement
+    ).value;
+    const description = (
+      e.currentTarget.elements.namedItem('description') as HTMLInputElement
+    ).value;
+
+    const location = (
+      e.currentTarget.elements.namedItem('event_location') as HTMLInputElement
+    ).value;
+
+    const date = (
+      e.currentTarget.elements.namedItem('event_date') as HTMLInputElement
+    ).value;
+
+    const eventType = (
+      e.currentTarget.elements.namedItem('event_type') as HTMLInputElement
+    ).value as EventType;
+
     setOpenModal(false);
-    createBudgetAction(
-      user_id,
-      name,
-      description
-    );
+
+    createBudgetAction(user_id, name, description, location, date, eventType);
   };
 
   return (
@@ -63,10 +91,47 @@ export function NewBudgetForm({
                 </div>
                 <Textarea
                   id="description"
-                  name="description"
                   data-testid="new-budget-form-input-description"
                   required
                 />
+              </div>
+              <div>
+                <div className="m-2 block">
+                  <Label htmlFor="event-location" value="Event Location" />
+                </div>
+                <TextInput
+                  id="event_location"
+                  name="event_location"
+                  data-testid="new-budget-form-input-location"
+                />
+              </div>
+
+              <div>
+                <div className="m-2 block">
+                  <Label htmlFor="event-date" value="Event Date" />
+                </div>
+                <Datepicker
+                  id="event_date"
+                  name="event_date"
+                  minDate={new Date()}
+                  data-testid="new-budget-form-input-datepicker"
+                  required
+                />
+              </div>
+              <div>
+                <div className="m-2 block">
+                  <Label htmlFor="event-type" value="Event Type" />
+                </div>
+                <Select
+                  id="event_type"
+                  name="event_type"
+                  data-testid="new-budget-form-input-event-type"
+                  required
+                >
+                  {EventTypes.map(eventType => (
+                    <option key={eventType}>{eventType}</option>
+                  ))}
+                </Select>
               </div>
               <Button
                 data-testid="new-budget-form-button-submit"

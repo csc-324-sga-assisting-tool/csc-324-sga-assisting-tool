@@ -21,6 +21,10 @@ type StatusChange = {
   when: string;
 };
 
+//stackoverflow.com/questions/40863488/how-can-i-iterate-over-a-custom-literal-type-in-typescript
+const EventTypes = ['Harris', 'Gardner', 'Cultural', 'Food', 'Other'] as const;
+type EventType = (typeof EventTypes)[number];
+
 // Budget represents a single budget request
 // some fields are allowed to be undefined so users can work on budgets without knowing all the details
 interface Budget extends Comments {
@@ -30,7 +34,7 @@ interface Budget extends Comments {
   event_description: string;
   event_datetime?: string;
   event_location?: string;
-  event_type?: string; // shouldn't be string but restricted to a specific string like 'food', cultural'... once we know types
+  event_type?: EventType; // shouldn't be string but restricted to a specific string like 'food', cultural'... once we know types
   total_cost: number;
   current_status: Status;
   status_history: [StatusChange] | [];
@@ -50,4 +54,5 @@ interface User {
   completed_event: number;
 }
 
-export type {Budget, Item, Status, StatusChange, User};
+export type {Budget, EventType, Item, Status, StatusChange, User};
+export {EventTypes};
