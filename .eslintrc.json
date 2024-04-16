@@ -5,7 +5,7 @@
   ],
   "overrides": [
     {
-      "files": ["test/**/*.ts", "*.config.ts"],
+      "files": ["./test/**", "*.config.ts"],
       "rules": {
         "node/no-unpublished-import": ["off"]
       }

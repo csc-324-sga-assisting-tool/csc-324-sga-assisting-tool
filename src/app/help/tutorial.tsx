@@ -10,22 +10,32 @@ export function ComponentSlide() {
         <Image
           src="https://flowbite.com/docs/images/carousel/carousel-1.svg"
           alt="..."
+          width={40}
+          height={10}
         />
         <Image
           src="https://flowbite.com/docs/images/carousel/carousel-2.svg"
           alt="..."
+          width={40}
+          height={10}
         />
         <Image
           src="https://flowbite.com/docs/images/carousel/carousel-3.svg"
           alt="..."
+          width={40}
+          height={10}
         />
         <Image
           src="https://flowbite.com/docs/images/carousel/carousel-4.svg"
           alt="..."
+          width={40}
+          height={10}
         />
         <Image
           src="https://flowbite.com/docs/images/carousel/carousel-5.svg"
           alt="..."
+          width={40}
+          height={10}
         />
       </Carousel>
     </div>

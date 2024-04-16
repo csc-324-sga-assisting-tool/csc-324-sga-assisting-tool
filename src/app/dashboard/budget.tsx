@@ -62,8 +62,7 @@ export function BudgetDisplay(props: BudgetProps) {
     <div className="grid grid-cols-6 gap-4 bg-white shadow-md rounded-lg p-4 m-5 ml-72 divide-x divide-solid max-w-3xl">
       <div className="h-full items-center justify-center col-span-1">
         <span className="text-xl text-bold text-black justify-center h-full w-full p-2">
-          {' '}
-          {props.title}{' '}
+          {props.title}
         </span>
       </div>
       <div className="col-span-2 grid grid-row-2 p-2">
