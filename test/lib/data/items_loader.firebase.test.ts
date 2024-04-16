@@ -1,27 +1,23 @@
 import {assert, beforeAll, it, describe} from 'vitest';
-import {
-  connectFirestoreEmulator,
-  getFirestore,
-  doc,
-  writeBatch,
-} from 'firebase/firestore';
-import {Budget, Item, getBudgetItems} from 'lib/data';
-import {
-  Collections,
-  getBudgetFirebase,
-  getUserBudgetsFirebase,
-} from 'lib/firebase';
+import {connectFirestoreEmulator, getFirestore} from 'firebase/firestore';
+import {DataModifier, Item, DataProvider, Sort} from 'lib/data';
+import {Collections, getBudgetItems, FirestoreDatabase} from 'lib/firebase';
 
 const db = getFirestore();
-
+const database = new FirestoreDatabase(db);
 beforeAll(async () => {
-  connectFirestoreEmulator(db, '127.0.0.1', 8080);
+  const host =
+    (db.toJSON() as {settings?: {host?: string}}).settings?.host ?? '';
+  if (process.env.APP_ENV === 'local' && !host.startsWith('localhost')) {
+    connectFirestoreEmulator(db, 'localhost', 8080);
+  }
+  const dataModifier = new DataModifier(database);
   const testItems: Item[] = [1, 2, 3].map(number => {
     return {
-      budget_id: `budget_${number}`,
+      budget_id: 'test_budget_for_items',
       cost: 10.0,
-      id: 'item_1',
-      name: 'testing item 1',
+      id: `item_${number}`,
+      name: `testing item ${number}`,
       quantity: 2,
       rso_item_comment: null,
       sga_item_comment: null,
@@ -29,12 +25,15 @@ beforeAll(async () => {
       vendor: 'test',
     };
   });
-
-  const batch = writeBatch(db);
-
-  testItems.map(async (item: Item) => {
-    batch.set(doc(db, Collections.Items, item.id), item);
+  testItems.forEach(item => {
+    dataModifier.addItem(item);
   });
+});
 
-  await batch.commit();
+describe('Test getBudgetItems', async () => {
+  const dataProvider = new DataProvider(database);
+  const items = await dataProvider.getBudgetItems(
+    'test_budget_for_items',
+    new Sort('id')
+  );
 });

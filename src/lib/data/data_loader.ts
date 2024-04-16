@@ -27,7 +27,7 @@ export class DataProvider {
     );
   }
 
-  /* getUserBudgets returns 'howMany' of the userID's most recent budgets
+  /* getBudgetItems returns 'howMany' items in budget 'budgetID's'
    */
   async getBudgetItems(
     budgetID: string,
@@ -43,6 +43,7 @@ export class DataProvider {
       howMany
     );
   }
+
   // Get a sorted and filtered list of budgets from a particular user
   getUserBudgets(
     user_id: string,
@@ -64,9 +65,23 @@ export class DataModifier {
     this.database = database;
   }
 
-  // Adds the given budget to the database and assigns it an ID
+  // Adds the given budget to the database
+  // If budget does not have an ID, assigns it one
+  // Else, use ID to get document from database
   async addBudget(budget: Budget): Promise<void> {
-    const id = await this.database.addDocument(Collections.Budgets, budget);
-    budget.id = id;
+    if (budget.id === '') {
+      const id = await this.database.addDocument(Collections.Budgets, budget);
+      budget.id = id;
+    } else {
+      await this.database.addDocumentWithId(Collections.Budgets, budget);
+    }
+  }
+  async addItem(item: Item): Promise<void> {
+    if (item.id === '') {
+      const id = await this.database.addDocument(Collections.Items, item);
+      item.id = id;
+    } else {
+      await this.database.addDocumentWithId(Collections.Items, item);
+    }
   }
 }
