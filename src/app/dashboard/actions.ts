@@ -1,19 +1,24 @@
 'use server';
 import {revalidatePath} from 'next/cache';
-import {Budget, DataModifier} from 'lib/data';
+import {Budget, DataModifier, EventType, Database} from 'lib/data';
 
-export async function createBudget(
+function createBudget(
   user_id: string,
   event_name: string,
-  event_description: string
-): Promise<void> {
-  const dataModifier: DataModifier = new DataModifier();
+  event_description: string,
+  event_location: string,
+  event_datetime: string,
+  event_type: EventType
+): Budget {
   const id = `${user_id}-${event_name}-${new Date().getSeconds()}`;
-  const budget: Budget = {
+  return {
     id,
     user_id,
     event_name,
     event_description,
+    event_location,
+    event_datetime,
+    event_type,
     total_cost: 0,
     items: [],
     current_status: 'created',
@@ -24,7 +29,47 @@ export async function createBudget(
       },
     ],
   };
+}
 
+export async function TESTcreateBudgetAction(
+  dataModifier: DataModifier,
+  user_id: string,
+  event_name: string,
+  event_description: string,
+  event_location: string,
+  event_date: string,
+  event_type: EventType
+): Promise<void> {
+  return dataModifier.addBudget(
+    createBudget(
+      user_id,
+      event_name,
+      event_description,
+      event_location,
+      event_date,
+      event_type
+    )
+  );
+}
+
+export async function createBudgetAction(
+  user_id: string,
+  event_name: string,
+  event_description: string,
+  event_location: string,
+  event_date: string,
+  event_type: EventType
+): Promise<void> {
+  const budget = createBudget(
+    user_id,
+    event_name,
+    event_description,
+    event_location,
+    event_date,
+    event_type
+  );
+  const modifier = new DataModifier(Database);
+  const result = modifier.addBudget(budget);
   revalidatePath('/dashboard');
-  return await dataModifier.addBudget(budget);
+  return result;
 }

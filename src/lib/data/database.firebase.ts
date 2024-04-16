@@ -1,4 +1,5 @@
-import {IDatabase, Document, Sort, Filter} from './database';
+import {IDatabase, Sort, Filter} from './database';
+import {Document} from './data_types';
 import {
   collection as getCollection,
   doc,
@@ -68,10 +69,7 @@ export class FirestoreDatabase implements IDatabase {
 
   // Adds the given document with an id
   // If a document with the same id already exists in the collection, it is overwritten
-  async addDocumentWithId(
-    collection: string,
-    new_doc: Document
-  ): Promise<boolean> {
+  async addDocument(collection: string, new_doc: Document): Promise<boolean> {
     // Add the document to firebase
     const {id, ...docData} = new_doc;
     await setDoc(doc(this.firestore, collection, id), docData);
@@ -83,7 +81,10 @@ export class FirestoreDatabase implements IDatabase {
   // Returns the id assigned to the document
   // Note: if the given document contains an "id" field, it will be treated
   // as data and not as the id of the document
-  async addDocument(collection: string, new_doc: object): Promise<string> {
+  async addDocumentWithAutoID(
+    collection: string,
+    new_doc: object
+  ): Promise<string> {
     const docRef = await addDoc(
       getCollection(this.firestore, collection),
       new_doc
