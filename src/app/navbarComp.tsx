@@ -3,11 +3,7 @@
 import Image from 'next/image';
 import {Button, Navbar} from 'flowbite-react';
 
-type childSign = {
-  name: string;
-};
-//FIX: logo does not appear in main page
-export function ComponentNav(propC: childSign) {
+export function ComponentNav({buttonLabel}: {buttonLabel: string}) {
   return (
     <Navbar
       fluid
@@ -16,10 +12,9 @@ export function ComponentNav(propC: childSign) {
       <Navbar.Brand href="/">
         <Image
           src="gbudget-logo.png"
-          className="mr-3 sm:h-9"
           alt="Gbudget Logo"
-          width={7}
-          height={10}
+          width={40}
+          height={40}
         />
         <span className="self-center whitespace-nowrap text-xl font-semibold text-black">
           GBudget
@@ -38,7 +33,7 @@ export function ComponentNav(propC: childSign) {
           </Button>
         </a>
         <Button className="bg-pallete-5 font-medium text-sm w-28 h-10">
-          {propC.name}
+          {buttonLabel}
         </Button>
         <Navbar.Toggle />
       </div>

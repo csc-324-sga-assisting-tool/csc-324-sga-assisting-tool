@@ -8,12 +8,12 @@
     "build": "next build",
     "quick-build": "next build --no-lint",
     "start": "next start",
-    "lint": "eslint -- src",
-    "fix": "eslint src --fix",
+    "lint": "eslint src test",
+    "fix": "eslint src test --fix",
     "clean": "gts clean",
-    "coverage-command": "vitest run * --coverage --test-timeout=10000",
+    "coverage-command": "vitest run * --coverage",
     "coverage": "firebase emulators:exec --only firestore \"npm run coverage-command\"",
-    "test-command": "vitest",
+    "test-command": "vitest --test-timeout=0",
     "test": "firebase emulators:exec --only firestore \"npm run test-command\"",
     "prepare": "husky"
   },
@@ -27,24 +27,26 @@
     "react-icons": "^5.0.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
+    "@testing-library/user-event": "^14.5.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-v8": "^1.3.1",
+    "@vitest/coverage-v8": "^1.4",
     "autoprefixer": "^10.4.18",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.1.2",
     "firebase-tools": "^13.6.0",
     "gts": "^5.2.0",
     "husky": "^9.0.11",
-    "jsdom": "^24.0.0",
+    "jsdom": "24.0.0",
     "lint-staged": "^15.2.2",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
     "vite-tsconfig-paths": "^4.3.1",
-    "vitest": "^1.3.1"
+    "vitest": "^1.4"
   }
 }

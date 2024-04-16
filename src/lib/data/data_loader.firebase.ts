@@ -1,4 +1,4 @@
-import {Budget} from './data_types';
+import {Budget, User} from './data_types';
 import {
   db,
   getBudgetFirebase,
@@ -7,12 +7,20 @@ import {
 } from 'lib/firebase';
 import {Firestore} from 'firebase/firestore';
 import {DataModifier, DataProvider} from './data_loader';
+import {getUserFirebase} from 'lib/firebase/get_user';
 
 export async function getBudget(
   budget_id: string,
   datastore: Firestore = db
 ): Promise<Budget | undefined> {
   return getBudgetFirebase(budget_id, datastore);
+}
+
+export async function getUser(
+  budget_id: string,
+  datastore: Firestore = db
+): Promise<User | undefined> {
+  return getUserFirebase(budget_id, datastore);
 }
 
 export async function getUserBudgets(
@@ -38,6 +46,9 @@ export const FirebaseProvider: DataProvider = {
 
   async getUserBudgets(userID: string): Promise<Budget[]> {
     return getUserBudgets(userID);
+  },
+  async getUser(userID: string): Promise<User | undefined> {
+    return getUser(userID);
   },
 };
 

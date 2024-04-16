@@ -1,47 +1,87 @@
 'use client';
 
-import {Button, Label, Modal, TextInput} from 'flowbite-react';
-import {useState} from 'react';
-import {createBudget} from './actions';
+import {
+  Button,
+  Datepicker,
+  Label,
+  Modal,
+  Select,
+  Textarea,
+  TextInput,
+} from 'flowbite-react';
+import {EventType, EventTypes} from 'lib/data';
+import {FormEvent, FormEventHandler, useState} from 'react';
 import {HiPlusCircle} from 'react-icons/hi';
 
-export function NewBudgetForm({user_id}: {user_id: string}) {
+export function NewBudgetForm({
+  user_id,
+  createBudgetAction,
+}: {
+  user_id: string;
+  createBudgetAction: (
+    userID: string,
+    name: string,
+    description: string,
+    event_location: string,
+    event_date: string,
+    event_type: EventType
+  ) => Promise<void>;
+}) {
   const [openModal, setOpenModal] = useState(false);
 
-  const [name, setName] = useState('Dance Party');
-  const [description, setDescription] = useState('Lots of Dancing and Fun');
-  const [location, setLocation] = useState('HSSC N114');
-  const [date, setDate] = useState('2024-MM-DD');
-  const [type, setType] = useState('SEPC');
-  const [cost, setCost] = useState('$500');
+  const submit: FormEventHandler<HTMLFormElement> = (
+    e: FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    const name = (
+      e.currentTarget.elements.namedItem('event_name') as HTMLInputElement
+    ).value;
+    const description = (
+      e.currentTarget.elements.namedItem('description') as HTMLInputElement
+    ).value;
 
+    const location = (
+      e.currentTarget.elements.namedItem('event_location') as HTMLInputElement
+    ).value;
 
-  const submit = () => {
+    const date = (
+      e.currentTarget.elements.namedItem('event_date') as HTMLInputElement
+    ).value;
+
+    const eventType = (
+      e.currentTarget.elements.namedItem('event_type') as HTMLInputElement
+    ).value as EventType;
+
     setOpenModal(false);
-    createBudget(user_id, name, description, location, date, type);
+
+    createBudgetAction(user_id, name, description, location, date, eventType);
   };
 
   return (
     <>
       <Button
+        data-testid="new-budget-form-button-add"
         className="fixed bottom-0 right-0 p-6"
         onClick={() => setOpenModal(true)}
       >
         <HiPlusCircle className="w-24 h-24" />
       </Button>
       <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-        <Modal.Header> Create a new Budget </Modal.Header>
+        <Modal.Header> Create a new Event </Modal.Header>
         <Modal.Body>
           <div className="bg-white">
-            <form className="flex max-w-md flex-col gap-4 bg-white">
+            <form
+              className="flex max-w-md flex-col gap-4 bg-white"
+              onSubmit={submit}
+            >
               <div>
                 <div className="m-2 block">
-                  <Label htmlFor="event-name" value="Event Name" />
+                  <Label htmlFor="event-name" value="Name" />
                 </div>
                 <TextInput
                   id="event_name"
-                  onChange={e => setName(e.target.value)}
-                  value = {name}
+                  name="event_name"
+                  data-testid="new-budget-form-input-name"
                   required
                 />
               </div>
@@ -49,58 +89,55 @@ export function NewBudgetForm({user_id}: {user_id: string}) {
                 <div className="m-2 block">
                   <Label htmlFor="description" value="Description" />
                 </div>
-                <TextInput
+                <Textarea
                   id="description"
-                  onChange={e => setDescription(e.target.value)}
-                  value = {description}
+                  data-testid="new-budget-form-input-description"
                   required
                 />
               </div>
               <div>
-               <div className="m-2 block">
+                <div className="m-2 block">
                   <Label htmlFor="event-location" value="Event Location" />
                 </div>
                 <TextInput
                   id="event_location"
-                  onChange={e => setLocation(e.target.value)}
-                  value = {location}
-                  required
+                  name="event_location"
+                  data-testid="new-budget-form-input-location"
                 />
               </div>
+
               <div>
-               <div className="m-2 block">
+                <div className="m-2 block">
                   <Label htmlFor="event-date" value="Event Date" />
                 </div>
-                <TextInput
+                <Datepicker
                   id="event_date"
-                  onChange={e => setDate(e.target.value)}
-                  value = {date}
+                  name="event_date"
+                  minDate={new Date()}
+                  data-testid="new-budget-form-input-datepicker"
                   required
                 />
               </div>
               <div>
-               <div className="m-2 block">
+                <div className="m-2 block">
                   <Label htmlFor="event-type" value="Event Type" />
                 </div>
-                <TextInput
+                <Select
                   id="event_type"
-                  onChange={e => setType(e.target.value)}
-                  value = {type}
+                  name="event_type"
+                  data-testid="new-budget-form-input-event-type"
                   required
-                />
+                >
+                  {EventTypes.map(eventType => (
+                    <option key={eventType}>{eventType}</option>
+                  ))}
+                </Select>
               </div>
-              <div>
-               <div className="m-2 block">
-                  <Label htmlFor="total-cost" value="Total Cost" />
-                </div>
-                <TextInput
-                  id="total_cost"
-                  onChange={e => setCost(e.target.value)}
-                  value = {cost}
-                  required
-                />
-              </div>
-              <Button onClick={submit} className="bg-pallete-5">
+              <Button
+                data-testid="new-budget-form-button-submit"
+                type="submit"
+                className="bg-pallete-5"
+              >
                 Submit
               </Button>
             </form>
