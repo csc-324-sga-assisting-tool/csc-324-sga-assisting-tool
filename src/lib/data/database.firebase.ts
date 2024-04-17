@@ -39,14 +39,14 @@ export class FirestoreDatabase implements IDatabase {
   async getDocuments<T extends Document>(
     collection: Collections,
     filters: Filter[],
-    sort: Sort = new Sort('id'),
+    sort?: Sort,
     howMany = 25
   ): Promise<T[]> {
     // Sort the query
-    let sortField;
-    if (sort.isAscending) {
+    let sortField = undefined;
+    if (sort && sort.isAscending) {
       sortField = orderBy(sort.field);
-    } else {
+    } else if (sort) {
       sortField = orderBy(sort.field, 'desc');
     }
     // Generate the filter for the query
@@ -56,9 +56,14 @@ export class FirestoreDatabase implements IDatabase {
 
     // Create a firebase query
     const coll = getCollection(this.firestore, collection);
-    let q = query(coll, sortField, limit(howMany));
-    if (wheres.length > 0) {
+    let q = query(coll, limit(howMany));
+    // if both sorting and filtering
+    if (wheres.length > 0 && sortField) {
       q = query(coll, and(...wheres), sortField, limit(howMany));
+    } else if (wheres.length > 0) {
+      q = query(coll, and(...wheres), limit(howMany));
+    } else if (sortField) {
+      q = query(coll, sortField, limit(howMany));
     }
     // Get all matching documents
     const result = await getDocs(q);

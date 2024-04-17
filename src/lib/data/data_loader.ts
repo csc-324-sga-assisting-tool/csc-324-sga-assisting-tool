@@ -19,9 +19,9 @@ export class DataModel {
   }
   // Get a sorted and filtered list of budgets
   getBudgets(
-    sort: Sort,
     filters: Filter[] = [],
-    howMany = 25
+    howMany = 25,
+    sort?: Sort
   ): Promise<Budget[]> {
     return this.database.getDocuments<Budget>(
       Collections.Budgets,
@@ -33,12 +33,12 @@ export class DataModel {
   // Get a sorted and filtered list of budgets from a particular user
   getBudgetsForUser(
     user_id: string,
-    sort: Sort = new Sort('id'),
     filters: Filter[] = [],
+    sort?: Sort,
     howMany = 25
   ): Promise<Budget[]> {
     filters.push(new Filter('user_id', '==', user_id));
-    return this.getBudgets(sort, filters, howMany);
+    return this.getBudgets(filters, howMany, sort);
   }
 
   // Adds the given budget to the database and assigns it an ID
