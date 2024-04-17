@@ -2,7 +2,6 @@ import {Budget, Item, User} from '.';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
-import {Abel} from 'next/font/google';
 
 export class DataModel {
   database: IDatabase;
@@ -34,7 +33,7 @@ export class DataModel {
 
   /* getBudgetItems returns 'howMany' items in budget 'budgetID's'
    */
-  async getBudgetItems(
+  async getItemsForBudget(
     budgetID: string,
     sort: Sort,
     filters: Filter[] = [],
@@ -72,5 +71,16 @@ export class DataModel {
     const budget: Budget = await this.getBudget(item.budget_id);
 
     budget.total_cost += item.cost * item.quantity;
+    const user: User = await this.getUser(budget.user_id);
+
+    user.remaining_budget -= item.cost * item.quantity;
+
+    // Write changes to Firestore
+    await this.addBudget(budget);
+    await this.updateUser(user);
+  }
+
+  async updateUser(user: User): Promise<void> {
+    await this.database.addDocument(Collections.Users, user);
   }
 }

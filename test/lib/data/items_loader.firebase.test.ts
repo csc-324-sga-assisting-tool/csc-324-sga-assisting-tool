@@ -1,17 +1,13 @@
 import {assert, beforeAll, it, describe} from 'vitest';
-import {connectFirestoreEmulator, getFirestore} from 'firebase/firestore';
-import {DataModifier, Item, DataProvider, Sort} from 'lib/data';
+import {Item, Sort, DataModel} from 'lib/data';
+import {getFirestore} from 'firebase/firestore';
 import {Collections, getBudgetItems, FirestoreDatabase} from 'lib/firebase';
+import {getLocalFirebase} from '../../utils/database.util';
 
 const db = getFirestore();
-const database = new FirestoreDatabase(db);
+const database = getLocalFirebase(db);
+const dataModel = new DataModel(database);
 beforeAll(async () => {
-  const host =
-    (db.toJSON() as {settings?: {host?: string}}).settings?.host ?? '';
-  if (process.env.APP_ENV === 'local' && !host.startsWith('localhost')) {
-    connectFirestoreEmulator(db, 'localhost', 8080);
-  }
-  const dataModifier = new DataModifier(database);
   const testItems: Item[] = [1, 2, 3].map(number => {
     return {
       budget_id: 'test_budget_for_items',
@@ -26,14 +22,20 @@ beforeAll(async () => {
     };
   });
   testItems.forEach(item => {
-    dataModifier.addItem(item);
+    dataModel.addItem(item);
   });
 });
 
 describe('Test getBudgetItems', async () => {
-  const dataProvider = new DataProvider(database);
-  const items = await dataProvider.getBudgetItems(
-    'test_budget_for_items',
-    new Sort('id')
-  );
+  it('function gets all correct budgets user 1', async () => {
+    const items = await dataModel.getBudgetItems(
+      'test_budget_for_items',
+      new Sort('id')
+    );
+    assert.equal(
+      items.length,
+      3,
+      `test_budget_for_items has 3 items but call returned ${items.length}`
+    );
+  });
 });
