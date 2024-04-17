@@ -65,7 +65,6 @@ describe('test firebase getBudget', async () => {
 describe('test getBudetsForUser', async () => {
   const dataModel = new DataModel(database);
   it('function gets all correct budgets user 1', async () => {
-    const HIDDENbudget = await database.getDocuments(Collections.Budgets, []);
     const budgets = await dataModel.getBudgetsForUser('user_1');
     assert.equal(
       budgets.length,

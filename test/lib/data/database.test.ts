@@ -2,8 +2,7 @@ import {Document} from 'lib/data';
 import {describe, expect, test} from 'vitest';
 import {getFirestore} from 'firebase/firestore';
 import {clearCollection, getLocalFirebase} from '../../utils/database.util';
-import {Filter, IDatabase, Sort} from '../../../src/lib/data/database';
-import {afterEach} from 'node:test';
+import {Filter, Sort} from 'lib/data/database';
 
 // Set up a Firestore Database for testing
 const testCollection = 'test_collection';
