@@ -64,13 +64,9 @@ class LocalDatabase implements IDatabase {
     return documents.slice(0, howMany) as T[];
   }
 
-  async addDocument(collection: Collections, doc: Document): Promise<boolean> {
+  async addDocument(collection: Collections, doc: Document): Promise<void> {
     const documents = this.collections[collection] || [];
-    if (documents.some(d => d.id === doc.id)) {
-      return false; // Document with same id already exists
-    }
     this.collections[collection] = [...documents, doc];
-    return true;
   }
 
   async addDocumentWithAutoID(
@@ -83,21 +79,23 @@ class LocalDatabase implements IDatabase {
     return id;
   }
 
-  async deleteDocument(
-    collection: Collections,
-    doc: Document
-  ): Promise<boolean> {
+  async deleteDocument(collection: Collections, doc: Document): Promise<void> {
     const documents = this.collections[collection] || [];
     const filteredDocuments = documents.filter(d => d.id !== doc.id);
     if (filteredDocuments.length === documents.length) {
-      return false; // Document not found
+      return Promise.reject(
+        new Error(`document with ${doc.id} not found in ${collection}`)
+      ); // Document not found
     }
     this.collections[collection] = filteredDocuments;
-    return true;
   }
 
   async emptyCollection(collection: Collections): Promise<void> {
     this.collections[collection] = [];
+  }
+
+  async setCollection(collection: Collections, items: Document[]) {
+    this.collections[collection] = items;
   }
 }
 
