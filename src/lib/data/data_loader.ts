@@ -96,7 +96,7 @@ export class DataModifier {
   }
   async addItem(item: Item): Promise<void> {
     const id = await this.database.addDocumentWithAutoID(
-      Collections.Budgets,
+      Collections.Items,
       item
     );
     item.id = id;
