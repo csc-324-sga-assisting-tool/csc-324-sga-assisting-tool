@@ -2,6 +2,7 @@ import {Budget, Item, User} from '.';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
+import {Abel} from 'next/font/google';
 
 export class DataModel {
   database: IDatabase;
@@ -67,5 +68,9 @@ export class DataModel {
   }
   async addItem(item: Item): Promise<void> {
     await this.database.addDocument(Collections.Items, item);
+
+    const budget: Budget = await this.getBudget(item.budget_id);
+
+    budget.total_cost += item.cost * item.quantity;
   }
 }
