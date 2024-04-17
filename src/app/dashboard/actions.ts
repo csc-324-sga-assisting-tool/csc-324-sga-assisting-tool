@@ -1,19 +1,24 @@
 'use server';
 import {revalidatePath} from 'next/cache';
-import {Budget, DataModifier, FirebaseModifier} from 'lib/data';
+import {Budget, DataModel, EventType, Database} from 'lib/data';
 
-export async function createBudget(
+function createBudget(
   user_id: string,
   event_name: string,
-  event_description: string
-): Promise<void> {
-  const dataModifier: DataModifier = FirebaseModifier;
-  const budget_id = `${user_id}-${event_name}-${new Date().getSeconds()}`;
-  const budget: Budget = {
-    budget_id,
+  event_description: string,
+  event_location: string,
+  event_datetime: string,
+  event_type: EventType
+): Budget {
+  const id = `${user_id}-${event_name}-${new Date().getSeconds()}`;
+  return {
+    id,
     user_id,
     event_name,
     event_description,
+    event_location,
+    event_datetime,
+    event_type,
     total_cost: 0,
     items: [],
     current_status: 'created',
@@ -24,7 +29,47 @@ export async function createBudget(
       },
     ],
   };
+}
 
+export async function TESTcreateBudgetAction(
+  dataModel: DataModel,
+  user_id: string,
+  event_name: string,
+  event_description: string,
+  event_location: string,
+  event_date: string,
+  event_type: EventType
+): Promise<void> {
+  return dataModel.addBudget(
+    createBudget(
+      user_id,
+      event_name,
+      event_description,
+      event_location,
+      event_date,
+      event_type
+    )
+  );
+}
+
+export async function createBudgetAction(
+  user_id: string,
+  event_name: string,
+  event_description: string,
+  event_location: string,
+  event_date: string,
+  event_type: EventType
+): Promise<void> {
+  const budget = createBudget(
+    user_id,
+    event_name,
+    event_description,
+    event_location,
+    event_date,
+    event_type
+  );
+  const modifier = new DataModel(Database);
+  const result = modifier.addBudget(budget);
   revalidatePath('/dashboard');
-  return await dataModifier.addBudget(budget);
+  return result;
 }
