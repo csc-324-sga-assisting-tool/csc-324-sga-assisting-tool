@@ -1,6 +1,6 @@
 'use server';
 import {revalidatePath} from 'next/cache';
-import {Budget, DataModifier, EventType, FirebaseModifier} from 'lib/data';
+import {Budget, DataModel, EventType, Database} from 'lib/data';
 
 function createBudget(
   user_id: string,
@@ -10,9 +10,9 @@ function createBudget(
   event_datetime: string,
   event_type: EventType
 ): Budget {
-  const budget_id = `${user_id}-${event_name}-${new Date().getSeconds()}`;
+  const id = `${user_id}-${event_name}-${new Date().getSeconds()}`;
   return {
-    budget_id,
+    id,
     user_id,
     event_name,
     event_description,
@@ -32,7 +32,7 @@ function createBudget(
 }
 
 export async function TESTcreateBudgetAction(
-  dataModifier: DataModifier = FirebaseModifier,
+  dataModel: DataModel,
   user_id: string,
   event_name: string,
   event_description: string,
@@ -40,7 +40,7 @@ export async function TESTcreateBudgetAction(
   event_date: string,
   event_type: EventType
 ): Promise<void> {
-  return dataModifier.addBudget(
+  return dataModel.addBudget(
     createBudget(
       user_id,
       event_name,
@@ -68,7 +68,8 @@ export async function createBudgetAction(
     event_date,
     event_type
   );
-  const result = FirebaseModifier.addBudget(budget);
+  const modifier = new DataModel(Database);
+  const result = modifier.addBudget(budget);
   revalidatePath('/dashboard');
   return result;
 }

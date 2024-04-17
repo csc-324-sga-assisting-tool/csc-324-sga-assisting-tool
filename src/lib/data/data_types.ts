@@ -25,11 +25,23 @@ type StatusChange = {
 const EventTypes = ['Harris', 'Gardner', 'Cultural', 'Food', 'Other'] as const;
 type EventType = (typeof EventTypes)[number];
 
+/*
+Document Type
+Represents a Firebase Document (list of key/value pairs)
+Every document must have an id.  Oher fields will represent
+the other key/value pairs
+*/
+type Document = {
+  id: string;
+  // Allow us to access attributes of the document by string indexing
+  // Used in the local database for testing
+  [key: string]: unknown;
+};
+
 // Budget represents a single budget request
 // some fields are allowed to be undefined so users can work on budgets without knowing all the details
-interface Budget extends Comments {
+interface Budget extends Comments, Document {
   user_id: string; // the user this budget belongs to
-  budget_id: string;
   event_name: string;
   event_description: string;
   event_datetime?: string;
@@ -43,8 +55,7 @@ interface Budget extends Comments {
 
 type UserType = 'RSO' | 'SEPC' | 'SGA_Treasurer' | 'SGA_Assistant_Treasurer';
 // User represents a single user
-interface User {
-  user_id: string;
+interface User extends Document {
   user_name: string;
   remaining_budget: number;
   total_budget: number;
@@ -54,5 +65,5 @@ interface User {
   completed_event: number;
 }
 
-export type {Budget, EventType, Item, Status, StatusChange, User};
+export type {Budget, Document, EventType, Item, Status, StatusChange, User};
 export {EventTypes};

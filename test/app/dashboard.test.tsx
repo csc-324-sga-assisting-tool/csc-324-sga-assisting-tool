@@ -1,35 +1,39 @@
 import {Dashboard} from 'app/dashboard/dashboard';
-import {MockDataStore} from '../utils/data_loader.mock';
 import {expect, describe, it} from 'vitest';
 import {render, screen} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
+import {LocalDatabase} from '../utils/database.local';
+import {DataModel, Sort} from 'lib/data';
+import {Collections} from 'lib/firebase';
 
 describe('Test Dashboard works as Expected', () => {
-  const mockDataprovider = new MockDataStore();
-  mockDataprovider.setUsers([
-    {
-      user_id: 'test_user',
-      user_name: 'Test Org',
-      user_type: 'RSO',
-      remaining_budget: 100,
-      total_budget: 1000,
-      pending_event: 3,
-      planned_event: 5,
-      completed_event: 2,
-    },
-  ]);
+  const mockDatabase = new LocalDatabase();
+  mockDatabase.addDocument(Collections.Users, {
+    id: 'test_user',
+    user_name: 'Test Org',
+    user_type: 'RSO',
+    remaining_budget: 100,
+    total_budget: 1000,
+    pending_event: 3,
+    planned_event: 5,
+    completed_event: 2,
+  });
+  const defaultSort: Sort = {
+    field: 'id',
+    isAscending: false,
+  };
+
+  const mockDataprovider = new DataModel(mockDatabase);
+  const props = {
+    userID: 'test_user',
+    dataModel: mockDataprovider,
+    TESTING_FLAG: true,
+  };
 
   it('renders navbar and siderbar correctly with no budgets', async () => {
     // make sure there are no budgets
-    mockDataprovider.setBudgets([]);
-
+    mockDatabase.emptyCollection(Collections.Budgets);
     //render the daashboard
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDataprovider,
-      TESTING_FLAG: true,
-    };
     // await Dashboard since it is an async component
     render(await Dashboard({...props}));
 
@@ -47,10 +51,10 @@ describe('Test Dashboard works as Expected', () => {
 
   it('displays budget and sidebar correctly', async () => {
     // make sure there are no budgets
-    mockDataprovider.setBudgets([
+    mockDatabase.setCollection(Collections.Budgets, [
       {
+        id: 'test_budget',
         user_id: 'test_user',
-        budget_id: 'test_budget',
         event_name: 'Test Event',
         event_description: 'Test Event Description',
         current_status: 'submitted',
@@ -60,13 +64,6 @@ describe('Test Dashboard works as Expected', () => {
       },
     ]);
 
-    //render the daashboard
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDataprovider,
-      TESTING_FLAG: true,
-    };
     // await Dashboard since it is an async component
     render(await Dashboard({...props}));
 
@@ -79,7 +76,9 @@ describe('Test Dashboard works as Expected', () => {
       screen.queryByTestId('new-budget-form-button-add')
     ).toBeInTheDocument();
     // 0 dollars, the cost of the budget should be rendered
-    expect(await screen.findByText('123', {exact: false})).toBeInTheDocument();
+    expect(
+      await screen.findByText('$ 123', {exact: false})
+    ).toBeInTheDocument();
     // Test Event, the name of the budget should be rendered
     expect(await screen.findByText('Test Event')).toBeInTheDocument();
   });
@@ -87,16 +86,10 @@ describe('Test Dashboard works as Expected', () => {
   it('make budget forms creates a new budget', async () => {
     // setup the userEvents library
     const user = userEvent.setup();
-    // make sure there are no budgets
-    mockDataprovider.setBudgets([]);
 
-    // render dashboard
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDataprovider,
-      TESTING_FLAG: true,
-    };
+    mockDatabase.emptyCollection(Collections.Budgets);
+
+    //render the daashboard
     render(await Dashboard({...props}));
 
     expect(
@@ -122,22 +115,16 @@ describe('Test Dashboard works as Expected', () => {
     await user.click(submitButton);
     await user.click(submitButton);
 
-    expect(mockDataprovider.budgets.length).toBe(1);
+    const budgets = await mockDataprovider.getBudgets(defaultSort);
+    expect(budgets.length).toBe(1);
   });
 
   it('unfilled form will not create a budget', async () => {
     // setup the userEvents library
     const user = userEvent.setup();
     // make sure there are no budgets
-    mockDataprovider.setBudgets([]);
-
-    // render dashboard
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDataprovider,
-      TESTING_FLAG: true,
-    };
+    mockDatabase.emptyCollection(Collections.Budgets);
+    //render the daashboard
     render(await Dashboard({...props}));
 
     expect(
@@ -161,23 +148,20 @@ describe('Test Dashboard works as Expected', () => {
     await user.click(submitButton);
     await user.click(submitButton);
 
-    expect(mockDataprovider.budgets.length).toBe(0);
+    const budgets = await mockDataprovider.getBudgets(defaultSort);
+    expect(budgets.length).toBe(0);
   });
 
   it('make budget form populates budget with correct data', async () => {
     // setup the userEvents library
     const user = userEvent.setup();
-    // make sure there are no budgets
-    mockDataprovider.setBudgets([]);
 
-    // render dashboard
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDataprovider,
-      TESTING_FLAG: true,
-    };
+    mockDatabase.emptyCollection(Collections.Budgets);
+    //render the daashboard
+    // await Dashboard since it is an async component
     render(await Dashboard({...props}));
+
+    // await Dashboard since it is an async component
 
     expect(
       screen.queryByTestId('new-budget-form-button-add')
@@ -216,12 +200,14 @@ describe('Test Dashboard works as Expected', () => {
 
     await user.click(submitButton);
 
-    expect(mockDataprovider.budgets.length).toBe(1);
-    expect(mockDataprovider.budgets[0].event_name).toBe(name);
-    expect(mockDataprovider.budgets[0].event_description).toBe(description);
-    expect(mockDataprovider.budgets[0].event_location).toBe(location);
-    expect(
-      new Date(mockDataprovider.budgets[0].event_datetime!).getDate().toString()
-    ).toBe(date);
+    const budgets = await mockDataprovider.getBudgets(defaultSort);
+
+    expect(budgets.length).toBe(1);
+    expect(budgets[0].event_name).toBe(name);
+    expect(budgets[0].event_description).toBe(description);
+    expect(budgets[0].event_location).toBe(location);
+    expect(new Date(budgets[0].event_datetime!).getDate().toString()).toBe(
+      date
+    );
   });
 });
