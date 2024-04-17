@@ -1,22 +1,20 @@
 import {BudgetDisplay} from './budget';
 import {SummarySidebar} from './sidebar';
-import {Budget, DataModifier, DataProvider, User} from 'lib/data';
+import {Budget, DataModel, User} from 'lib/data';
 import {NewBudgetForm} from './create_budget_form';
 import {createBudgetAction, TESTcreateBudgetAction} from './actions';
 
 export async function Dashboard({
   userID,
-  dataProvider,
-  dataModifier,
+  dataModel: dataModel,
   TESTING_FLAG = false,
 }: {
   userID: string;
-  dataProvider: DataProvider;
-  dataModifier: DataModifier;
+  dataModel: DataModel;
   TESTING_FLAG?: boolean;
 }) {
-  const user = (await dataProvider.getUser(userID)) as User;
-  const userBudgets = await dataProvider.getUserBudgets(userID);
+  const user = (await dataModel.getUser(userID)) as User;
+  const userBudgets = await dataModel.getBudgetsForUser(userID);
   // THIS IS BAD Code
   // The problem is that we can only pass data, not functions from server side to client side components
   // UNLESS those functions are 'server side actions'. As far as I know, the underlying firebase sdk probably
@@ -25,7 +23,7 @@ export async function Dashboard({
   // at Runtime
   let action;
   if (TESTING_FLAG) {
-    action = TESTcreateBudgetAction.bind(null, dataModifier);
+    action = TESTcreateBudgetAction.bind(null, dataModel);
   } else {
     action = createBudgetAction;
   }

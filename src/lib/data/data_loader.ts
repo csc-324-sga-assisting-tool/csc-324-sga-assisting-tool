@@ -3,40 +3,25 @@ import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
 
-export class DataProvider {
-  setBudgets(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    arg0: {
-      user_id: string;
-      budget_id: string;
-      event_name: string;
-      event_description: string;
-      current_status: string;
-      total_cost: number;
-      status_history: {status: string; when: string}[];
-      items: never[];
-    }[]
-  ) {
-    throw new Error('Method not implemented.');
-  }
+export class DataModel {
   database: IDatabase;
   constructor(database: IDatabase = Database) {
     this.database = database;
   }
 
   // Get a budget by ID
-  async getBudget(budgetID: string): Promise<Budget | undefined> {
+  getBudget(budgetID: string): Promise<Budget> {
     return this.database.getDocument<Budget>(Collections.Budgets, budgetID);
   }
 
-  getUser(userID: string): Promise<User | undefined> {
+  getUser(userID: string): Promise<User> {
     return this.database.getDocument<User>(Collections.Users, userID);
   }
   // Get a sorted and filtered list of budgets
   getBudgets(
-    sort: Sort,
     filters: Filter[] = [],
-    howMany = 25
+    howMany = 25,
+    sort?: Sort
   ): Promise<Budget[]> {
     return this.database.getDocuments<Budget>(
       Collections.Budgets,
@@ -64,41 +49,23 @@ export class DataProvider {
   }
 
   // Get a sorted and filtered list of budgets from a particular user
-  getUserBudgets(
+  getBudgetsForUser(
     user_id: string,
-    sort: Sort = new Sort('id'),
     filters: Filter[] = [],
+    sort?: Sort,
     howMany = 25
   ): Promise<Budget[]> {
-    return this.getBudgets(
-      sort,
-      filters.concat([new Filter('id', '==', user_id)]),
-      howMany
-    );
-  }
-}
-
-export class DataModifier {
-  database: IDatabase;
-  constructor(database: IDatabase = Database) {
-    this.database = database;
+    filters.push(new Filter('user_id', '==', user_id));
+    return this.getBudgets(filters, howMany, sort);
   }
 
   // Adds the given budget to the database
   // If budget does not have an ID, assigns it one
   // Else, use ID to get document from database
   async addBudget(budget: Budget): Promise<void> {
-    const id = await this.database.addDocumentWithAutoID(
-      Collections.Budgets,
-      budget
-    );
-    budget.id = id;
+    return this.database.addDocument(Collections.Budgets, budget);
   }
   async addItem(item: Item): Promise<void> {
-    const id = await this.database.addDocumentWithAutoID(
-      Collections.Items,
-      item
-    );
-    item.id = id;
+    await this.database.addDocument(Collections.Items, item);
   }
 }

@@ -1,20 +1,20 @@
 import {IDatabase, Sort, Filter} from './database';
 import {Document} from './data_types';
 import {
-  collection as getCollection,
+  and,
   doc,
+  collection as getCollection,
   Firestore,
   getDoc,
   getDocs,
   deleteDoc,
-  addDoc,
   setDoc,
   limit,
   orderBy,
   query,
   where,
 } from 'firebase/firestore';
-import {db} from 'lib/firebase';
+import {Collections, db} from 'lib/firebase';
 
 export class FirestoreDatabase implements IDatabase {
   private firestore: Firestore;
@@ -23,12 +23,13 @@ export class FirestoreDatabase implements IDatabase {
   }
 
   async getDocument<T extends Document>(
-    collection: string,
+    collection: Collections,
     id: string
   ): Promise<T> {
     const result = await getDoc(doc(this.firestore, collection, id));
-    if (result.exists()) return {...result.data(), id: result.id} as T;
-    else
+    if (result.exists()) {
+      return result.data() as T;
+    } else
       return Promise.reject(
         new Error(
           `Document with id ${id} does not exist in collection ${collection}`
@@ -36,31 +37,41 @@ export class FirestoreDatabase implements IDatabase {
       );
   }
   async getDocuments<T extends Document>(
-    collection: string,
+    collection: Collections,
     filters: Filter[],
-    sort: Sort,
+    sort?: Sort,
     howMany = 25
   ): Promise<T[]> {
+    // Sort the query
+    let sortField = undefined;
+    if (sort && sort.isAscending) {
+      sortField = orderBy(sort.field);
+    } else if (sort) {
+      sortField = orderBy(sort.field, 'desc');
+    }
+    // Generate the filter for the query
+    const wheres = filters.map((filter: Filter) => {
+      return where(filter.field, filter.operator, filter.value);
+    });
+
     // Create a firebase query
     const coll = getCollection(this.firestore, collection);
     let q = query(coll, limit(howMany));
-
-    // Sort the query
-    if (sort.isAscending) q = query(q, orderBy(sort.field));
-    else q = query(q, orderBy(sort.field, 'desc'));
-
-    // Filter the query
-    filters.forEach((filter: Filter) => {
-      q = query(q, where(filter.field, filter.operator, filter.value));
-    });
-
+    // if both sorting and filtering
+    if (wheres.length > 0 && sortField) {
+      q = query(coll, and(...wheres), sortField, limit(howMany));
+    } else if (wheres.length > 0) {
+      q = query(coll, and(...wheres), limit(howMany));
+    } else if (sortField) {
+      q = query(coll, sortField, limit(howMany));
+    }
     // Get all matching documents
-    const result = await getDocs(coll);
+    const result = await getDocs(q);
 
     // Collect the data from those documents in an array
     const documents: T[] = [];
     result.forEach(doc => {
-      const data = {...doc.data(), id: doc.id} as T;
+      const data = doc.data() as T;
       documents.push(data);
     });
 
@@ -69,34 +80,17 @@ export class FirestoreDatabase implements IDatabase {
 
   // Adds the given document with an id
   // If a document with the same id already exists in the collection, it is overwritten
-  async addDocument(collection: string, new_doc: Document): Promise<boolean> {
+  async addDocument(collection: Collections, newDoc: Document): Promise<void> {
     // Add the document to firebase
-    const {id, ...docData} = new_doc;
-    await setDoc(doc(this.firestore, collection, id), docData);
-    return true;
+    return setDoc(doc(this.firestore, collection, newDoc.id), newDoc);
   }
 
-  // Adds the given document without reference to an id
-  // Returns the id assigned to the document
-  // Note: if the given document contains an "id" field, it will be treated
-  // as data and not as the id of the document
-  async addDocumentWithAutoID(
-    collection: string,
-    new_doc: object
-  ): Promise<string> {
-    const docRef = await addDoc(
-      getCollection(this.firestore, collection),
-      new_doc
-    );
-    return docRef.id;
-  }
   async deleteDocument(
-    collection: string,
+    collection: Collections,
     delete_doc: Document
-  ): Promise<boolean> {
+  ): Promise<void> {
     // Delete the firebase document
     const document = doc(this.firestore, collection, delete_doc.id);
-    await deleteDoc(document);
-    return true;
+    return await deleteDoc(document);
   }
 }

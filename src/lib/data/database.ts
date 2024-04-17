@@ -14,9 +14,8 @@ export interface IDatabase {
     sort?: Sort,
     howMany?: number
   ): Promise<Array<T>>;
-  addDocument(collection: string, doc: Document): Promise<boolean>;
-  addDocumentWithAutoID(collection: string, doc: object): Promise<string>;
-  deleteDocument(collection: string, doc: Document): Promise<boolean>;
+  addDocument(collection: string, doc: Document): Promise<void>;
+  deleteDocument(collection: string, doc: Document): Promise<void>;
 }
 
 /*

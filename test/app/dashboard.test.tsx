@@ -3,7 +3,7 @@ import {expect, describe, it} from 'vitest';
 import {render, screen} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
 import {LocalDatabase} from '../utils/database.local';
-import {DataModifier, DataProvider, Sort} from 'lib/data';
+import {DataModel, Sort} from 'lib/data';
 import {Collections} from 'lib/firebase';
 
 describe('Test Dashboard works as Expected', () => {
@@ -22,19 +22,18 @@ describe('Test Dashboard works as Expected', () => {
     field: 'id',
     isAscending: false,
   };
-  const mockDataprovider = new DataProvider(mockDatabase);
-  const mockDatamodifier = new DataModifier(mockDatabase);
+
+  const mockDataprovider = new DataModel(mockDatabase);
+  const props = {
+    userID: 'test_user',
+    dataModel: mockDataprovider,
+    TESTING_FLAG: true,
+  };
 
   it('renders navbar and siderbar correctly with no budgets', async () => {
     // make sure there are no budgets
     mockDatabase.emptyCollection(Collections.Budgets);
     //render the daashboard
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDatamodifier,
-      TESTING_FLAG: true,
-    };
     // await Dashboard since it is an async component
     render(await Dashboard({...props}));
 
@@ -52,10 +51,10 @@ describe('Test Dashboard works as Expected', () => {
 
   it('displays budget and sidebar correctly', async () => {
     // make sure there are no budgets
-    mockDataprovider.setBudgets([
+    mockDatabase.setCollection(Collections.Budgets, [
       {
+        id: 'test_budget',
         user_id: 'test_user',
-        budget_id: 'test_budget',
         event_name: 'Test Event',
         event_description: 'Test Event Description',
         current_status: 'submitted',
@@ -64,14 +63,7 @@ describe('Test Dashboard works as Expected', () => {
         items: [],
       },
     ]);
-    mockDatabase.emptyCollection(Collections.Budgets);
-    //render the daashboard
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDatamodifier,
-      TESTING_FLAG: true,
-    };
+
     // await Dashboard since it is an async component
     render(await Dashboard({...props}));
 
@@ -84,7 +76,9 @@ describe('Test Dashboard works as Expected', () => {
       screen.queryByTestId('new-budget-form-button-add')
     ).toBeInTheDocument();
     // 0 dollars, the cost of the budget should be rendered
-    expect(await screen.findByText('123', {exact: false})).toBeInTheDocument();
+    expect(
+      await screen.findByText('$ 123', {exact: false})
+    ).toBeInTheDocument();
     // Test Event, the name of the budget should be rendered
     expect(await screen.findByText('Test Event')).toBeInTheDocument();
   });
@@ -94,12 +88,6 @@ describe('Test Dashboard works as Expected', () => {
     const user = userEvent.setup();
 
     mockDatabase.emptyCollection(Collections.Budgets);
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDatamodifier,
-      TESTING_FLAG: true,
-    };
 
     //render the daashboard
     render(await Dashboard({...props}));
@@ -135,17 +123,8 @@ describe('Test Dashboard works as Expected', () => {
     // setup the userEvents library
     const user = userEvent.setup();
     // make sure there are no budgets
-    mockDataprovider.setBudgets([]);
-
     mockDatabase.emptyCollection(Collections.Budgets);
     //render the daashboard
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDatamodifier,
-      TESTING_FLAG: true,
-    };
-
     render(await Dashboard({...props}));
 
     expect(
@@ -179,12 +158,6 @@ describe('Test Dashboard works as Expected', () => {
 
     mockDatabase.emptyCollection(Collections.Budgets);
     //render the daashboard
-    const props = {
-      userID: 'test_user',
-      dataProvider: mockDataprovider,
-      dataModifier: mockDatamodifier,
-      TESTING_FLAG: true,
-    };
     // await Dashboard since it is an async component
     render(await Dashboard({...props}));
 
