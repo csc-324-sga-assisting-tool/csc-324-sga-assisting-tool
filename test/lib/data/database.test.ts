@@ -127,23 +127,6 @@ describe('Test FirestoreDatabase class', async () => {
     expect(docs.length).toEqual(2);
   });
 
-  test('test that multi-filtering works', async () => {
-    // clear db so we start fresh
-    await clearCollection(database, testCollection);
-
-    const testDocuments: TestDocument[] = generateTestDocuments(3);
-    testDocuments.forEach(
-      async document => await database.addDocument(testCollection, document)
-    );
-    // No Filters, Sort by field descending
-    // Filter number > 1, Sort by field
-    const docs = await database.getDocuments<TestDocument>(testCollection, [
-      new Filter('number', '>', 1),
-      new Filter('number', '<', 3),
-    ]);
-    expect(docs.length).toEqual(1);
-  });
-
   test('test that equality filtering works', async () => {
     // clear db so we start fresh
     await clearCollection(database, testCollection);

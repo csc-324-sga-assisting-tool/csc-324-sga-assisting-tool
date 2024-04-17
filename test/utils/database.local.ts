@@ -23,42 +23,46 @@ class LocalDatabase implements IDatabase {
   async getDocuments<T extends Document>(
     collection: Collections,
     filters: Filter[],
-    sort: Sort,
-    howMany: number
+    sort?: Sort,
+    howMany = 25
   ): Promise<T[]> {
     let documents = this.collections[collection] || [];
 
-    // Apply filters
-    for (const filter of filters) {
-      documents = documents.filter(doc => {
-        const fieldValue = doc[filter.field] as string | number;
-        switch (filter.operator) {
-          case '==':
-            return fieldValue === filter.value;
-          case '<':
-            return fieldValue < filter.value;
-          case '>':
-            return fieldValue > filter.value;
-          case '<=':
-            return fieldValue <= filter.value;
-          case '>=':
-            return fieldValue >= filter.value;
-          default:
-            return true;
-        }
-      });
+    if (filters.length > 0) {
+      // Apply filters
+      for (const filter of filters) {
+        documents = documents.filter(doc => {
+          const fieldValue = doc[filter.field] as string | number;
+          switch (filter.operator) {
+            case '==':
+              return fieldValue === filter.value;
+            case '<':
+              return fieldValue < filter.value;
+            case '>':
+              return fieldValue > filter.value;
+            case '<=':
+              return fieldValue <= filter.value;
+            case '>=':
+              return fieldValue >= filter.value;
+            default:
+              return true;
+          }
+        });
+      }
     }
 
     // Apply sorting
-    documents.sort((a, b) => {
-      const fieldA = a[sort.field] as string | number;
-      const fieldB = b[sort.field] as string | number;
-      if (sort.isAscending) {
-        return fieldA > fieldB ? 1 : -1;
-      } else {
-        return fieldA < fieldB ? 1 : -1;
-      }
-    });
+    if (sort) {
+      documents.sort((a, b) => {
+        const fieldA = a[sort.field] as string | number;
+        const fieldB = b[sort.field] as string | number;
+        if (sort.isAscending) {
+          return fieldA > fieldB ? 1 : -1;
+        } else {
+          return fieldA < fieldB ? 1 : -1;
+        }
+      });
+    }
 
     // Return up to `howMany` documents
     return documents.slice(0, howMany) as T[];
