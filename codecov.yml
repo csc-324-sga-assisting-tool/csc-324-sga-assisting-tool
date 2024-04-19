@@ -1,0 +1,34 @@
+codecov:
+  branch: main # set new Default branch
+
+comment:
+  layout: "condensed_header, diff, flags, components"
+  
+component_management:
+  individual_components:
+    - component_id: fe  # this is an identifier that should not be changed
+      name: Front-End  # this is a display name, and can be changed freely
+      paths:
+        - src/app
+  individual_components:
+    - component_id: be  # this is an identifier that should not be changed
+      name: Back-End  # this is a display name, and can be changed freely
+      paths:
+        - src/lib
+
+coverage:
+  status:
+    project:
+      default: # This can be anything, but it needs to exist as the name
+        # basic settings
+        # advanced settings
+        branches: 
+          - main
+        if_ci_failed: error #success, failure, error, ignore
+        only_pulls: true
+        removed_code_behavior: off #removals_only, fully_covered_patch, adjust_base",
+
+ignore:
+  - "*config.ts" #ignore config files in code coverage
+  - "*config.tsx" #ignore config files in code coverage
+  - "*types.ts" #ignore config files in code coverage
