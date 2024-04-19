@@ -1,32 +1,54 @@
 'use client';
 
-import {Button, Label, Checkbox, Modal, TextInput} from 'flowbite-react';
+import {Button, Label, Checkbox, Modal, TextInput, Select} from 'flowbite-react';
 import { sep } from 'path';
-import {useState} from 'react';
-import { createUser } from './auth';
+import {FormEvent, FormEventHandler, useState} from 'react';
+import { createUserAction } from './auth';
+import { Dropdown } from "flowbite-react";
+import { UserType, UserTypes } from 'lib/data';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export function SignUp() {
+  
+  const router = useRouter()
   const [openModal, setOpenModal] = useState(false);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [budget, setBudget] = useState(0);
-  const [sepc, setSEPC] = useState(false);
-  // ...
+  const submit: FormEventHandler<HTMLFormElement> = (
+    e: FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    const name = (
+      e.currentTarget.elements.namedItem('name') as HTMLInputElement
+    ).value;
+    const email = (
+      e.currentTarget.elements.namedItem('email') as HTMLInputElement
+    ).value;
 
+    const password = (
+      e.currentTarget.elements.namedItem('password') as HTMLInputElement
+    ).value;
 
-  const submit = () => {
+    const budget = (
+      e.currentTarget.elements.namedItem('budget') as HTMLInputElement
+    ).value as unknown as number;
+
+    const userType = (
+      e.currentTarget.elements.namedItem('user_type') as HTMLInputElement
+    ).value as UserType;
+
     setOpenModal(false);
-    createUser(email, name, email, password, sepc, budget);
-    // return (
-    //   <div>
-    //     <a href="/dashboard" ></a>
-    //   </div>
-      
-    // )
 
-    // open dashboard for user
+    createUserAction(name, email, budget, userType, password);
+    // <Link
+    //   href={{
+    //     pathname: '/dashboard',
+    //     query: {
+    //       userId: name
+    //     }
+    //   }}
+    // ></Link> 
+    router.push("/dashboard")
   };
 
   return (
@@ -41,7 +63,10 @@ export function SignUp() {
         <Modal.Header> Create a new Account </Modal.Header>
         <Modal.Body>
           <div className="bg-white">
-            <form className="flex max-w-md flex-col gap-4 bg-white">
+            <form
+              className="flex max-w-md flex-col gap-4 bg-white"
+              onSubmit={submit}
+            >
               <div>
                 <div className="m-2 block">
                   <Label htmlFor="name" value="Your RSO name" />
@@ -50,8 +75,6 @@ export function SignUp() {
                   id="name" 
                   type="name"
                   placeholder='CS_SEPC'
-                  onChange={e => setName(e.target.value)}
-                  value={name}
                   required
                 />
               </div>
@@ -60,11 +83,9 @@ export function SignUp() {
                   <Label htmlFor="email1" value="Your email" />
                 </div>
                 <TextInput
-                  id="email1" 
+                  id="email" 
                   type="email" 
                   placeholder="testUser@studentorg.grinnell.edu" 
-                  onChange={e => setEmail(e.target.value)}
-                  value={email}
                   required
                 />
               </div>
@@ -73,11 +94,9 @@ export function SignUp() {
                   <Label htmlFor="password" value="Your password" />
                 </div>
                 <TextInput
-                  id="password1" 
+                  id="password" 
                   type="password"
                   placeholder='Loveweb1234@'
-                  onChange={e => setPassword(e.target.value)}
-                  value={password}
                   required
                 />
               </div>
@@ -88,17 +107,30 @@ export function SignUp() {
                 <TextInput
                   id="budget" 
                   type="budget"
-                  placeholder='$2000'
-                  onChange={e => setBudget(e.target.valueAsNumber)}
-                  value={budget}
+                  placeholder='2000'
                   required
                 />
               </div>
-              <div className="flex items-center gap-2">
-                <Checkbox id="sepc" onChange={e => setSEPC(!sepc)}/>
-                <Label htmlFor="sepc">Are you an SEPC</Label>
+              <div>
+                <div className="m-2 block">
+                  <Label htmlFor="user_type" value="Are you?" />
+                </div>
+                <Select
+                  id="user_type"
+                  name="user_type"
+                  data-testid="new-budget-form-input-user_type"
+                  required
+                >
+                  {UserTypes.map(userType => (
+                    <option key={userType}>{userType}</option>
+                  ))}
+                </Select>
               </div>
-              <Button  onClick={submit} className="bg-pallete-5">
+              
+              <Button 
+                type="submit"
+                className="bg-pallete-5"
+              >
                 Create Account
               </Button>
             </form>

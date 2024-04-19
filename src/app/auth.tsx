@@ -1,31 +1,36 @@
 'use server';
 // import {revalidatePath} from 'next/cache';
-import {User, DataModifier, FirebaseModifier} from 'lib/data';
+import {User, DataModel, UserType, Database} from 'lib/data';
 
-export async function createUser(
-  user_id: string,
+function createUser(
   user_name: string,
   email: string,
-  password: string,
-  sepcBool: boolean,
   total_budget: number, 
-): Promise<void> {
-  const dataModifier: DataModifier = FirebaseModifier;
-  // const budget_id = `${user_id}-${event_name}-${new Date().getSeconds()}`;
+  user_type: UserType,
+): User {
+  const id = email // Do I want to change this?
   const user: User = {
-    user_id,
-    email,
-    password,
-    is_SEPC: sepcBool,
+    id,
     user_name,
-    remaining_budget: total_budget,
+    remaining_budget: 0,
     total_budget,
-    user_type: "", //fix this later
+    user_type,
     pending_event: 0,
     planned_event: 0,
     completed_event: 0,
   };
 
-  // revalidatePath('/dashboard');
-  return await dataModifier.addUser(user);
+  return user
+}
+
+export async function createUserAction(
+  user_name: string,
+  email: string,
+  total_budget: number, 
+  user_type: UserType,
+  password: string,
+): Promise<void> {
+  const modifier = new DataModel(Database);
+  const user = createUser(user_name, email, total_budget, user_type)
+  return modifier.addUser(email, password, user);
 }

@@ -53,7 +53,13 @@ interface Budget extends Comments, Document {
   items: [Item] | [];
 }
 
-type UserType = 'RSO' | 'SEPC' | 'SGA_Treasurer' | 'SGA_Assistant_Treasurer';
+const UserTypes = [
+  'RSO',
+  'SEPC',
+  'SGA_Treasurer',
+  'SGA_Assistant_Treasurer',
+] as const;
+type UserType = (typeof UserTypes)[number];
 // User represents a single user
 interface User extends Document {
   user_name: string;
@@ -65,5 +71,14 @@ interface User extends Document {
   completed_event: number;
 }
 
-export type {Budget, Document, EventType, Item, Status, StatusChange, User};
-export {EventTypes};
+export type {
+  Budget,
+  Document,
+  EventType,
+  UserType,
+  Item,
+  Status,
+  StatusChange,
+  User,
+};
+export {EventTypes, UserTypes};

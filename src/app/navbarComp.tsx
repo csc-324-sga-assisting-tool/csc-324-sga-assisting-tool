@@ -7,7 +7,7 @@ export function ComponentNav({buttonLabel}: {buttonLabel: string}) {
   return (
     <Navbar
       fluid
-      className="bg-pallete-1 items-center justify-between mx-auto md:w-auto p-3"
+      className="bg-pallete-1 items-center justify-between mx-auto md:w-auto p-3 order-1"
     >
       <Navbar.Brand href="/">
         <Image

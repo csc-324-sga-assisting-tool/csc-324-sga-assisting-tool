@@ -1,4 +1,5 @@
 import {Budget, User} from '.';
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
@@ -44,5 +45,21 @@ export class DataModel {
   // Adds the given budget to the database and assigns it an ID
   async addBudget(budget: Budget): Promise<void> {
     return this.database.addDocument(Collections.Budgets, budget);
+  }
+
+  async addUser(email: string, password: string, user: User): Promise<void> {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        // Signed up
+        // const user = userCredential.user; might need this but not now for future testing
+
+        return this.database.addDocument(Collections.Users, user);
+      })
+      .catch(error => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // incase
+      });
   }
 }
