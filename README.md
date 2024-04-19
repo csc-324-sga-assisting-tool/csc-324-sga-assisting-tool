@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/branch/main/graph/badge.svg)](https://codecov.io/gh/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool)
+
 # CSC 324 GBudget
 
 
@@ -9,9 +11,6 @@ To run the code locally, `clone` the repository, run `npm install` to install de
 - Help page
 
 *While the components are interactive, the actual data and information in the help page are placeholders*
-
-[![codecov](https://codecov.io/gh/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/branch/main/graph/badge.svg)](https://codecov.io/gh/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool)
-
 
 ## Idea
 
