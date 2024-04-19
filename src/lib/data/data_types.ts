@@ -56,13 +56,19 @@ interface Budget extends Comments, Document {
 type UserType = 'RSO' | 'SEPC' | 'SGA_Treasurer' | 'SGA_Assistant_Treasurer';
 // User represents a single user
 interface User extends Document {
-  user_name: string;
+  name: string;
   remaining_budget: number;
   total_budget: number;
   user_type: UserType;
   pending_event: number;
   planned_event: number;
   completed_event: number;
+}
+export function userIsSGA(user: User): boolean {
+  return (
+    user.user_type === 'SGA_Treasurer' ||
+    user.user_type === 'SGA_Assistant_Treasurer'
+  );
 }
 
 export type {Budget, Document, EventType, Item, Status, StatusChange, User};

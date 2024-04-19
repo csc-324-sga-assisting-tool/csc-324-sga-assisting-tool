@@ -1,5 +1,5 @@
 import {BudgetDisplay} from './budget';
-import {SummarySidebar} from './sidebar';
+import {DashboardSidebar} from './sidebar';
 import {Budget, DataModel, User} from 'lib/data';
 import {NewBudgetForm} from './create_budget_form';
 import {createBudgetAction, TESTcreateBudgetAction} from './actions';
@@ -30,13 +30,7 @@ export async function Dashboard({
 
   return (
     <>
-      <SummarySidebar
-        total={user.total_budget}
-        remaining={user.remaining_budget}
-        pendingEvents={user.pending_event}
-        plannedEvents={user.planned_event}
-        completedEvents={user.completed_event}
-      />
+      <DashboardSidebar {...user} />
       <main className="w-128">
         {userBudgets.map((budget: Budget) => (
           <BudgetDisplay
