@@ -47,7 +47,11 @@ export class DataModel {
     return this.database.addDocument(Collections.Budgets, budget);
   }
 
-  async addUser(email: string, password: string, user: User): Promise<void> {
+  async addUser(
+    email: string,
+    password: string,
+    user: User
+  ): Promise<string | void> {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
@@ -59,7 +63,8 @@ export class DataModel {
       .catch(error => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        // incase
+
+        return `${errorCode} : ${errorMessage}`;
       });
   }
 }

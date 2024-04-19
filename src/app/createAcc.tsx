@@ -1,17 +1,20 @@
 'use client';
 
-import {Button, Label, Checkbox, Modal, TextInput, Select} from 'flowbite-react';
-import { sep } from 'path';
+import {
+  Button,
+  Label,
+  Checkbox,
+  Modal,
+  TextInput,
+  Select,
+} from 'flowbite-react';
 import {FormEvent, FormEventHandler, useState} from 'react';
-import { createUserAction } from './auth';
-import { Dropdown } from "flowbite-react";
-import { UserType, UserTypes } from 'lib/data';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import {createUserAction} from './auth';
+import {UserType, UserTypes} from 'lib/data';
+import {useRouter} from 'next/navigation';
 
 export function SignUp() {
-  
-  const router = useRouter()
+  const router = useRouter();
   const [openModal, setOpenModal] = useState(false);
 
   const submit: FormEventHandler<HTMLFormElement> = (
@@ -39,7 +42,7 @@ export function SignUp() {
 
     setOpenModal(false);
 
-    createUserAction(name, email, budget, userType, password);
+    const output = createUserAction(name, email, budget, userType, password);
     // <Link
     //   href={{
     //     pathname: '/dashboard',
@@ -47,8 +50,8 @@ export function SignUp() {
     //       userId: name
     //     }
     //   }}
-    // ></Link> 
-    router.push("/dashboard")
+    // ></Link>
+    router.push('/dashboard');
   };
 
   return (
@@ -57,7 +60,7 @@ export function SignUp() {
         className="flex font-medium text-sm text-black underline-offset-auto "
         onClick={() => setOpenModal(true)}
       >
-        Don't have an account? Sign up
+        Don `&apos;`t have an account? Sign up
       </Button>
       <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
         <Modal.Header> Create a new Account </Modal.Header>
@@ -72,9 +75,9 @@ export function SignUp() {
                   <Label htmlFor="name" value="Your RSO name" />
                 </div>
                 <TextInput
-                  id="name" 
+                  id="name"
                   type="name"
-                  placeholder='CS_SEPC'
+                  placeholder="CS_SEPC"
                   required
                 />
               </div>
@@ -83,9 +86,9 @@ export function SignUp() {
                   <Label htmlFor="email1" value="Your email" />
                 </div>
                 <TextInput
-                  id="email" 
-                  type="email" 
-                  placeholder="testUser@studentorg.grinnell.edu" 
+                  id="email"
+                  type="email"
+                  placeholder="testUser@studentorg.grinnell.edu"
                   required
                 />
               </div>
@@ -94,9 +97,9 @@ export function SignUp() {
                   <Label htmlFor="password" value="Your password" />
                 </div>
                 <TextInput
-                  id="password" 
+                  id="password"
                   type="password"
-                  placeholder='Loveweb1234@'
+                  placeholder="Loveweb1234@"
                   required
                 />
               </div>
@@ -105,9 +108,9 @@ export function SignUp() {
                   <Label htmlFor="budget" value="Your Total budget" />
                 </div>
                 <TextInput
-                  id="budget" 
+                  id="budget"
                   type="budget"
-                  placeholder='2000'
+                  placeholder="2000"
                   required
                 />
               </div>
@@ -126,11 +129,8 @@ export function SignUp() {
                   ))}
                 </Select>
               </div>
-              
-              <Button 
-                type="submit"
-                className="bg-pallete-5"
-              >
+
+              <Button type="submit" className="bg-pallete-5">
                 Create Account
               </Button>
             </form>
@@ -138,40 +138,5 @@ export function SignUp() {
         </Modal.Body>
       </Modal>
     </>
-  );
-}
-
-
-
-function Component() {
-  return (
-    <form className="flex max-w-md flex-col gap-4">
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="email1" value="Your email" />
-        </div>
-        <TextInput 
-          id="email1" 
-          type="email" 
-          placeholder="name@flowbite.com" required />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="password1" value="Your password" />
-        </div>
-        <TextInput 
-          id="password1" 
-          type="password" required />
-      </div>
-      <div className="flex items-center gap-2">
-        <Checkbox id="remember" />
-        <Label htmlFor="remember">Remember me</Label>
-      </div>
-      <Button type="submit"
-        className="bg-pallete-5 font-medium text-sm w-28 h-10"
-      >
-        Submit
-      </Button>
-    </form>
   );
 }
