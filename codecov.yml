@@ -10,7 +10,6 @@ component_management:
       name: Front-End  # this is a display name, and can be changed freely
       paths:
         - src/app
-  individual_components:
     - component_id: be  # this is an identifier that should not be changed
       name: Back-End  # this is a display name, and can be changed freely
       paths:
