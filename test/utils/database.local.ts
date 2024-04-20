@@ -80,7 +80,7 @@ class LocalDatabase implements IDatabase {
     this.collections[collection] = [...documents, doc];
   }
 
-  async addDocuments(
+  async addManyDocuments(
     collection: Collections,
     newDocs: Document[]
   ): Promise<void> {

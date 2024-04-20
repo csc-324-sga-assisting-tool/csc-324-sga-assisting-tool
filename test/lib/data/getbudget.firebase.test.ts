@@ -42,7 +42,7 @@ beforeAll(async () => {
     items: [],
   });
 
-  await database.addDocuments(Collections.Budgets, testBudgets);
+  await database.addManyDocuments(Collections.Budgets, testBudgets);
 });
 
 describe('test firebase getBudget', async () => {

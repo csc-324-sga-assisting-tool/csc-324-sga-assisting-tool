@@ -88,7 +88,7 @@ export class FirestoreDatabase implements IDatabase {
 
   // Add many documents to firebase using a batched write
   // More performant when writing many documents to the same collection
-  async addDocuments(
+  async addManyDocuments(
     collection: Collections,
     newDocs: Document[]
   ): Promise<void> {
