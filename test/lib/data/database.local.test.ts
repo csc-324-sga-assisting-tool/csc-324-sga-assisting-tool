@@ -1,12 +1,12 @@
 import {Document} from 'lib/data';
-import {describe, expect, test} from 'vitest';
-import {getFirestore} from 'firebase/firestore';
-import {clearCollection, getLocalFirebase} from '../../utils/database.util';
+import {beforeEach, beforeAll, describe, expect, test} from 'vitest';
+import {clearCollection} from '../../utils/database.util';
 import {Filter, Sort} from 'lib/data/database';
+import {LocalDatabase} from '../../utils/database.local';
+import {Collections} from 'lib/firebase';
 
-// Set up a Firestore Database for testing
-const testCollection = 'test_collection';
-const db = getFirestore();
+const testCollection = Collections.Items;
+const database = new LocalDatabase();
 
 interface TestDocument extends Document {
   field: string;
@@ -25,13 +25,19 @@ function generateTestDocuments(howMany: number) {
   return documents;
 }
 
-describe('Test FirestoreDatabase class', async () => {
-  const database = getLocalFirebase(db);
+// On cold starts Firebase emulator is slow causing our tests to timeout
+// I am adding a few documents then clearing for perfomance
+beforeAll(async () => {
+  await database.addManyDocuments(testCollection, generateTestDocuments(10));
+  await clearCollection(database, testCollection);
+});
 
+beforeEach(async () => {
+  await clearCollection(database, testCollection);
+});
+
+describe('Test LocalDatabase class', async () => {
   test('adding with addDocument and getDocument work', async () => {
-    // Add test documents to collection
-    await clearCollection(database, testCollection);
-
     const testDocuments = generateTestDocuments(3);
     for (const document of testDocuments) {
       await database.addDocument(testCollection, document);
@@ -56,10 +62,32 @@ describe('Test FirestoreDatabase class', async () => {
     expect(doc3).toEqual(testDocuments[2]);
   });
 
+  test('adding many documents with addManyDocuments works', async () => {
+    const testDocuments = generateTestDocuments(3);
+    // Add test documents to collection with batch adder addManyDocuments
+    await database.addManyDocuments(testCollection, testDocuments);
+
+    // Test getDocument
+    const doc1 = await database.getDocument<TestDocument>(
+      testCollection,
+      'testDocument1'
+    );
+    const doc2 = await database.getDocument<TestDocument>(
+      testCollection,
+      'testDocument2'
+    );
+    const doc3 = await database.getDocument<TestDocument>(
+      testCollection,
+      'testDocument3'
+    );
+
+    expect(doc1).toEqual(testDocuments[0]);
+    expect(doc2).toEqual(testDocuments[1]);
+    expect(doc3).toEqual(testDocuments[2]);
+  }, 10000);
+
   // Test deleteDocument
   test('check that documents are deleted correctly', async () => {
-    // Add dummy documents
-    await clearCollection(database, testCollection);
     const testDocuments = generateTestDocuments(3);
     for (const document of testDocuments) {
       await database.addDocument(testCollection, document);
@@ -85,8 +113,6 @@ describe('Test FirestoreDatabase class', async () => {
   });
 
   test('test that sorting works', async () => {
-    // clear db so we start fresh
-    await clearCollection(database, testCollection);
     const testDocuments: TestDocument[] = generateTestDocuments(3);
     testDocuments.forEach(
       async document => await database.addDocument(testCollection, document)
@@ -109,12 +135,30 @@ describe('Test FirestoreDatabase class', async () => {
     expect(docs[2].id).toEqual(testDocuments[0].id);
     expect(docs[2].number).toEqual(testDocuments[0].number);
     expect(docs[2].field).toEqual(testDocuments[0].field);
-  });
+  }, 10000);
+
+  test('test that sorting and filtering work simultaneuosly', async () => {
+    const testDocuments: TestDocument[] = generateTestDocuments(3);
+    testDocuments.forEach(
+      async document => await database.addDocument(testCollection, document)
+    );
+    // No Filters, Sort by field descending
+    const docs = await database.getDocuments(
+      testCollection,
+      [new Filter('number', '<', 3)],
+      new Sort('field', true)
+    );
+
+    expect(docs[0].id).toEqual(testDocuments[1].id);
+    expect(docs[0].number).toEqual(testDocuments[1].number);
+    expect(docs[0].field).toEqual(testDocuments[1].field);
+
+    expect(docs[1].id).toEqual(testDocuments[0].id);
+    expect(docs[1].number).toEqual(testDocuments[0].number);
+    expect(docs[1].field).toEqual(testDocuments[0].field);
+  }, 10000);
 
   test('test that filtering works', async () => {
-    // clear db so we start fresh
-    await clearCollection(database, testCollection);
-
     const testDocuments: TestDocument[] = generateTestDocuments(3);
     testDocuments.forEach(
       async document => await database.addDocument(testCollection, document)
@@ -125,12 +169,23 @@ describe('Test FirestoreDatabase class', async () => {
       new Filter('number', '>', 1),
     ]);
     expect(docs.length).toEqual(2);
-  });
+  }, 10000);
+
+  test('test that multifiltering works', async () => {
+    const testDocuments: TestDocument[] = generateTestDocuments(3);
+    testDocuments.forEach(
+      async document => await database.addDocument(testCollection, document)
+    );
+    // No Filters, Sort by field descending
+    // Filter number > 1, Sort by field
+    const docs = await database.getDocuments<TestDocument>(testCollection, [
+      new Filter('number', '>', 1),
+      new Filter('number', '<', 3),
+    ]);
+    expect(docs.length).toEqual(1);
+  }, 10000);
 
   test('test that equality filtering works', async () => {
-    // clear db so we start fresh
-    await clearCollection(database, testCollection);
-
     const testDocuments: TestDocument[] = generateTestDocuments(3);
     testDocuments.forEach(
       async document => await database.addDocument(testCollection, document)
@@ -143,5 +198,5 @@ describe('Test FirestoreDatabase class', async () => {
     expect(docs.length).toEqual(1);
     expect(docs[0].id).toEqual(testDocuments[0].id);
     expect(docs[0].field).toEqual(testDocuments[0].field);
-  });
+  }, 10000);
 });

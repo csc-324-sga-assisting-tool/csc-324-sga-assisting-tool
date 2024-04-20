@@ -1,11 +1,10 @@
 {
   "emulators": {
-    "singleProjectMode": true,
     "firestore": {
       "port": 3240 
     },
     "ui": {
-      "enabled": false
+      "enabled": true
     }
   }
 }
