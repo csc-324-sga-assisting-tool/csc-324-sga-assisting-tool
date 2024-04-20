@@ -12,11 +12,18 @@ class LocalDatabase implements IDatabase {
     const documents = this.collections[collection];
     if (!documents) {
       return Promise.reject(
-        new Error(`Document with ${id} doesn't exist in Local Database`)
+        new Error(`Collection ${collection} doesn't exist in the database`)
       );
     }
 
     const document = documents.find(doc => doc.id === id);
+    if (!document) {
+      return Promise.reject(
+        new Error(
+          `Document with ${id} doesn't exist in the collection ${collection}`
+        )
+      );
+    }
     return document as T;
   }
 
@@ -73,14 +80,12 @@ class LocalDatabase implements IDatabase {
     this.collections[collection] = [...documents, doc];
   }
 
-  async addDocumentWithAutoID(
+  async addDocuments(
     collection: Collections,
-    doc: object
-  ): Promise<string> {
-    const id = String(Date.now()); // Generate unique id
-    const documentWithId = {id, ...doc} as Document;
-    await this.addDocument(collection, documentWithId);
-    return id;
+    newDocs: Document[]
+  ): Promise<void> {
+    const documents = this.collections[collection] || [];
+    this.collections[collection] = [...documents, ...newDocs];
   }
 
   async deleteDocument(collection: Collections, doc: Document): Promise<void> {

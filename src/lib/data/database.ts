@@ -15,6 +15,7 @@ export interface IDatabase {
     howMany?: number
   ): Promise<Array<T>>;
   addDocument(collection: string, doc: Document): Promise<void>;
+  addDocuments(collection: string, docs: Document[]): Promise<void>;
   deleteDocument(collection: string, doc: Document): Promise<void>;
 }
 

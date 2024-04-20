@@ -194,20 +194,20 @@ describe('Test Dashboard works as Expected', () => {
     await user.type(locationInput, location);
 
     // Set date to the day after today
-    const date = (new Date().getDate() + 1).toString();
+    const today = new Date();
     await user.click(dateInput);
-    await user.click(await screen.findByText(date, {exact: false}));
+    await user.click(await screen.findByText(today.getDate()));
 
     await user.click(submitButton);
 
-    const budgets = await mockDataprovider.getBudgets(defaultSort);
+    const budgets = await mockDataprovider.getBudgets();
 
     expect(budgets.length).toBe(1);
     expect(budgets[0].event_name).toBe(name);
     expect(budgets[0].event_description).toBe(description);
     expect(budgets[0].event_location).toBe(location);
-    expect(new Date(budgets[0].event_datetime!).getDate().toString()).toBe(
-      date
+    expect(new Date(budgets[0].event_datetime!).getDate()).toBe(
+      today.getDate()
     );
   });
 });

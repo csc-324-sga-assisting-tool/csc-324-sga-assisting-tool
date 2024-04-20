@@ -1,4 +1,4 @@
-import {assert, beforeEach, it, describe, expect} from 'vitest';
+import {assert, beforeAll, it, describe, expect} from 'vitest';
 import {getFirestore} from 'firebase/firestore';
 import {Budget, DataModel} from 'lib/data';
 import {getLocalFirebase} from '../../utils/database.util';
@@ -7,7 +7,7 @@ import {Collections} from 'lib/firebase';
 const db = getFirestore();
 const database = getLocalFirebase(db);
 
-beforeEach(async () => {
+beforeAll(async () => {
   const testBudgets: Budget[] = [1, 2, 3].map(number => {
     return {
       id: `budget_${number}`,
@@ -42,9 +42,7 @@ beforeEach(async () => {
     items: [],
   });
 
-  testBudgets.forEach(async budget => {
-    database.addDocument(Collections.Budgets, budget);
-  });
+  await database.addDocuments(Collections.Budgets, testBudgets);
 });
 
 describe('test firebase getBudget', async () => {
@@ -64,7 +62,7 @@ describe('test firebase getBudget', async () => {
 
 describe('test getBudetsForUser', async () => {
   const dataModel = new DataModel(database);
-  it('function gets all correct budgets user 1', async () => {
+  test('function gets all correct budgets user 1', async () => {
     const budgets = await dataModel.getBudgetsForUser('user_1');
     assert.equal(
       budgets.length,
@@ -73,7 +71,7 @@ describe('test getBudetsForUser', async () => {
     );
   });
 
-  it('function gets all correct budgets user 2', async () => {
+  test('function gets all correct budgets user 2', async () => {
     const budgets = await dataModel.getBudgetsForUser('user_2');
     assert.equal(
       budgets.length,
