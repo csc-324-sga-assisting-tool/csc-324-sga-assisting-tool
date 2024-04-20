@@ -13,6 +13,7 @@ import {
   orderBy,
   query,
   where,
+  writeBatch,
 } from 'firebase/firestore';
 import {Collections, db} from 'lib/firebase';
 
@@ -83,6 +84,19 @@ export class FirestoreDatabase implements IDatabase {
   async addDocument(collection: Collections, newDoc: Document): Promise<void> {
     // Add the document to firebase
     return setDoc(doc(this.firestore, collection, newDoc.id), newDoc);
+  }
+
+  // Add many documents to firebase using a batched write
+  // More performant when writing many documents to the same collection
+  async addManyDocuments(
+    collection: Collections,
+    newDocs: Document[]
+  ): Promise<void> {
+    const batch = writeBatch(db);
+    newDocs.forEach(newDoc => {
+      batch.set(doc(this.firestore, collection, newDoc.id), newDoc);
+    });
+    return batch.commit();
   }
 
   async deleteDocument(
