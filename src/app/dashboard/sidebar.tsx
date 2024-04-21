@@ -1,7 +1,8 @@
 'use client';
 
-import {Sidebar} from 'flowbite-react';
-import {User, userIsSGA} from 'lib/data';
+import { Sidebar } from 'flowbite-react';
+import { User } from 'lib/data';
+import { userIsSGA } from 'lib/data/utils';
 
 type SummaryProps = {
   total: number;
@@ -12,7 +13,7 @@ type SummaryProps = {
 };
 
 function DashboardSidebar(user: User) {
-  const SGAUser = userIsSGA(user);
+  const SGAUser = userIsSGA(user)
   const summary: SummaryProps = {
     total: user.total_budget,
     remaining: user.remaining_budget,
@@ -44,6 +45,7 @@ function AccountPannel(user: User) {
     </Sidebar.ItemGroup>
   );
 }
+
 function RSOSummary(props: SummaryProps) {
   return (
     <Sidebar.ItemGroup>
@@ -85,6 +87,7 @@ function RSOSummary(props: SummaryProps) {
     </Sidebar.ItemGroup>
   );
 }
+
 function BudgetListTools() {
   return (
     <Sidebar.ItemGroup>
@@ -99,5 +102,5 @@ function BudgetListTools() {
   );
 }
 
-export type {SummaryProps};
-export {DashboardSidebar};
+export type { SummaryProps };
+export { DashboardSidebar };

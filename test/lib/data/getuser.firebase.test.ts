@@ -8,33 +8,20 @@ const db = getFirestore();
 const database = getLocalFirebase(db);
 
 beforeAll(async () => {
-  const testUser: User[] = [1, 2, 3].map(number => {
+  const testUsers: User[] = [1, 2, 3].map(number => {
     return {
       id: `test_user${number}`,
+      name: 'test_user1',
       total_budget: 2000,
       remaining_budget: 1000,
       pending_event: 5,
       completed_event: 10,
       planned_event: 5,
-      user_name: 'test_user1',
       user_type: 'RSO',
     };
   });
 
-  testUser.push({
-    id: 'test_user4',
-    total_budget: 1000,
-    remaining_budget: 200,
-    pending_event: 5,
-    completed_event: 5,
-    planned_event: 5,
-    user_name: 'test_user2',
-    user_type: 'SEPC',
-  });
-
-  testUser.forEach(document =>
-    database.addDocument(Collections.Users, document)
-  );
+  database.addManyDocuments(Collections.Users, testUsers);
 });
 
 describe('test firebase getUser', () => {
