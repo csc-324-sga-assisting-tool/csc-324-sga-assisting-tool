@@ -246,3 +246,13 @@ testDashboard({
   planned_event: 5,
   completed_event: 2,
 });
+testDashboard({
+  id: 'test_sga_user',
+  name: 'SGA Treasurer',
+  user_type: 'SGA_Treasurer',
+  remaining_budget: 100,
+  total_budget: 1000,
+  pending_event: 3,
+  planned_event: 5,
+  completed_event: 2,
+});
