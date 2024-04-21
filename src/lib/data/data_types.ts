@@ -56,6 +56,7 @@ interface Budget extends Comments, Document {
 type UserType = 'RSO' | 'SEPC' | 'SGA_Treasurer' | 'SGA_Assistant_Treasurer';
 // User represents a single user
 interface User extends Document {
+  id: string;
   name: string;
   remaining_budget: number;
   total_budget: number;
