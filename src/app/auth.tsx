@@ -3,7 +3,7 @@
 import {User, DataModel, UserType, Database} from 'lib/data';
 import {createSession, deleteSession} from './session';
 import {redirect} from 'next/navigation';
-import { revalidatePath } from 'next/cache';
+import {revalidatePath} from 'next/cache';
 
 function createUser(
   user_name: string,
@@ -32,35 +32,35 @@ export async function createUserAction(
   total_budget: number,
   user_type: UserType,
   password: string
-):  Promise<string | void> {
+): Promise<string | void> {
   const modifier = new DataModel(Database);
   const user = createUser(user_name, email, total_budget, user_type);
   // 4. Create user session
   await createSession(user.id);
-  const out =  modifier.addUser(email, password, user);
-  const work = await out.then()
-  if (typeof work === "string" ){
-    return work
+  const out = modifier.addUser(email, password, user);
+  const work = await out.then();
+  if (typeof work === 'string') {
+    return work;
   }
   revalidatePath('/dashboard');
-  redirect('/dashboard')
-  // User the router to move to dashboard 
+  redirect('/dashboard');
+  // User the router to move to dashboard
   // when error/string in promise return the string out else use redirect to proceed
 }
 
-export async function signOutAction(){
-  console.log("BYE!!!!")
+export async function signOutAction() {
+  console.log('BYE!!!!');
   const modifier = new DataModel(Database);
   modifier.signOutUser();
-  deleteSession()
-  redirect('/')
+  deleteSession();
+  redirect('/');
 }
 
-export async function signInAction(email: string, password: string){
+export async function signInAction(email: string, password: string) {
   const modifier = new DataModel(Database);
   modifier.signInUser(email, password);
-  await createSession(email);//since user.id is the email for now
-  console.log("WELCOME!!!")
+  await createSession(email); //since user.id is the email for now
+  console.log('WELCOME!!!');
   revalidatePath('/dashboard');
-  redirect('/dashboard')
+  redirect('/dashboard');
 }

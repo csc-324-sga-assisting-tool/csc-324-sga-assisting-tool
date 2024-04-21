@@ -2,11 +2,10 @@
 
 import {Button, Checkbox, Label, TextInput} from 'flowbite-react';
 import {SignUp} from './createAcc';
-import { signInAction } from './auth';
-import { FormEvent, FormEventHandler } from 'react';
+import {signInAction} from './auth';
+import {FormEvent, FormEventHandler} from 'react';
 
 export function ComponentLog() {
-
   const submit: FormEventHandler<HTMLFormElement> = (
     e: FormEvent<HTMLFormElement>
   ) => {
@@ -19,14 +18,16 @@ export function ComponentLog() {
       e.currentTarget.elements.namedItem('password') as HTMLInputElement
     ).value;
 
-
     const output = signInAction(email, password);
     // will use out if error occured else redirect before here
   };
 
   return (
     <div className="block  place-self-center">
-      <form className="bg-white flex max-w-lg flex-col gap-4  justify-items-center justify-self-center" onSubmit={submit}>
+      <form
+        className="bg-white flex max-w-lg flex-col gap-4  justify-items-center justify-self-center"
+        onSubmit={submit}
+      >
         <div>
           <div className="mb-2 block">
             <Label htmlFor="email1" value="Your email" />

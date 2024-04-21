@@ -12,7 +12,7 @@ import {FormEvent, FormEventHandler, useState} from 'react';
 import {createUserAction} from './auth';
 import {UserType, UserTypes} from 'lib/data';
 import {useRouter} from 'next/navigation';
-import { revalidatePath } from 'next/cache';
+import {revalidatePath} from 'next/cache';
 
 export function SignUp() {
   const router = useRouter();
