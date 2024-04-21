@@ -34,8 +34,8 @@ export class DataModel {
   getBudgetsForUser(
     user_id: string,
     filters: Filter[] = [],
-    sort?: Sort,
-    howMany = 25
+    howMany = 25,
+    sort?: Sort
   ): Promise<Budget[]> {
     filters.push(new Filter('user_id', '==', user_id));
     return this.getBudgets(filters, howMany, sort);

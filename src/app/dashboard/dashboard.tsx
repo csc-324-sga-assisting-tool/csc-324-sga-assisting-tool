@@ -1,6 +1,6 @@
 import {BudgetDisplay} from './budget';
 import {DashboardSidebar} from './sidebar';
-import {Budget, DataModel, User, userIsSGA} from 'lib/data';
+import {Budget, Filter, DataModel, User, userIsSGA} from 'lib/data';
 import {NewBudgetForm} from './create_budget_form';
 import {createBudgetAction, TESTcreateBudgetAction} from './actions';
 
@@ -14,9 +14,14 @@ export async function Dashboard({
   TESTING_FLAG?: boolean;
 }) {
   const user = (await dataModel.getUser(userID)) as User;
-  const userBudgets = await dataModel.getBudgetsForUser(userID);
-  for (const budget of userBudgets) {
-    if (userIsSGA(user)) {
+  const sgaUser = userIsSGA(user);
+  const budgets = await dataModel.getBudgets(
+    sgaUser ? [] : [new Filter('user_id', '==', userID)]
+  );
+
+  // Add organizer name to each budget
+  for (const budget of budgets) {
+    if (sgaUser) {
       const organizer = await dataModel.getUser(budget.user_id);
       budget.organizer = organizer.name;
     } else budget.organizer = '';
@@ -39,7 +44,7 @@ export async function Dashboard({
     <>
       <DashboardSidebar {...user} />
       <main className="w-128">
-        {userBudgets.map((budget: Budget) => (
+        {budgets.map((budget: Budget) => (
           <BudgetDisplay
             key={budget.id}
             organizer={budget.organizer}
@@ -51,7 +56,7 @@ export async function Dashboard({
           />
         ))}
       </main>
-      <NewBudgetForm user_id={userID} createBudgetAction={action} />
+      {!sgaUser && <NewBudgetForm user_id={userID} createBudgetAction={action} />}
     </>
   );
 }
