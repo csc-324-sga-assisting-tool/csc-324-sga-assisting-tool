@@ -9,17 +9,20 @@ import {
   Textarea,
   TextInput,
 } from 'flowbite-react';
-import {EventType, EventTypes} from 'lib/data';
-import {FormEvent, FormEventHandler, useState} from 'react';
-import {HiPlusCircle} from 'react-icons/hi';
+import { EventType, EventTypes } from 'lib/data';
+import { FormEvent, FormEventHandler, useState } from 'react';
+import { HiPlusCircle } from 'react-icons/hi';
 
 export function NewBudgetForm({
   user_id,
+  user_name,
   createBudgetAction,
 }: {
   user_id: string;
+  user_name: string,
   createBudgetAction: (
     userID: string,
+    userName: string,
     name: string,
     description: string,
     event_location: string,
@@ -54,7 +57,7 @@ export function NewBudgetForm({
 
     setOpenModal(false);
 
-    createBudgetAction(user_id, name, description, location, date, eventType);
+    createBudgetAction(user_id, user_name, name, description, location, date, eventType);
   };
 
   return (

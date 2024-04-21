@@ -30,6 +30,7 @@ export class DataModel {
       howMany
     );
   }
+
   // Get a sorted and filtered list of budgets from a particular user
   getBudgetsForUser(
     user_id: string,
@@ -38,6 +39,16 @@ export class DataModel {
     sort?: Sort
   ): Promise<Budget[]> {
     filters.push(new Filter('user_id', '==', user_id));
+    return this.getBudgets(filters, howMany, sort);
+  }
+
+  // Get a sorted and filtered list of submitted budgetes
+  getBudgetsSubmitted(
+    filters: Filter[] = [],
+    howMany = 25,
+    sort?: Sort
+  ): Promise<Budget[]> {
+    filters.push(new Filter('current_status', '==', 'submitted'));
     return this.getBudgets(filters, howMany, sort);
   }
 
