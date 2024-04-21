@@ -12,6 +12,7 @@ import {FormEvent, FormEventHandler, useState} from 'react';
 import {createUserAction} from './auth';
 import {UserType, UserTypes} from 'lib/data';
 import {useRouter} from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export function SignUp() {
   const router = useRouter();
@@ -43,15 +44,9 @@ export function SignUp() {
     setOpenModal(false);
 
     const output = createUserAction(name, email, budget, userType, password);
-    // <Link
-    //   href={{
-    //     pathname: '/dashboard',
-    //     query: {
-    //       userId: name
-    //     }
-    //   }}
-    // ></Link>
-    router.push('/dashboard');
+    // will use out if error occured else redirect befor here
+    // revalidatePath('/dashboard');
+    // router.push('/dashboard');
   };
 
   return (
@@ -60,7 +55,7 @@ export function SignUp() {
         className="flex font-medium text-sm text-black underline-offset-auto "
         onClick={() => setOpenModal(true)}
       >
-        Don `&apos;`t have an account? Sign up
+        Don&apos;t have an account? Sign up
       </Button>
       <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
         <Modal.Header> Create a new Account </Modal.Header>

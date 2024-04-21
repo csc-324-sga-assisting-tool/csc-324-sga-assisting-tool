@@ -1,5 +1,10 @@
 import {Budget, User} from '.';
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
@@ -64,6 +69,37 @@ export class DataModel {
         const errorCode = error.code;
         const errorMessage = error.message;
 
+        return `${errorCode} : ${errorMessage}`;
+      });
+  }
+
+  signOutUser() {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+      })
+      .catch(error => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        return `${errorCode} : ${errorMessage}`;
+
+        // An error happened.
+      });
+  }
+
+  signInUser(email: string, password: string) {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        // Signed in
+        const user = userCredential.user;
+        // ...
+      })
+      .catch(error => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
         return `${errorCode} : ${errorMessage}`;
       });
   }
