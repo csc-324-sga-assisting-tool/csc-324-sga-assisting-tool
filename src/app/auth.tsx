@@ -15,7 +15,7 @@ function createUser(
   const user: User = {
     id,
     user_name,
-    remaining_budget: 0,
+    remaining_budget: total_budget,
     total_budget,
     user_type,
     pending_event: 0,
@@ -32,19 +32,12 @@ export async function createUserAction(
   total_budget: number,
   user_type: UserType,
   password: string
-): Promise<string | void> {
+): Promise<void> {
   const modifier = new DataModel(Database);
   const user = createUser(user_name, email, total_budget, user_type);
-  // 4. Create user session
   await createSession(user.id);
-  const out = modifier.addUser(email, password, user);
-  const work = await out.then();
-  if (typeof work === 'string') {
-    return work;
-  }
-  revalidatePath('/dashboard');
+  const out = await modifier.addUser(email, password, user);
   redirect('/dashboard');
-  // User the router to move to dashboard
   // when error/string in promise return the string out else use redirect to proceed
 }
 
@@ -57,6 +50,9 @@ export async function signOutAction() {
 }
 
 export async function signInAction(email: string, password: string) {
+  if (email === '' || password === '') {
+    return Promise.reject(new Error('Entered empty password or email'));
+  }
   const modifier = new DataModel(Database);
   modifier.signInUser(email, password);
   await createSession(email); //since user.id is the email for now

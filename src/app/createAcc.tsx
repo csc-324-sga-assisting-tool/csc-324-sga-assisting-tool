@@ -11,11 +11,8 @@ import {
 import {FormEvent, FormEventHandler, useState} from 'react';
 import {createUserAction} from './auth';
 import {UserType, UserTypes} from 'lib/data';
-import {useRouter} from 'next/navigation';
-import {revalidatePath} from 'next/cache';
 
 export function SignUp() {
-  const router = useRouter();
   const [openModal, setOpenModal] = useState(false);
 
   const submit: FormEventHandler<HTMLFormElement> = (
@@ -43,16 +40,13 @@ export function SignUp() {
 
     setOpenModal(false);
 
-    const output = createUserAction(name, email, budget, userType, password);
-    // will use out if error occured else redirect befor here
-    // revalidatePath('/dashboard');
-    // router.push('/dashboard');
+    createUserAction(name, email, budget, userType, password);
   };
 
   return (
     <>
       <Button
-        className="flex font-medium text-sm text-black underline-offset-auto "
+        className="flex max-w-lg gap-4 font-medium text-sm text-black underline-offset-auto bg-white "
         onClick={() => setOpenModal(true)}
       >
         Don&apos;t have an account? Sign up

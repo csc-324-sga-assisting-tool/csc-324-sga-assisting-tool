@@ -23,7 +23,7 @@ export function ComponentLog() {
   };
 
   return (
-    <div className="block  place-self-center">
+    <div className="place-self-center">
       <form
         className="bg-white flex max-w-lg flex-col gap-4  justify-items-center justify-self-center"
         onSubmit={submit}
@@ -55,8 +55,8 @@ export function ComponentLog() {
         >
           Log In
         </Button>
-        <SignUp />
       </form>
+      <SignUp />
     </div>
   );
 }

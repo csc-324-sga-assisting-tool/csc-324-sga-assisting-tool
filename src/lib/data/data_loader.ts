@@ -52,11 +52,8 @@ export class DataModel {
     return this.database.addDocument(Collections.Budgets, budget);
   }
 
-  async addUser(
-    email: string,
-    password: string,
-    user: User
-  ): Promise<string | void> {
+  //These should be moved
+  async addUser(email: string, password: string, user: User): Promise<void> {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
@@ -68,8 +65,6 @@ export class DataModel {
       .catch(error => {
         const errorCode = error.code;
         const errorMessage = error.message;
-
-        return `${errorCode} : ${errorMessage}`;
       });
   }
 
@@ -83,8 +78,7 @@ export class DataModel {
         const errorCode = error.code;
         const errorMessage = error.message;
 
-        return `${errorCode} : ${errorMessage}`;
-
+        // return `${errorCode} : ${errorMessage}`;
         // An error happened.
       });
   }
@@ -100,7 +94,7 @@ export class DataModel {
       .catch(error => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        return `${errorCode} : ${errorMessage}`;
+        // return `${errorCode} : ${errorMessage}`;
       });
   }
 }
