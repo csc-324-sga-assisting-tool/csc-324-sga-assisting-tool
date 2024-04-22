@@ -31,7 +31,7 @@ export class DataModel {
     );
   }
 
-  /* getBudgetItems returns 'howMany' items in budget 'budgetID's'
+  /* getItemsForBudget returns 'howMany' items in budget 'budgetID's'
    */
   async getItemsForBudget(
     budgetID: string,
@@ -69,11 +69,10 @@ export class DataModel {
     await this.database.addDocument(Collections.Items, item);
 
     const budget: Budget = await this.getBudget(item.budget_id);
-
-    budget.total_cost += item.cost * item.quantity;
     const user: User = await this.getUser(budget.user_id);
-
-    user.remaining_budget -= item.cost * item.quantity;
+    const total = item.cost * item.quantity;
+    budget.total_cost += total;
+    user.remaining_budget -= total;
 
     // Write changes to Firestore
     await this.addBudget(budget);
