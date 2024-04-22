@@ -1,7 +1,6 @@
 import {assert, beforeAll, it, describe} from 'vitest';
 import {Item, Sort, DataModel} from 'lib/data';
 import {getFirestore} from 'firebase/firestore';
-import {Collections, getBudgetItems, FirestoreDatabase} from 'lib/firebase';
 import {getLocalFirebase} from '../../utils/database.util';
 
 const db = getFirestore();
@@ -11,7 +10,7 @@ beforeAll(async () => {
   const testItems: Item[] = [1, 2, 3].map(number => {
     return {
       budget_id: 'test_budget_for_items',
-      cost: 10.0,
+      unit_cost: 10.0,
       id: `item_${number}`,
       name: `testing item ${number}`,
       quantity: 2,
@@ -28,7 +27,7 @@ beforeAll(async () => {
 
 describe('Test getBudgetItems', async () => {
   it('function gets all correct budgets user 1', async () => {
-    const items = await dataModel.getBudgetItems(
+    const items = await dataModel.getItemsForBudget(
       'test_budget_for_items',
       new Sort('id')
     );

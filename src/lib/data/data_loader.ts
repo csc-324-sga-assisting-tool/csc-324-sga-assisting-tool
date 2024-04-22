@@ -70,7 +70,7 @@ export class DataModel {
 
     const budget: Budget = await this.getBudget(item.budget_id);
     const user: User = await this.getUser(budget.user_id);
-    const total = item.cost * item.quantity;
+    const total = item.unit_cost * item.quantity;
     budget.total_cost += total;
     user.remaining_budget -= total;
 

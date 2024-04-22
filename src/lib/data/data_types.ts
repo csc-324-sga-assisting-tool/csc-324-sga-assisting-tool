@@ -8,7 +8,7 @@ interface Item extends Comments, Document {
   budget_id: string;
   name: string;
   quantity: number;
-  cost: number;
+  unit_cost: number;
   vendor: string | undefined;
   url: string;
 }
