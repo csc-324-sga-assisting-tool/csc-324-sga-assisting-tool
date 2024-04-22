@@ -29,7 +29,7 @@ export class FirestoreDatabase implements IDatabase {
   ): Promise<T> {
     const result = await getDoc(doc(this.firestore, collection, id));
     if (result.exists()) {
-      return result.data() as T;
+      return {id: id, ...result.data()} as T;
     } else
       return Promise.reject(
         new Error(
@@ -72,7 +72,7 @@ export class FirestoreDatabase implements IDatabase {
     // Collect the data from those documents in an array
     const documents: T[] = [];
     result.forEach(doc => {
-      const data = doc.data() as T;
+      const data = {id: doc.id, ...doc.data()} as T;
       documents.push(data);
     });
 
