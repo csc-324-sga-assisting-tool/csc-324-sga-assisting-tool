@@ -44,6 +44,8 @@ describe('Test Dashboard works as Expected', () => {
     // Check the the filter and sort options are present
     expect(screen.queryByTestId('Filter')).toBeTruthy();
     expect(screen.queryByTestId('Sort')).toBeTruthy();
+    // We have no budgets so nothing with Cost should be rendered
+    expect(screen.queryByTestId('BudgetDisplay')).toBeNull();
   });
 
   it('displays budget and sidebar correctly', async () => {

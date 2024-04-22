@@ -81,11 +81,15 @@ function BudgetListTools() {
   return (
     <Sidebar.ItemGroup>
       <Sidebar.Item>
-        <h2 className="text-2xl">Sort By</h2>
+        <h2 className="text-2xl" data-testid="Filter">
+          Sort By
+        </h2>
       </Sidebar.Item>
 
       <Sidebar.Item>
-        <h2 className="text-2xl">Filters</h2>
+        <h2 className="text-2xl" data-testid="Sort">
+          Filters
+        </h2>
       </Sidebar.Item>
     </Sidebar.ItemGroup>
   );

@@ -61,7 +61,7 @@ function DateDisplay({dateISO}: {dateISO: string}) {
 // If the organizer is false, it will not be displayed
 export function BudgetDisplay(props: BudgetProps) {
   return (
-    <div className="grid grid-cols-10 gap-4 bg-white shadow-md rounded-lg pt-4 pb-4 m-5 ml-72 divide-x divide-solid max-w-3xl budgetCard">
+    <div className="grid grid-cols-10 gap-4 bg-white shadow-md rounded-lg pt-4 pb-4 m-5 ml-72 divide-x divide-solid max-w-3xl budgetCard" data-testid="BudgetDisplay">
       {props.organizer && (
         <div className="h-full col-span-1 items-center justify-center">
           <span className="text-sm text-bold text-black justify-center h-full w-full p-2">
