@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Button,
-  Label,
-  Checkbox,
-  Modal,
-  TextInput,
-  Select,
-} from 'flowbite-react';
+import {Button, Label, Modal, TextInput, Select} from 'flowbite-react';
 import {FormEvent, FormEventHandler, useState} from 'react';
 import {createUserAction} from './auth';
 import {UserType, UserTypes} from 'lib/data';

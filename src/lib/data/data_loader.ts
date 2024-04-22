@@ -59,7 +59,6 @@ export class DataModel {
       .then(userCredential => {
         // Signed up
         // const user = userCredential.user; might need this but not now for future testing
-
         return this.database.addDocument(Collections.Users, user);
       })
       .catch(error => {
@@ -77,9 +76,6 @@ export class DataModel {
       .catch(error => {
         const errorCode = error.code;
         const errorMessage = error.message;
-
-        // return `${errorCode} : ${errorMessage}`;
-        // An error happened.
       });
   }
 
@@ -89,7 +85,6 @@ export class DataModel {
       .then(userCredential => {
         // Signed in
         const user = userCredential.user;
-        // ...
       })
       .catch(error => {
         const errorCode = error.code;

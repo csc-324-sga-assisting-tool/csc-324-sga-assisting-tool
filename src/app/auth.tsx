@@ -1,5 +1,5 @@
 'use server';
-// import {revalidatePath} from 'next/cache';
+
 import {User, DataModel, UserType, Database} from 'lib/data';
 import {createSession, deleteSession} from './session';
 import {redirect} from 'next/navigation';
@@ -36,9 +36,8 @@ export async function createUserAction(
   const modifier = new DataModel(Database);
   const user = createUser(user_name, email, total_budget, user_type);
   await createSession(user.id);
-  const out = await modifier.addUser(email, password, user);
+  await modifier.addUser(email, password, user);
   redirect('/dashboard');
-  // when error/string in promise return the string out else use redirect to proceed
 }
 
 export async function signOutAction() {
@@ -55,7 +54,7 @@ export async function signInAction(email: string, password: string) {
   }
   const modifier = new DataModel(Database);
   modifier.signInUser(email, password);
-  await createSession(email); //since user.id is the email for now
+  await createSession(email);
   console.log('WELCOME!!!');
   revalidatePath('/dashboard');
   redirect('/dashboard');

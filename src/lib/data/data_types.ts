@@ -61,6 +61,7 @@ const UserTypes = [
 ] as const;
 type UserType = (typeof UserTypes)[number];
 // User represents a single user
+//user.id is email of user
 interface User extends Document {
   user_name: string;
   remaining_budget: number;

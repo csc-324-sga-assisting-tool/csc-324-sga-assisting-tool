@@ -18,8 +18,8 @@ export function ComponentLog() {
       e.currentTarget.elements.namedItem('password') as HTMLInputElement
     ).value;
 
-    const output = signInAction(email, password);
-    // will use out if error occured else redirect before here
+    signInAction(email, password);
+    //sign in
   };
 
   return (
