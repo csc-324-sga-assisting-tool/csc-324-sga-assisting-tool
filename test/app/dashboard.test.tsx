@@ -39,18 +39,18 @@ describe('Test Dashboard works as Expected', () => {
     render(await Dashboard({...props}));
 
     // Check that the side bar is rendered
-    expect(screen.queryByText('Summary')).toBeInTheDocument();
+    expect(screen.queryByText('Summary')).toBeTruthy();
     // Check that the remaining budget is rendered
     expect(
       screen.queryByText(`$ ${user.remaining_budget}`)
-    ).toBeInTheDocument();
+    ).toBeTruthy();
     // Check that the Add Button is rendered
     expect(
       screen.queryByTestId('new-budget-form-button-add')
-    ).toBeInTheDocument();
+    ).toBeTruthy();
     // Check the the filter and sort options are present
-    expect(screen.queryByTestId('Filter')).toBeInTheDocument();
-    expect(screen.queryByTestId('Sort')).toBeInTheDocument();
+    expect(screen.queryByTestId('Filter')).toBeTruthy();
+    expect(screen.queryByTestId('Sort')).toBeTruthy();
     // We have no budgets so nothing with Cost should be rendered
     expect(screen.queryByTestId('Cost')).toBeNull();
   });
@@ -74,17 +74,17 @@ describe('Test Dashboard works as Expected', () => {
     render(await Dashboard({...props}));
 
     // Check that the side bar is rendered
-    expect(screen.queryByText('Summary')).toBeInTheDocument();
+    expect(screen.queryByText('Summary')).toBeTruthy();
     // Check that the remaining budget is rendered
     // Check the the filter and sort options are present
-    expect(screen.queryByTestId('Filter')).toBeInTheDocument();
-    expect(screen.queryByTestId('Sort')).toBeInTheDocument();
+    expect(screen.queryByTestId('Filter')).toBeTruthy();
+    expect(screen.queryByTestId('Sort')).toBeTruthy();
     // 0 dollars, the cost of the budget should be rendered
     expect(
       await screen.findByText('$ 123', {exact: false})
-    ).toBeInTheDocument();
+    ).toBeTruthy();
     // Test Event, the name of the budget should be rendered
-    expect(await screen.findByText('Test Event')).toBeInTheDocument();
+    expect(await screen.findByText('Test Event')).toBeTruthy();
     expect(screen.queryByText('Test Org')).toBeNull();
   });
 
@@ -99,7 +99,7 @@ describe('Test Dashboard works as Expected', () => {
 
     expect(
       screen.queryByTestId('new-budget-form-button-add')
-    ).toBeInTheDocument();
+    ).toBeTruthy();
     // Click the new button form
     await user.click(screen.getByTestId('new-budget-form-button-add'));
     // Check that the form fields are present*
@@ -134,7 +134,7 @@ describe('Test Dashboard works as Expected', () => {
 
     expect(
       screen.queryByTestId('new-budget-form-button-add')
-    ).toBeInTheDocument();
+    ).toBeTruthy();
     // Click the new button form
     await user.click(screen.getByTestId('new-budget-form-button-add'));
     // Check that the form fields are present*
@@ -170,7 +170,7 @@ describe('Test Dashboard works as Expected', () => {
 
     expect(
       screen.queryByTestId('new-budget-form-button-add')
-    ).toBeInTheDocument();
+    ).toBeTruthy();
     // Click the new button form
     await user.click(screen.getByTestId('new-budget-form-button-add'));
 

@@ -42,8 +42,8 @@ describe('Test Dashboard works as Expected', () => {
     // Check that the Add Button is not rendered
     expect(screen.queryByTestId('new-budget-form-button-add')).toBeNull();
     // Check the the filter and sort options are present
-    expect(screen.queryByTestId('Filter')).toBeInTheDocument();
-    expect(screen.queryByTestId('Sort')).toBeInTheDocument();
+    expect(screen.queryByTestId('Filter')).toBeTruthy();
+    expect(screen.queryByTestId('Sort')).toBeTruthy();
   });
 
   it('displays budget and sidebar correctly', async () => {
@@ -66,9 +66,9 @@ describe('Test Dashboard works as Expected', () => {
     render(await SGADashboard({...props}));
 
     // Check that the side bar is rendered
-    expect(screen.queryByText('Summary')).toBeInTheDocument();
-    expect(await screen.findByText('Test Event')).toBeInTheDocument();
-    expect(await screen.findByText('Test Org')).toBeInTheDocument();
+    expect(screen.queryByText('Summary')).toBeTruthy();
+    expect(await screen.findByText('Test Event')).toBeTruthy();
+    expect(await screen.findByText('Test Org')).toBeTruthy();
   });
 
   it('does not display non pending budgets', async () => {
@@ -90,9 +90,9 @@ describe('Test Dashboard works as Expected', () => {
     render(await SGADashboard({...props}));
 
     // Check that the side bar is rendered
-    expect(screen.queryByText('Summary')).toBeInTheDocument();
-    expect(await screen.findByText('Test Event')).toBeInTheDocument();
-    expect(await screen.findByText('Test Org')).toBeInTheDocument();
+    expect(screen.queryByText('Summary')).toBeTruthy();
+    expect(await screen.findByText('Test Event')).toBeTruthy();
+    expect(await screen.findByText('Test Org')).toBeTruthy();
 
     expect(screen.queryByText('Test Event')).toBeNull();
     expect(screen.queryByText('Test Org')).toBeNull();
