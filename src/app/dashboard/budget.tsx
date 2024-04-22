@@ -1,12 +1,16 @@
 'use client';
 
-import {Status} from 'lib/data';
+import {Status, Budget} from 'lib/data';
 import {Color} from 'lib/color.types';
 import {FiCopy, FiEdit} from 'react-icons/fi';
 
 export type BudgetProps = {
   title: string;
+<<<<<<< HEAD
   organizer: string;
+=======
+  organizer: string | false;
+>>>>>>> Elliot-backend
   description: string;
   status: Status;
   lastStatusDate: string;
@@ -91,5 +95,26 @@ export function BudgetDisplay(props: BudgetProps) {
         <FiCopy />
       </div>
     </div>
+  );
+}
+
+export function BudgetList(props: {
+  budgets: Budget[];
+  show_organizer: boolean;
+}) {
+  return (
+    <>
+      {props.budgets.map((budget: Budget) => (
+        <BudgetDisplay
+          key={budget.id}
+          organizer={props.show_organizer && budget.user_name}
+          title={budget.event_name}
+          description={budget.event_description}
+          total={budget.total_cost}
+          status={budget.current_status}
+          lastStatusDate={budget.status_history[0]!.when}
+        />
+      ))}
+    </>
   );
 }

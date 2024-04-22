@@ -1,9 +1,11 @@
 'use client';
 
 import {Sidebar} from 'flowbite-react';
-import {User, userIsSGA} from 'lib/data';
+import {PropsWithChildren} from 'react';
+import {User} from 'lib/data';
+import {userIsSGA} from 'lib/data/utils';
 
-type SummaryProps = {
+export type SummaryProps = {
   total: number;
   remaining: number;
   pendingEvents: number;
@@ -11,25 +13,13 @@ type SummaryProps = {
   completedEvents: number;
 };
 
-function DashboardSidebar(user: User) {
-  const SGAUser = userIsSGA(user);
-  const summary: SummaryProps = {
-    total: user.total_budget,
-    remaining: user.remaining_budget,
-    pendingEvents: user.pending_event,
-    plannedEvents: user.planned_event,
-    completedEvents: user.completed_event,
-  };
+function DashboardSidebar(props: PropsWithChildren<{}>) {
   return (
     <Sidebar
       className="sidebar h-screen fixed"
       aria-label="RSO Summary Sidebar"
     >
-      <Sidebar.Items>
-        <AccountPannel {...user} />
-        {!SGAUser && <RSOSummary {...summary} />}
-        <BudgetListTools />
-      </Sidebar.Items>
+      <Sidebar.Items> {props.children} </Sidebar.Items>
     </Sidebar>
   );
 }
@@ -44,6 +34,7 @@ function AccountPannel(user: User) {
     </Sidebar.ItemGroup>
   );
 }
+
 function RSOSummary(props: SummaryProps) {
   return (
     <Sidebar.ItemGroup>
@@ -85,6 +76,7 @@ function RSOSummary(props: SummaryProps) {
     </Sidebar.ItemGroup>
   );
 }
+
 function BudgetListTools() {
   return (
     <Sidebar.ItemGroup>
@@ -99,5 +91,27 @@ function BudgetListTools() {
   );
 }
 
-export type {SummaryProps};
-export {DashboardSidebar};
+export function SGADashboardSidebar(props: {user: User}) {
+  return (
+    <DashboardSidebar>
+      <AccountPannel {...props.user} />
+      <BudgetListTools />
+    </DashboardSidebar>
+  );
+}
+export function RSODashboardSidebar(props: {user: User}) {
+  const summary = {
+    total: props.user.total_budget,
+    remaining: props.user.remaining_budget,
+    pendingEvents: props.user.pending_event,
+    plannedEvents: props.user.planned_event,
+    completedEvents: props.user.completed_event,
+  };
+  return (
+    <DashboardSidebar>
+      <AccountPannel {...props.user} />
+      <RSOSummary {...summary} />
+      <BudgetListTools />
+    </DashboardSidebar>
+  );
+}

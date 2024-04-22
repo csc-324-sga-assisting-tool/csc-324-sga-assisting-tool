@@ -1,4 +1,7 @@
+[![codecov](https://codecov.io/gh/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/branch/main/graph/badge.svg)](https://codecov.io/gh/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool)
+
 # CSC 324 GBudget
+
 
 To run the code locally, `clone` the repository, run `npm install` to install dependencies in the repo directory and run `npm run dev` to start a local server. More detailed instructions are available for building and testing the project are available in the [wiki](https://github.com/csc-324-sga-assisting-tool/csc-324-sga-assisting-tool/wiki)
 

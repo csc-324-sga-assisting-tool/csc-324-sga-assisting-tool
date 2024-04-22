@@ -1,32 +1,19 @@
-import {BudgetDisplay} from './budget';
-import {DashboardSidebar} from './sidebar';
-import {Budget, Filter, DataModel, User, userIsSGA} from 'lib/data';
+import {BudgetList} from './budget';
+import {RSODashboardSidebar} from './sidebar';
+import {Budget, DataModel, User} from 'lib/data';
 import {NewBudgetForm} from './create_budget_form';
 import {createBudgetAction, TESTcreateBudgetAction} from './actions';
 
 export async function Dashboard({
-  userID,
+  user,
   dataModel: dataModel,
   TESTING_FLAG = false,
 }: {
-  userID: string;
+  user: User;
   dataModel: DataModel;
   TESTING_FLAG?: boolean;
 }) {
-  const user = (await dataModel.getUser(userID)) as User;
-  const sgaUser = userIsSGA(user);
-  const budgets = await dataModel.getBudgets(
-    sgaUser ? [] : [new Filter('user_id', '==', userID)]
-  );
-
-  // Add organizer name to each budget
-  for (const budget of budgets) {
-    if (sgaUser) {
-      const organizer = await dataModel.getUser(budget.user_id);
-      budget.organizer = organizer.name;
-    } else budget.organizer = '';
-  }
-
+  const budgets = await dataModel.getBudgetsForUser(user.id);
   // THIS IS BAD Code
   // The problem is that we can only pass data, not functions from server side to client side components
   // UNLESS those functions are 'server side actions'. As far as I know, the underlying firebase sdk probably
@@ -42,21 +29,17 @@ export async function Dashboard({
 
   return (
     <>
-      <DashboardSidebar {...user} />
+      <RSODashboardSidebar user={user} />
+
       <main className="w-128">
-        {budgets.map((budget: Budget) => (
-          <BudgetDisplay
-            key={budget.id}
-            organizer={budget.organizer}
-            title={budget.event_name}
-            description={budget.event_description}
-            total={budget.total_cost}
-            status={budget.current_status}
-            lastStatusDate={budget.status_history[0]!.when}
-          />
-        ))}
+        <BudgetList budgets={budgets} show_organizer={false} />
       </main>
-      {!sgaUser && <NewBudgetForm user_id={userID} createBudgetAction={action} />}
+
+      <NewBudgetForm
+        user_id={user.id}
+        user_name={user.name}
+        createBudgetAction={action}
+      />
     </>
   );
 }

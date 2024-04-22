@@ -42,6 +42,7 @@ type Document = {
 // some fields are allowed to be undefined so users can work on budgets without knowing all the details
 interface Budget extends Comments, Document {
   user_id: string; // the user this budget belongs to
+  user_name: string; // the name of the user this budget belongs to
   event_name: string;
   event_description: string;
   event_datetime?: string;
