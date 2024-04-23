@@ -33,6 +33,7 @@ export async function Dashboard({
 
       <main className="w-128">
         <BudgetList budgets={budgets} show_organizer={false} />
+
       </main>
 
       <NewBudgetForm

@@ -17,10 +17,14 @@
     "test": "firebase --project demo emulators:exec --only firestore \"npm run test-command\"",
     "prepare": "husky"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "firebase": "^10.8.1",
     "flowbite": "^2.3.0",
-    "flowbite-react": "^0.7.3",
+    "flowbite-react": "^0.7.8",
+    "jose": "^5.2.4",
     "next": "14.1.2",
     "react": "^18",
     "react-dom": "^18",
@@ -44,7 +48,7 @@
     "jsdom": "^24.0.0",
     "lint-staged": "^15.2.2",
     "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.4.3",
     "typescript": "^5.3.3",
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.4"

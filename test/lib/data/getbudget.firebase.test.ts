@@ -24,6 +24,7 @@ beforeAll(async () => {
         },
       ],
       items: [],
+      event_type: 'Other',
     };
   });
 
@@ -42,6 +43,7 @@ beforeAll(async () => {
       },
     ],
     items: [],
+    event_type: 'Other',
   });
 
   await database.addManyDocuments(Collections.Budgets, testBudgets);

@@ -4,12 +4,13 @@ interface Comments {
   sga_treasurer_comment?: string;
 }
 // an Item will represent a single item in a budget
-interface Item extends Comments {
+interface Item extends Comments, Document {
+  budget_id: string;
   name: string;
   quantity: number;
   unit_price: number;
   vendor: string | undefined;
-  url: string;
+  url?: string;
 }
 
 // Status represents the different status a budget can be in
@@ -47,15 +48,21 @@ interface Budget extends Comments, Document {
   event_description: string;
   event_datetime?: string;
   event_location?: string;
-  event_type?: EventType; // shouldn't be string but restricted to a specific string like 'food', cultural'... once we know types
+  event_type: EventType; // shouldn't be string but restricted to a specific string like 'food', cultural'... once we know types
   total_cost: number;
   current_status: Status;
-  status_history: [StatusChange] | [];
-  items: [Item] | [];
+  status_history: StatusChange[];
 }
 
-type UserType = 'RSO' | 'SEPC' | 'SGA_Treasurer' | 'SGA_Assistant_Treasurer';
+const UserTypes = [
+  'RSO',
+  'SEPC',
+  'SGA_Treasurer',
+  'SGA_Assistant_Treasurer',
+] as const;
+type UserType = (typeof UserTypes)[number];
 // User represents a single user
+//user.id is email of user
 interface User extends Document {
   id: string;
   name: string;
@@ -73,5 +80,14 @@ export function userIsSGA(user: User): boolean {
   );
 }
 
-export type {Budget, Document, EventType, Item, Status, StatusChange, User};
-export {EventTypes};
+export type {
+  Budget,
+  Document,
+  EventType,
+  UserType,
+  Item,
+  Status,
+  StatusChange,
+  User,
+};
+export {EventTypes, UserTypes};

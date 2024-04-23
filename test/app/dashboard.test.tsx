@@ -20,6 +20,7 @@ describe('Test Dashboard works as Expected', () => {
   const mockDatabase = new LocalDatabase();
   mockDatabase.addDocument(Collections.Users, mockUser);
 
+
   const mockDataprovider = new DataModel(mockDatabase);
   const props = {
     user: mockUser,

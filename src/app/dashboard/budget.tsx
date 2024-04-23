@@ -3,9 +3,12 @@
 import {Status, Budget} from 'lib/data';
 import {Color} from 'lib/color.types';
 import {FiCopy, FiEdit} from 'react-icons/fi';
+import Link from 'next/link';
+import {Budget} from 'lib/data';
 
 export type BudgetProps = {
   title: string;
+  id: string;
   description: string;
   status: Status;
   lastStatusDate: string;
@@ -57,7 +60,6 @@ function DateDisplay({dateISO}: {dateISO: string}) {
     </span>
   );
 }
-
 // If the organizer is false, it will not be displayed
 export function BudgetDisplay(props: BudgetProps) {
   return (
