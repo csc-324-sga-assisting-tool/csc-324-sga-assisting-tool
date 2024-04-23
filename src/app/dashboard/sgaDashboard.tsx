@@ -1,11 +1,10 @@
 import {BudgetList} from './budget';
 import {SGADashboardSidebar} from './sidebar';
-import {Budget, Filter, DataModel, User} from 'lib/data';
+import {DataModel, User} from 'lib/data';
 
 export async function SGADashboard({
   user,
   dataModel: dataModel,
-  TESTING_FLAG = false,
 }: {
   user: User;
   dataModel: DataModel;

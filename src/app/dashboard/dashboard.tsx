@@ -1,6 +1,6 @@
 import {BudgetList} from './budget';
 import {RSODashboardSidebar} from './sidebar';
-import {Budget, DataModel, User} from 'lib/data';
+import {DataModel, User} from 'lib/data';
 import {NewBudgetForm} from './create_budget_form';
 import {createBudgetAction, TESTcreateBudgetAction} from './actions';
 

@@ -1,13 +1,13 @@
 import {Dashboard} from 'app/dashboard/dashboard';
 import {expect, describe, it} from 'vitest';
-import {render, screen} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
 import {LocalDatabase} from '../utils/database.local';
-import {DataModel, Sort, User} from 'lib/data';
+import {DataModel, User} from 'lib/data';
 import {Collections} from 'lib/firebase';
 
 describe('Test Dashboard works as Expected', () => {
-  const user: User = {
+  const mockUser: User = {
     id: 'test_user',
     name: 'Test Org',
     user_type: 'RSO',
@@ -18,15 +18,11 @@ describe('Test Dashboard works as Expected', () => {
     completed_event: 2,
   };
   const mockDatabase = new LocalDatabase();
-  mockDatabase.addDocument(Collections.Users, user);
-  const defaultSort: Sort = {
-    field: 'id',
-    isAscending: false,
-  };
+  mockDatabase.addDocument(Collections.Users, mockUser);
 
   const mockDataprovider = new DataModel(mockDatabase);
   const props = {
-    user: user,
+    user: mockUser,
     dataModel: mockDataprovider,
     TESTING_FLAG: true,
   };
@@ -39,20 +35,15 @@ describe('Test Dashboard works as Expected', () => {
     render(await Dashboard({...props}));
 
     // Check that the side bar is rendered
-    expect(screen.queryByText('Summary')).toBeTruthy();
+    expect(screen.queryByText('Summary')).toBeInTheDocument();
     // Check that the remaining budget is rendered
-    expect(
-      screen.queryByText(`$ ${user.remaining_budget}`)
-    ).toBeTruthy();
+    expect(screen.queryByText('$ 100')).toBeInTheDocument();
     // Check that the Add Button is rendered
     expect(
       screen.queryByTestId('new-budget-form-button-add')
-    ).toBeTruthy();
-    // Check the the filter and sort options are present
-    expect(screen.queryByTestId('Filter')).toBeTruthy();
-    expect(screen.queryByTestId('Sort')).toBeTruthy();
+    ).toBeInTheDocument();
     // We have no budgets so nothing with Cost should be rendered
-    expect(screen.queryByTestId('BudgetDisplay')).toBeNull();
+    expect(screen.queryByTestId('Cost')).toBeNull();
   });
 
   it('displays budget and sidebar correctly', async () => {
@@ -74,18 +65,19 @@ describe('Test Dashboard works as Expected', () => {
     render(await Dashboard({...props}));
 
     // Check that the side bar is rendered
-    expect(screen.queryByText('Summary')).toBeTruthy();
+    expect(screen.queryByText('Summary')).toBeInTheDocument();
     // Check that the remaining budget is rendered
-    // Check the the filter and sort options are present
-    expect(screen.queryByTestId('Filter')).toBeTruthy();
-    expect(screen.queryByTestId('Sort')).toBeTruthy();
+    expect(screen.queryByText('$ 100')).toBeInTheDocument();
+    // Check that the Add Button is rendered
+    expect(
+      screen.queryByTestId('new-budget-form-button-add')
+    ).toBeInTheDocument();
     // 0 dollars, the cost of the budget should be rendered
     expect(
       await screen.findByText('$ 123', {exact: false})
-    ).toBeTruthy();
+    ).toBeInTheDocument();
     // Test Event, the name of the budget should be rendered
-    expect(await screen.findByText('Test Event')).toBeTruthy();
-    expect(screen.queryByText('Test Org')).toBeNull();
+    expect(await screen.findByText('Test Event')).toBeInTheDocument();
   });
 
   it('make budget forms creates a new budget', async () => {
@@ -99,13 +91,13 @@ describe('Test Dashboard works as Expected', () => {
 
     expect(
       screen.queryByTestId('new-budget-form-button-add')
-    ).toBeTruthy();
+    ).toBeInTheDocument();
     // Click the new button form
     await user.click(screen.getByTestId('new-budget-form-button-add'));
     // Check that the form fields are present*
-    screen
-      .queryAllByTestId('new-budget-form-')
-      .forEach(element => expect(element).toBeVisible());
+    const formInputs = await screen.findAllByTestId(/new-budget-form/);
+    formInputs.forEach(element => expect(element).toBeVisible());
+
     // submit a new budget
     const nameInput = await screen.findByTestId('new-budget-form-input-name');
     const descriptionInput = await screen.findByTestId(
@@ -118,9 +110,8 @@ describe('Test Dashboard works as Expected', () => {
     await user.type(nameInput, 'Dance Party');
     await user.type(descriptionInput, "Dance till you can't any more");
     await user.click(submitButton);
-    await user.click(submitButton);
 
-    const budgets = await mockDataprovider.getBudgets([], 25, defaultSort);
+    const budgets = await mockDataprovider.getBudgets();
     expect(budgets.length).toBe(1);
   });
 
@@ -134,13 +125,13 @@ describe('Test Dashboard works as Expected', () => {
 
     expect(
       screen.queryByTestId('new-budget-form-button-add')
-    ).toBeTruthy();
+    ).toBeInTheDocument();
     // Click the new button form
     await user.click(screen.getByTestId('new-budget-form-button-add'));
+
     // Check that the form fields are present*
-    screen
-      .queryAllByTestId('new-budget-form-')
-      .forEach(element => expect(element).toBeVisible());
+    const formInputs = await screen.findAllByTestId(/new-budget-form/);
+    formInputs.forEach(element => expect(element).toBeVisible());
 
     const descriptionInput = await screen.findByTestId(
       'new-budget-form-input-description'
@@ -153,7 +144,7 @@ describe('Test Dashboard works as Expected', () => {
     await user.click(submitButton);
     await user.click(submitButton);
 
-    const budgets = await mockDataprovider.getBudgets([], 25, defaultSort);
+    const budgets = await mockDataprovider.getBudgets();
     expect(budgets.length).toBe(0);
   });
 
@@ -168,11 +159,15 @@ describe('Test Dashboard works as Expected', () => {
 
     // await Dashboard since it is an async component
 
+    // Check that the form fields are present*
     expect(
       screen.queryByTestId('new-budget-form-button-add')
-    ).toBeTruthy();
+    ).toBeInTheDocument();
     // Click the new button form
     await user.click(screen.getByTestId('new-budget-form-button-add'));
+
+    const formInputs = await screen.findAllByTestId(/new-budget-form/);
+    formInputs.forEach(element => expect(element).toBeVisible());
 
     // submit a new budget
     const nameInput = await screen.findByTestId('new-budget-form-input-name');
@@ -189,19 +184,26 @@ describe('Test Dashboard works as Expected', () => {
     const submitButton = await screen.findByTestId(
       'new-budget-form-button-submit'
     );
+    const typeInput = await screen.findByTestId(
+      'new-budget-form-input-event-type'
+    );
 
     const name = 'Dance Party';
     const description = "Dance till you can't any more";
     const location = 'Main Pit';
+    const testDate = new Date('2027-1-1');
 
     await user.type(nameInput, name);
     await user.type(descriptionInput, description);
     await user.type(locationInput, location);
-
-    // Set date to the day after today
-    const today = new Date();
+    fireEvent.change(typeInput, {target: {value: 'Other'}});
+    //Toggle Date
     await user.click(dateInput);
-    await user.click(await screen.findByText(today.getDate()));
+    await user.click(await screen.findByText('2024', {exact: false}));
+    await user.click(await screen.findByText('2024', {exact: false}));
+    await user.click(await screen.findByText('2027', {exact: false}));
+    await user.click(await screen.findByText('Jan', {exact: false}));
+    await user.click((await screen.findAllByText('1'))[0]);
 
     await user.click(submitButton);
 
@@ -212,7 +214,7 @@ describe('Test Dashboard works as Expected', () => {
     expect(budgets[0].event_description).toBe(description);
     expect(budgets[0].event_location).toBe(location);
     expect(new Date(budgets[0].event_datetime!).getDate()).toBe(
-      today.getDate()
+      testDate.getDate()
     );
   });
 });

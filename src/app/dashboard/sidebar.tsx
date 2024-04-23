@@ -3,7 +3,6 @@
 import {Sidebar} from 'flowbite-react';
 import {PropsWithChildren} from 'react';
 import {User} from 'lib/data';
-import {userIsSGA} from 'lib/data/utils';
 
 export type SummaryProps = {
   total: number;

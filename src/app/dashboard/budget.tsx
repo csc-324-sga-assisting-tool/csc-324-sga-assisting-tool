@@ -6,11 +6,11 @@ import {FiCopy, FiEdit} from 'react-icons/fi';
 
 export type BudgetProps = {
   title: string;
-  organizer: string | false;
   description: string;
   status: Status;
   lastStatusDate: string;
   total: number;
+  organizer?: string;
 };
 
 function BudgetStatusDisplay({status}: {status: Status}) {
@@ -61,7 +61,10 @@ function DateDisplay({dateISO}: {dateISO: string}) {
 // If the organizer is false, it will not be displayed
 export function BudgetDisplay(props: BudgetProps) {
   return (
-    <div className="grid grid-cols-10 gap-4 bg-white shadow-md rounded-lg pt-4 pb-4 m-5 ml-72 divide-x divide-solid max-w-3xl budgetCard" data-testid="BudgetDisplay">
+    <div
+      className="grid grid-cols-10 gap-4 bg-white shadow-md rounded-lg pt-4 pb-4 m-5 ml-72 divide-x divide-solid max-w-3xl budgetCard"
+      data-testid="BudgetDisplay"
+    >
       {props.organizer && (
         <div className="h-full col-span-1 items-center justify-center">
           <span className="text-sm text-bold text-black justify-center h-full w-full p-2">
@@ -103,7 +106,7 @@ export function BudgetList(props: {
       {props.budgets.map((budget: Budget) => (
         <BudgetDisplay
           key={budget.id}
-          organizer={props.show_organizer && budget.user_name}
+          organizer={props.show_organizer ? budget.user_name : undefined}
           title={budget.event_name}
           description={budget.event_description}
           total={budget.total_cost}

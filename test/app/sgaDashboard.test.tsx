@@ -1,9 +1,7 @@
-import {Dashboard} from 'app/dashboard/dashboard';
 import {expect, describe, it} from 'vitest';
 import {render, screen} from '@testing-library/react';
-import {userEvent} from '@testing-library/user-event';
 import {LocalDatabase} from '../utils/database.local';
-import {DataModel, Sort, User} from 'lib/data';
+import {DataModel, User} from 'lib/data';
 import {Collections} from 'lib/firebase';
 import {SGADashboard} from 'app/dashboard/sgaDashboard';
 
@@ -20,10 +18,6 @@ describe('Test Dashboard works as Expected', () => {
   };
   const mockDatabase = new LocalDatabase();
   mockDatabase.addDocument(Collections.Users, userSGA);
-  const defaultSort: Sort = {
-    field: 'id',
-    isAscending: false,
-  };
 
   const mockDataprovider = new DataModel(mockDatabase);
   const props = {
@@ -42,8 +36,8 @@ describe('Test Dashboard works as Expected', () => {
     // Check that the Add Button is not rendered
     expect(screen.queryByTestId('new-budget-form-button-add')).toBeNull();
     // Check the the filter and sort options are present
-    expect(screen.queryByTestId('Filter')).toBeTruthy();
-    expect(screen.queryByTestId('Sort')).toBeTruthy();
+    expect(screen.getByText('Filters')).toBeInTheDocument();
+    expect(screen.getByText('Sort By')).toBeInTheDocument();
     // We have no budgets so nothing with Cost should be rendered
     expect(screen.queryByTestId('BudgetDisplay')).toBeNull();
   });
@@ -68,9 +62,10 @@ describe('Test Dashboard works as Expected', () => {
     render(await SGADashboard({...props}));
 
     // Check that the side bar is rendered
-    expect(screen.queryByText('Summary')).toBeTruthy();
-    expect(await screen.findByText('Test Event')).toBeTruthy();
-    expect(await screen.findByText('Test Org')).toBeTruthy();
+    expect(screen.getByText(`${userSGA.name}`)).toBeInTheDocument();
+    // Check that pending budgets are rendered
+    expect(await screen.findByText('Test Event')).toBeInTheDocument();
+    expect(await screen.findByText('Test Org')).toBeInTheDocument();
   });
 
   it('does not display non pending budgets', async () => {
@@ -92,9 +87,7 @@ describe('Test Dashboard works as Expected', () => {
     render(await SGADashboard({...props}));
 
     // Check that the side bar is rendered
-    expect(screen.queryByText('Summary')).toBeTruthy();
-    expect(await screen.findByText('Test Event')).toBeTruthy();
-    expect(await screen.findByText('Test Org')).toBeTruthy();
+    expect(screen.getByText(`${userSGA.name}`)).toBeInTheDocument();
 
     expect(screen.queryByText('Test Event')).toBeNull();
     expect(screen.queryByText('Test Org')).toBeNull();
