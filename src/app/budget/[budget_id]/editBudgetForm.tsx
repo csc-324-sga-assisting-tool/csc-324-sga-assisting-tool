@@ -8,23 +8,15 @@ import {
   Textarea,
   TextInput,
 } from 'flowbite-react';
-import {EventType, EventTypes} from 'lib/data';
+import {Budget, EventType, EventTypes} from 'lib/data';
 import {FormEvent, FormEventHandler, useState} from 'react';
-import {HiPlusCircle} from 'react-icons/hi';
 
-export function NewBudgetForm({
-  user_id,
-  createBudgetAction,
+export function EditBudgetForm({
+  budget,
+  updateBudgetAction,
 }: {
-  user_id: string;
-  createBudgetAction: (
-    userID: string,
-    name: string,
-    description: string,
-    event_location: string,
-    event_date: string,
-    event_type: EventType
-  ) => Promise<void>;
+  budget: Budget;
+  updateBudgetAction: (budget: Budget) => Promise<void>;
 }) {
   const [openModal, setOpenModal] = useState(false);
 
@@ -32,41 +24,51 @@ export function NewBudgetForm({
     e: FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-    const name = (
+    const event_name = (
       e.currentTarget.elements.namedItem('event_name') as HTMLInputElement
     ).value;
-    const description = (
+    const event_description = (
       e.currentTarget.elements.namedItem('description') as HTMLInputElement
     ).value;
 
-    const location = (
+    const event_location = (
       e.currentTarget.elements.namedItem('event_location') as HTMLInputElement
     ).value;
 
-    const date = (
+    // TODO: make sure date is not in the past
+    const event_datetime = (
       e.currentTarget.elements.namedItem('event_date') as HTMLInputElement
     ).value;
 
-    const eventType = (
+    const event_type = (
       e.currentTarget.elements.namedItem('event_type') as HTMLInputElement
     ).value as EventType;
 
+    const updatedBudget: Budget = {
+      ...budget,
+      event_name,
+      event_type,
+      event_datetime,
+      event_location,
+      event_description,
+    };
+
     setOpenModal(false);
 
-    createBudgetAction(user_id, name, description, location, date, eventType);
+    updateBudgetAction(updatedBudget);
   };
 
   return (
     <>
       <Button
-        data-testid="new-budget-form-button-add"
-        className="fixed bottom-0 right-0 p-6 "
+        data-testid="edit-budget-form-button-add"
+        className="bg-pallete-1 w-full text-black"
         onClick={() => setOpenModal(true)}
       >
-        <HiPlusCircle className="w-24 h-24 hover:text-pallete-4 text-pallete-5" />
+        Edit Budget Information
       </Button>
       <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-        <Modal.Header> Create a new Event </Modal.Header>
+        <Modal.Header> Edit Budget </Modal.Header>
         <Modal.Body>
           <div className="bg-white w-full">
             <form
@@ -80,7 +82,8 @@ export function NewBudgetForm({
                 <TextInput
                   id="event_name"
                   name="event_name"
-                  data-testid="new-budget-form-input-name"
+                  data-testid="edit-budget-form-input-name"
+                  defaultValue={budget.event_name}
                   required
                 />
               </div>
@@ -90,7 +93,8 @@ export function NewBudgetForm({
                 </div>
                 <Textarea
                   id="description"
-                  data-testid="new-budget-form-input-description"
+                  data-testid="edit-budget-form-input-description"
+                  defaultValue={budget.event_description}
                   required
                 />
               </div>
@@ -101,7 +105,8 @@ export function NewBudgetForm({
                 <TextInput
                   id="event_location"
                   name="event_location"
-                  data-testid="new-budget-form-input-location"
+                  data-testid="edit-budget-form-input-location"
+                  defaultValue={budget.event_location}
                 />
               </div>
 
@@ -114,7 +119,12 @@ export function NewBudgetForm({
                   className="text-black border-gray-300 bg-gray-50 w-full rounded-lg"
                   name="event_date"
                   type="datetime-local"
-                  data-testid="new-budget-form-input-datepicker"
+                  data-testid="edit-budget-form-input-datepicker"
+                  defaultValue={
+                    budget.event_datetime
+                      ? budget.event_datetime
+                      : new Date().toISOString()
+                  }
                   required
                 />
               </div>
@@ -125,7 +135,8 @@ export function NewBudgetForm({
                 <Select
                   id="event_type"
                   name="event_type"
-                  data-testid="new-budget-form-input-event-type"
+                  data-testid="edit-budget-form-input-event-type"
+                  defaultValue={budget.event_type}
                   required
                 >
                   {EventTypes.map(eventType => (
@@ -134,11 +145,11 @@ export function NewBudgetForm({
                 </Select>
               </div>
               <Button
-                data-testid="new-budget-form-button-submit"
+                data-testid="edit-budget-form-button-submit"
                 type="submit"
                 className="bg-pallete-5"
               >
-                Submit
+                Save Changes
               </Button>
             </form>
           </div>
