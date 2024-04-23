@@ -1,9 +1,9 @@
 import {Dashboard} from 'app/dashboard/dashboard';
 import {expect, describe, it} from 'vitest';
-import {render, screen} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
 import {LocalDatabase} from '../utils/database.local';
-import {DataModel, Sort} from 'lib/data';
+import {DataModel} from 'lib/data';
 import {Collections} from 'lib/firebase';
 
 describe('Test Dashboard works as Expected', () => {
@@ -18,10 +18,6 @@ describe('Test Dashboard works as Expected', () => {
     planned_event: 5,
     completed_event: 2,
   });
-  const defaultSort: Sort = {
-    field: 'id',
-    isAscending: false,
-  };
 
   const mockDataprovider = new DataModel(mockDatabase);
   const props = {
@@ -98,9 +94,9 @@ describe('Test Dashboard works as Expected', () => {
     // Click the new button form
     await user.click(screen.getByTestId('new-budget-form-button-add'));
     // Check that the form fields are present*
-    screen
-      .queryAllByTestId('new-budget-form-')
-      .forEach(element => expect(element).toBeVisible());
+    const formInputs = await screen.findAllByTestId(/new-budget-form/);
+    formInputs.forEach(element => expect(element).toBeVisible());
+
     // submit a new budget
     const nameInput = await screen.findByTestId('new-budget-form-input-name');
     const descriptionInput = await screen.findByTestId(
@@ -113,9 +109,8 @@ describe('Test Dashboard works as Expected', () => {
     await user.type(nameInput, 'Dance Party');
     await user.type(descriptionInput, "Dance till you can't any more");
     await user.click(submitButton);
-    await user.click(submitButton);
 
-    const budgets = await mockDataprovider.getBudgets(defaultSort);
+    const budgets = await mockDataprovider.getBudgets();
     expect(budgets.length).toBe(1);
   });
 
@@ -132,10 +127,10 @@ describe('Test Dashboard works as Expected', () => {
     ).toBeInTheDocument();
     // Click the new button form
     await user.click(screen.getByTestId('new-budget-form-button-add'));
+
     // Check that the form fields are present*
-    screen
-      .queryAllByTestId('new-budget-form-')
-      .forEach(element => expect(element).toBeVisible());
+    const formInputs = await screen.findAllByTestId(/new-budget-form/);
+    formInputs.forEach(element => expect(element).toBeVisible());
 
     const descriptionInput = await screen.findByTestId(
       'new-budget-form-input-description'
@@ -148,7 +143,7 @@ describe('Test Dashboard works as Expected', () => {
     await user.click(submitButton);
     await user.click(submitButton);
 
-    const budgets = await mockDataprovider.getBudgets(defaultSort);
+    const budgets = await mockDataprovider.getBudgets();
     expect(budgets.length).toBe(0);
   });
 
@@ -163,11 +158,15 @@ describe('Test Dashboard works as Expected', () => {
 
     // await Dashboard since it is an async component
 
+    // Check that the form fields are present*
     expect(
       screen.queryByTestId('new-budget-form-button-add')
     ).toBeInTheDocument();
     // Click the new button form
     await user.click(screen.getByTestId('new-budget-form-button-add'));
+
+    const formInputs = await screen.findAllByTestId(/new-budget-form/);
+    formInputs.forEach(element => expect(element).toBeVisible());
 
     // submit a new budget
     const nameInput = await screen.findByTestId('new-budget-form-input-name');
@@ -184,19 +183,26 @@ describe('Test Dashboard works as Expected', () => {
     const submitButton = await screen.findByTestId(
       'new-budget-form-button-submit'
     );
+    const typeInput = await screen.findByTestId(
+      'new-budget-form-input-event-type'
+    );
 
     const name = 'Dance Party';
     const description = "Dance till you can't any more";
     const location = 'Main Pit';
+    const testDate = new Date('2027-1-1');
 
     await user.type(nameInput, name);
     await user.type(descriptionInput, description);
     await user.type(locationInput, location);
-
-    // Set date to the day after today
-    const today = new Date();
+    fireEvent.change(typeInput, {target: {value: 'Other'}});
+    //Toggle Date
     await user.click(dateInput);
-    await user.click(await screen.findByText(today.getDate()));
+    await user.click(await screen.findByText('2024', {exact: false}));
+    await user.click(await screen.findByText('2024', {exact: false}));
+    await user.click(await screen.findByText('2027', {exact: false}));
+    await user.click(await screen.findByText('Jan', {exact: false}));
+    await user.click((await screen.findAllByText('1'))[0]);
 
     await user.click(submitButton);
 
@@ -207,7 +213,7 @@ describe('Test Dashboard works as Expected', () => {
     expect(budgets[0].event_description).toBe(description);
     expect(budgets[0].event_location).toBe(location);
     expect(new Date(budgets[0].event_datetime!).getDate()).toBe(
-      today.getDate()
+      testDate.getDate()
     );
   });
 });

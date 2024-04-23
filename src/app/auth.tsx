@@ -3,7 +3,7 @@
 import {User, DataModel, UserType, Database} from 'lib/data';
 import {createSession, deleteSession} from './session';
 import {redirect} from 'next/navigation';
-import {revalidatePath} from 'next/cache';
+import {normalizeID} from 'lib/util';
 
 function createUser(
   user_name: string,
@@ -33,10 +33,11 @@ export async function createUserAction(
   user_type: UserType,
   password: string
 ): Promise<void> {
+  const emailNorm = normalizeID(email);
   const modifier = new DataModel(Database);
-  const user = createUser(user_name, email, total_budget, user_type);
+  const user = createUser(user_name, emailNorm, total_budget, user_type);
   await createSession(user.id);
-  await modifier.addUser(email, password, user);
+  await modifier.addUser(emailNorm, password, user);
   redirect('/dashboard');
 }
 
@@ -52,9 +53,11 @@ export async function signInAction(email: string, password: string) {
   if (email === '' || password === '') {
     return Promise.reject(new Error('Entered empty password or email'));
   }
+  const emailNorm = normalizeID(email);
   const modifier = new DataModel(Database);
-  modifier.signInUser(email, password);
-  await createSession(email);
+  modifier.signInUser(emailNorm, password);
+  await createSession(emailNorm);
+  //need to add logic for failed logins
   console.log('WELCOME!!!');
   redirect('/dashboard');
 }

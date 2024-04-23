@@ -3,13 +3,7 @@ import {verifySession} from 'app/dal';
 import {Dashboard} from './dashboard';
 import {DataModel, Database} from 'lib/data';
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: {slug: string};
-  searchParams: {[key: string]: string | string[] | undefined};
-}) {
+export default async function Page() {
   const session = await verifySession();
   const userId = session.userId;
   console.log(`User id from session is: ${userId}`);
