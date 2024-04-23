@@ -4,7 +4,6 @@ import {Status, Budget} from 'lib/data';
 import {Color} from 'lib/color.types';
 import {FiCopy, FiEdit} from 'react-icons/fi';
 import Link from 'next/link';
-import {Budget} from 'lib/data';
 
 export type BudgetProps = {
   title: string;
