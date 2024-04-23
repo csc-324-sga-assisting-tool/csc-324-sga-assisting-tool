@@ -106,6 +106,7 @@ export function BudgetList(props: {
     <>
       {props.budgets.map((budget: Budget) => (
         <BudgetDisplay
+          id={budget.id}
           key={budget.id}
           organizer={props.show_organizer ? budget.user_name : undefined}
           title={budget.event_name}
