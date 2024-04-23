@@ -1,13 +1,13 @@
-import {BudgetViewSidebar} from './sidebar';
-import {Item, Budget, DataModel} from 'lib/data';
+import { BudgetViewSidebar } from './sidebar';
+import { Item, Budget, DataModel } from 'lib/data';
 import {
   updateBudgetAction,
   TESTupdateBudgetAction,
   TESTcreateItemAction,
   createItemAction,
 } from './actions';
-import {ItemDisplay} from './itemDisplay';
-import {NewItemForm} from './addItemForm';
+import { ItemDisplay } from './itemDisplay';
+import { NewItemForm } from './addItemForm';
 
 export async function BudgetView({
   budget_id,
@@ -72,7 +72,7 @@ export async function BudgetView({
       />
       <main className="ml-72 w-3/5 bg-white">
         <ItemDisplay items={items} />
-        <NewItemForm budget_id={budget_id} createItemAction={itemAddAction} />
+        {budget.current_status === 'created' && <NewItemForm budget_id={budget_id} createItemAction={itemAddAction} />}
       </main>
     </>
   );
