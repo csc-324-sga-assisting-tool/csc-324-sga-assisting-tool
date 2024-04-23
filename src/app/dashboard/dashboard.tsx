@@ -37,16 +37,9 @@ export async function Dashboard({
         plannedEvents={user.planned_event}
         completedEvents={user.completed_event}
       />
-      <main className="w-128">
+      <main className="w-128 ml-72">
         {userBudgets.map((budget: Budget) => (
-          <BudgetDisplay
-            key={budget.id}
-            title={budget.event_name}
-            description={budget.event_description}
-            total={budget.total_cost}
-            status={budget.current_status}
-            lastStatusDate={budget.status_history[0]!.when}
-          />
+          <BudgetDisplay key={budget.id} budget={budget} />
         ))}
       </main>
       <NewBudgetForm user_id={userID} createBudgetAction={action} />

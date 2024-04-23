@@ -10,7 +10,7 @@ interface Item extends Comments, Document {
   quantity: number;
   unit_cost: number;
   vendor: string | undefined;
-  url: string;
+  url?: string;
 }
 
 // Status represents the different status a budget can be in
@@ -47,7 +47,7 @@ interface Budget extends Comments, Document {
   event_description: string;
   event_datetime?: string;
   event_location?: string;
-  event_type?: EventType; // shouldn't be string but restricted to a specific string like 'food', cultural'... once we know types
+  event_type: EventType; // shouldn't be string but restricted to a specific string like 'food', cultural'... once we know types
   total_cost: number;
   current_status: Status;
   status_history: [StatusChange] | [];

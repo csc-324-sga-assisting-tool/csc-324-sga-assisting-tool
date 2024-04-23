@@ -3,9 +3,12 @@
 import {Status} from 'lib/data';
 import {Color} from 'lib/color.types';
 import {FiCopy, FiEdit} from 'react-icons/fi';
+import Link from 'next/link';
+import {Budget} from 'lib/data';
 
 export type BudgetProps = {
   title: string;
+  id: string;
   description: string;
   status: Status;
   lastStatusDate: string;
@@ -57,30 +60,32 @@ function DateDisplay({dateISO}: {dateISO: string}) {
   );
 }
 
-export function BudgetDisplay(props: BudgetProps) {
+export function BudgetDisplay({budget}: {budget: Budget}) {
   return (
-    <div className="grid grid-cols-6 gap-4 bg-white shadow-md rounded-lg p-4 m-5 ml-72 divide-x divide-solid max-w-3xl">
-      <div className="h-full items-center justify-center col-span-1">
-        <span className="text-xl text-bold text-black justify-center h-full w-full p-2">
-          {props.title}
-        </span>
-      </div>
-      <div className="col-span-2 grid grid-row-2 p-2">
-        <BudgetStatusDisplay status={props.status} />
-        <div>
-          <DateDisplay dateISO={props.lastStatusDate} />
+    <Link href={`/budget/${budget.id}`}>
+      <div className="grid grid-cols-6 gap-4 bg-white hover:bg-gray-200 shadow-md rounded-lg p-4 m-5 divide-x divide-solid max-w-3xl">
+        <div className="h-full items-center justify-center col-span-1">
+          <span className="text-xl text-bold text-black justify-center h-full w-full p-2">
+            {budget.event_name}
+          </span>
+        </div>
+        <div className="col-span-2 grid grid-row-2 p-2">
+          <BudgetStatusDisplay status={budget.current_status} />
+          <div>
+            <DateDisplay dateISO={budget.status_history[0]!.when} />
+          </div>
+        </div>
+        <div className="col-span-2 p-2">
+          <span className="text-lg text-black float-left">Cost: </span>
+          <span className="text-lg text-black float-right text-bold">
+            $ {budget.total_cost}
+          </span>
+        </div>
+        <div className="col-span-1 p-2 items-center justify-center grid grid-row-2 divide-y divide-dashed">
+          <FiEdit />
+          <FiCopy />
         </div>
       </div>
-      <div className="col-span-2 p-2">
-        <span className="text-lg text-black float-left">Cost: </span>
-        <span className="text-lg text-black float-right text-bold">
-          $ {props.total}
-        </span>
-      </div>
-      <div className="col-span-1 p-2 items-center justify-center grid grid-row-2 divide-y divide-dashed">
-        <FiEdit />
-        <FiCopy />
-      </div>
-    </div>
+    </Link>
   );
 }

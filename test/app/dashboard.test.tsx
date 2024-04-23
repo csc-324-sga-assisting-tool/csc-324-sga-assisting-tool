@@ -1,10 +1,11 @@
-import {Dashboard} from 'app/dashboard/dashboard';
-import {expect, describe, it} from 'vitest';
-import {render, screen} from '@testing-library/react';
-import {userEvent} from '@testing-library/user-event';
-import {LocalDatabase} from '../utils/database.local';
-import {DataModel, Sort} from 'lib/data';
-import {Collections} from 'lib/firebase';
+import { Dashboard } from 'app/dashboard/dashboard';
+import { expect, describe, it } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { LocalDatabase } from '../utils/database.local';
+import { DataModel, Sort } from 'lib/data';
+import { Collections } from 'lib/firebase';
+import { getMMDDYYYYTTTT } from 'lib/util';
 
 describe('Test Dashboard works as Expected', () => {
   const mockDatabase = new LocalDatabase();
@@ -35,7 +36,7 @@ describe('Test Dashboard works as Expected', () => {
     mockDatabase.emptyCollection(Collections.Budgets);
     //render the daashboard
     // await Dashboard since it is an async component
-    render(await Dashboard({...props}));
+    render(await Dashboard({ ...props }));
 
     // Check that the side bar is rendered
     expect(screen.queryByText('Summary')).toBeInTheDocument();
@@ -59,13 +60,13 @@ describe('Test Dashboard works as Expected', () => {
         event_description: 'Test Event Description',
         current_status: 'submitted',
         total_cost: 123,
-        status_history: [{status: 'submitted', when: new Date().toISOString()}],
+        status_history: [{ status: 'submitted', when: new Date().toISOString() }],
         items: [],
       },
     ]);
 
     // await Dashboard since it is an async component
-    render(await Dashboard({...props}));
+    render(await Dashboard({ ...props }));
 
     // Check that the side bar is rendered
     expect(screen.queryByText('Summary')).toBeInTheDocument();
@@ -77,7 +78,7 @@ describe('Test Dashboard works as Expected', () => {
     ).toBeInTheDocument();
     // 0 dollars, the cost of the budget should be rendered
     expect(
-      await screen.findByText('$ 123', {exact: false})
+      await screen.findByText('$ 123', { exact: false })
     ).toBeInTheDocument();
     // Test Event, the name of the budget should be rendered
     expect(await screen.findByText('Test Event')).toBeInTheDocument();
@@ -90,7 +91,7 @@ describe('Test Dashboard works as Expected', () => {
     mockDatabase.emptyCollection(Collections.Budgets);
 
     //render the daashboard
-    render(await Dashboard({...props}));
+    render(await Dashboard({ ...props }));
 
     expect(
       screen.queryByTestId('new-budget-form-button-add')
@@ -115,7 +116,7 @@ describe('Test Dashboard works as Expected', () => {
     await user.click(submitButton);
     await user.click(submitButton);
 
-    const budgets = await mockDataprovider.getBudgets(defaultSort);
+    const budgets = await mockDataprovider.getBudgets();
     expect(budgets.length).toBe(1);
   });
 
@@ -125,7 +126,7 @@ describe('Test Dashboard works as Expected', () => {
     // make sure there are no budgets
     mockDatabase.emptyCollection(Collections.Budgets);
     //render the daashboard
-    render(await Dashboard({...props}));
+    render(await Dashboard({ ...props }));
 
     expect(
       screen.queryByTestId('new-budget-form-button-add')
@@ -148,7 +149,7 @@ describe('Test Dashboard works as Expected', () => {
     await user.click(submitButton);
     await user.click(submitButton);
 
-    const budgets = await mockDataprovider.getBudgets(defaultSort);
+    const budgets = await mockDataprovider.getBudgets();
     expect(budgets.length).toBe(0);
   });
 
@@ -159,7 +160,7 @@ describe('Test Dashboard works as Expected', () => {
     mockDatabase.emptyCollection(Collections.Budgets);
     //render the daashboard
     // await Dashboard since it is an async component
-    render(await Dashboard({...props}));
+    render(await Dashboard({ ...props }));
 
     // await Dashboard since it is an async component
 
@@ -195,8 +196,7 @@ describe('Test Dashboard works as Expected', () => {
 
     // Set date to the day after today
     const today = new Date();
-    await user.click(dateInput);
-    await user.click(await screen.findByText(today.getDate()));
+    await user.type(dateInput, getMMDDYYYYTTTT(today));
 
     await user.click(submitButton);
 
