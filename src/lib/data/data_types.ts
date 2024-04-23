@@ -63,7 +63,7 @@ type UserType = (typeof UserTypes)[number];
 // User represents a single user
 //user.id is email of user
 interface User extends Document {
-  user_name: string;
+  name: string;
   remaining_budget: number;
   total_budget: number;
   user_type: UserType;
