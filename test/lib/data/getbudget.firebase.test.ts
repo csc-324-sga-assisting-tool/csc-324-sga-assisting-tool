@@ -1,4 +1,4 @@
-import {assert, beforeAll, it, describe, expect} from 'vitest';
+import {assert, beforeAll, it, describe, expect, test} from 'vitest';
 import {getFirestore} from 'firebase/firestore';
 import {Budget, DataModel} from 'lib/data';
 import {getLocalFirebase} from '../../utils/database.util';
@@ -23,6 +23,7 @@ beforeAll(async () => {
         },
       ],
       items: [],
+      event_type: 'Other',
     };
   });
 
@@ -40,6 +41,7 @@ beforeAll(async () => {
       },
     ],
     items: [],
+    event_type: 'Other',
   });
 
   await database.addManyDocuments(Collections.Budgets, testBudgets);

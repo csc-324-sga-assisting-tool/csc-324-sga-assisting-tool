@@ -1,16 +1,9 @@
 'use client';
 
-import {
-  Button,
-  Datepicker,
-  Label,
-  Modal,
-  Select,
-  TextInput,
-} from 'flowbite-react';
-import { EventType, EventTypes } from 'lib/data';
-import { FormEvent, FormEventHandler, useState } from 'react';
-import { HiPlusCircle } from 'react-icons/hi';
+import {Button, Label, Modal, TextInput} from 'flowbite-react';
+import {EventType} from 'lib/data';
+import {FormEvent, FormEventHandler, useState} from 'react';
+import {HiPlusCircle} from 'react-icons/hi';
 
 export function NewItemForm({
   budget_id,
@@ -41,7 +34,7 @@ export function NewItemForm({
 
     const unit_cost = (
       e.currentTarget.elements.namedItem('item_cost') as HTMLInputElement
-    ).value as unknown as number;;
+    ).value as unknown as number;
 
     const quantity = (
       e.currentTarget.elements.namedItem('item_quantity') as HTMLInputElement
@@ -102,7 +95,7 @@ export function NewItemForm({
                 <TextInput
                   id="item_cost"
                   name="item_cost"
-                  type='number'
+                  type="number"
                   data-testid="new-item-form-input-cost"
                   required
                 />
@@ -114,7 +107,7 @@ export function NewItemForm({
                 <TextInput
                   id="item_quantity"
                   name="item_quantity"
-                  type='number'
+                  type="number"
                   data-testid="new-item-form-input-quantity"
                   required
                 />
@@ -126,8 +119,8 @@ export function NewItemForm({
                 <TextInput
                   id="item_url"
                   name="item_url"
-                  type='url'
-                  placeholder='Optional'
+                  type="url"
+                  placeholder="Optional"
                   data-testid="new-item-form-input-quantity"
                 />
               </div>

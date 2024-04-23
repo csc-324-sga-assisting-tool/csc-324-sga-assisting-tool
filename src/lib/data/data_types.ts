@@ -50,8 +50,7 @@ interface Budget extends Comments, Document {
   event_type: EventType; // shouldn't be string but restricted to a specific string like 'food', cultural'... once we know types
   total_cost: number;
   current_status: Status;
-  status_history: [StatusChange] | [];
-  items: [Item] | [];
+  status_history: StatusChange[];
 }
 
 type UserType = 'RSO' | 'SEPC' | 'SGA_Treasurer' | 'SGA_Assistant_Treasurer';

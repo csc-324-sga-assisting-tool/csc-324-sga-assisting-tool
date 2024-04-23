@@ -1,7 +1,7 @@
 'use client';
 
 import {Sidebar, Button} from 'flowbite-react';
-import {Budget, Status} from 'lib/data';
+import {Budget, Status, StatusChange} from 'lib/data';
 import {Color} from 'lib/color.types';
 import {EditBudgetForm} from './editBudgetForm';
 
@@ -53,8 +53,29 @@ function BudgetViewSidebar({
 }: {
   budget: Budget;
   item_count: number;
-  updateBudgetAction: (budget: Budget) => Promise<void>;
+  updateBudgetAction: (
+    budget: Budget,
+    backToDashboard?: boolean
+  ) => Promise<void>;
 }) {
+  const submitBudget = () => {
+    // TODO: Do validation here to make sure invalid budgets are not submitted
+    const newStatus: StatusChange = {
+      status: 'submitted',
+      when: new Date().toISOString(),
+    };
+    const updatedStatusHistory = [newStatus];
+    //Add the old statuses to the status history
+    updatedStatusHistory.push(...budget.status_history);
+    updateBudgetAction(
+      {
+        ...budget,
+        status_history: updatedStatusHistory,
+        current_status: newStatus.status,
+      },
+      true
+    );
+  };
   return (
     <Sidebar
       className="sidebar h-screen fixed"
@@ -102,7 +123,9 @@ function BudgetViewSidebar({
               budget={budget}
               updateBudgetAction={updateBudgetAction}
             />
-            <Button className="bg-pallete-5 w-full">Submit</Button>
+            <Button onClick={submitBudget} className="bg-pallete-5 w-full">
+              Submit
+            </Button>
           </Sidebar.ItemGroup>
         )}
       </Sidebar.Items>
