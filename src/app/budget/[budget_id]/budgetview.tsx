@@ -21,36 +21,6 @@ export async function BudgetView({
   const budget = (await dataModel.getBudget(budget_id)) as Budget;
   // TODO: get items from db
   const items: Item[] = await dataModel.getItemsForBudget(budget_id);
-
-  if (TESTING_FLAG) {
-    items.push(
-      {
-        budget_id,
-        id: 'test-item',
-        name: 'Test Item',
-        quantity: 10,
-        vendor: 'Walmart',
-        unit_price: 5,
-      },
-      {
-        budget_id,
-        id: 'test-item-2',
-        name: 'Second Test Item',
-        quantity: 15,
-        vendor: 'Amazon',
-        unit_price: 10,
-      },
-      {
-        budget_id,
-        id: 'test-item-3',
-        name: 'Test Item with Link',
-        quantity: 15,
-        vendor: 'Amazon',
-        url: 'https://amazon.com',
-        unit_price: 10,
-      }
-    );
-  }
   // THIS IS BAD Code
   // The problem is that we can only pass data, not functions from server side to client side components
   // UNLESS those functions are 'server side actions'. As far as I know, the underlying firebase sdk probably
