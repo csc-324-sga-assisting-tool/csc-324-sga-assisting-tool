@@ -56,6 +56,5 @@ export async function signInAction(email: string, password: string) {
   modifier.signInUser(email, password);
   await createSession(email);
   console.log('WELCOME!!!');
-  revalidatePath('/dashboard');
   redirect('/dashboard');
 }
