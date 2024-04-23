@@ -67,16 +67,48 @@ export class DataModel {
   }
   async addItem(item: Item): Promise<void> {
     await this.database.addDocument(Collections.Items, item);
+    try {
+      const budget: Budget = await this.getBudget(item.budget_id);
+      const user: User = await this.getUser(budget.user_id);
+      const total = item.unit_cost * item.quantity;
+      budget.total_cost += total;
+      user.remaining_budget -= total;
 
-    const budget: Budget = await this.getBudget(item.budget_id);
-    const user: User = await this.getUser(budget.user_id);
-    const total = item.unit_cost * item.quantity;
-    budget.total_cost += total;
-    user.remaining_budget -= total;
+      // Write changes to Firestore
+      await this.addBudget(budget);
+      await this.updateUser(user);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
 
-    // Write changes to Firestore
-    await this.addBudget(budget);
-    await this.updateUser(user);
+  async addItems(items: Item[]): Promise<void> {
+    if (items.length === 0) return Promise.resolve();
+    let sameBudget = true;
+    const lastId = items[0].budget_id;
+    items.forEach(
+      item => (sameBudget = sameBudget && lastId === item.budget_id)
+    );
+    if (!sameBudget) {
+      return Promise.reject(
+        new Error('all items passed to addItems should have the same budget_id')
+      );
+    }
+    try {
+      const budget: Budget = await this.getBudget(lastId);
+      const user: User = await this.getUser(budget.user_id);
+      const total: number = items.reduce((cumulative, current) => {
+        return cumulative + current.unit_cost * current.quantity;
+      }, 0);
+      budget.total_cost += total;
+      user.remaining_budget -= total;
+      // Write changes to Firestore
+      await this.database.addManyDocuments(Collections.Items, items);
+      await this.addBudget(budget);
+      await this.updateUser(user);
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   async updateUser(user: User): Promise<void> {
