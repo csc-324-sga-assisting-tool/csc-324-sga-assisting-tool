@@ -36,7 +36,7 @@ function createItem(
   const id = normalizeID(
     `${budget_id}-${vendor}-${name}-${new Date().getSeconds()}`
   );
-  return {id, budget_id: budget_id, name, vendor, url, unit_price, quantity};
+  return {id, budget_id, name, vendor, url, unit_price, quantity};
 }
 
 export async function TESTcreateItemAction(
@@ -49,8 +49,7 @@ export async function TESTcreateItemAction(
   url?: string
 ) {
   const item = createItem(budgetID, name, vendor, unit_price, quantity, url);
-  // TODO: comment out once implemented
-  //return dataModel.addItem(item)
+  return dataModel.addItem(item);
 }
 
 export async function createItemAction(
@@ -63,7 +62,6 @@ export async function createItemAction(
 ) {
   const item = createItem(budgetID, name, vendor, unit_price, quantity, url);
   const model = new DataModel(Database);
-  // TODO: comment out once implemented
-  // const result = modifier.addItem(item)
+  model.addItem(item);
   revalidatePath('/dashboard');
 }

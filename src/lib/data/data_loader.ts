@@ -35,7 +35,7 @@ export class DataModel {
    */
   async getItemsForBudget(
     budgetID: string,
-    sort: Sort,
+    sort?: Sort,
     filters: Filter[] = [],
     howMany = 25
   ): Promise<Item[]> {
@@ -70,7 +70,7 @@ export class DataModel {
     try {
       const budget: Budget = await this.getBudget(item.budget_id);
       const user: User = await this.getUser(budget.user_id);
-      const total = item.unit_cost * item.quantity;
+      const total = item.unit_price * item.quantity;
       budget.total_cost += total;
       user.remaining_budget -= total;
 
@@ -98,7 +98,7 @@ export class DataModel {
       const budget: Budget = await this.getBudget(lastId);
       const user: User = await this.getUser(budget.user_id);
       const total: number = items.reduce((cumulative, current) => {
-        return cumulative + current.unit_cost * current.quantity;
+        return cumulative + current.unit_price * current.quantity;
       }, 0);
       budget.total_cost += total;
       user.remaining_budget -= total;
