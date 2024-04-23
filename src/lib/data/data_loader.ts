@@ -1,4 +1,11 @@
+
 import {Budget, Item, User} from '.';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
@@ -113,5 +120,46 @@ export class DataModel {
 
   async updateUser(user: User): Promise<void> {
     await this.database.addDocument(Collections.Users, user);
+  }
+ 
+  //These should be moved
+  async addUser(email: string, password: string, user: User): Promise<void> {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        // Signed up
+        // const user = userCredential.user; might need this but not now for future testing
+        return this.database.addDocument(Collections.Users, user);
+      })
+      .catch(error => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  }
+
+  signOutUser() {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+      })
+      .catch(error => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  }
+
+  signInUser(email: string, password: string) {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        // Signed in
+        const user = userCredential.user;
+      })
+      .catch(error => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // return `${errorCode} : ${errorMessage}`;
+      });
   }
 }
