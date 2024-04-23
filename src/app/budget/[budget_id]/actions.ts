@@ -2,18 +2,26 @@
 import {revalidatePath} from 'next/cache';
 import {Budget, Item, DataModel, Database} from 'lib/data';
 import {normalizeID} from 'lib/util';
+import {redirect} from 'next/navigation';
 
 export async function TESTupdateBudgetAction(
   dataModel: DataModel,
-  budget: Budget
+  budget: Budget,
+  backToDashboard = false
 ): Promise<void> {
   return dataModel.addBudget(budget);
 }
 
-export async function updateBudgetAction(budget: Budget): Promise<void> {
+export async function updateBudgetAction(
+  budget: Budget,
+  backToDashboard = false
+): Promise<void> {
   const modifier = new DataModel(Database);
   const result = modifier.addBudget(budget);
   revalidatePath('/dashboard');
+  if (backToDashboard) {
+    redirect('/dashboard');
+  }
   return result;
 }
 
