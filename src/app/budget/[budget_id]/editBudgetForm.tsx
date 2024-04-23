@@ -2,14 +2,16 @@
 
 import {
   Button,
+  Datepicker,
+  DatepickerProps,
   Label,
   Modal,
   Select,
   Textarea,
   TextInput,
 } from 'flowbite-react';
-import {Budget, EventType, EventTypes} from 'lib/data';
-import {FormEvent, FormEventHandler, useState} from 'react';
+import { Budget, EventType, EventTypes } from 'lib/data';
+import { FormEvent, FormEventHandler, useState } from 'react';
 
 export function EditBudgetForm({
   budget,
@@ -114,17 +116,11 @@ export function EditBudgetForm({
                 <div className="m-2 block">
                   <Label htmlFor="event-date" value="Event Date" />
                 </div>
-                <input
+                <Datepicker
                   id="event_date"
-                  className="text-black border-gray-300 bg-gray-50 w-full rounded-lg"
                   name="event_date"
-                  type="datetime-local"
                   data-testid="edit-budget-form-input-datepicker"
-                  defaultValue={
-                    budget.event_datetime
-                      ? budget.event_datetime
-                      : new Date().toISOString()
-                  }
+                  defaultDate={budget.event_datetime ? new Date(budget.event_datetime) : new Date()}
                   required
                 />
               </div>

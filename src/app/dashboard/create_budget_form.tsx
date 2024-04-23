@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Datepicker,
   Label,
   Modal,
   Select,
@@ -109,11 +110,9 @@ export function NewBudgetForm({
                 <div className="m-2 block">
                   <Label htmlFor="event-date" value="Event Date" />
                 </div>
-                <input
+                <Datepicker
                   id="event_date"
-                  className="text-black border-gray-300 bg-gray-50 w-full rounded-lg"
                   name="event_date"
-                  type="datetime-local"
                   data-testid="new-budget-form-input-datepicker"
                   required
                 />
