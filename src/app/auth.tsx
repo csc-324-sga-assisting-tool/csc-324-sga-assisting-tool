@@ -6,7 +6,7 @@ import {redirect} from 'next/navigation';
 import {normalizeID} from 'lib/util';
 
 function createUser(
-  user_name: string,
+  name: string,
   email: string,
   total_budget: number,
   user_type: UserType
@@ -14,7 +14,7 @@ function createUser(
   const id = email; // Do I want to change this?
   const user: User = {
     id,
-    user_name,
+    name,
     remaining_budget: total_budget,
     total_budget,
     user_type,
@@ -27,7 +27,7 @@ function createUser(
 }
 
 export async function createUserAction(
-  user_name: string,
+  name: string,
   email: string,
   total_budget: number,
   user_type: UserType,
@@ -35,7 +35,7 @@ export async function createUserAction(
 ): Promise<void> {
   const emailNorm = normalizeID(email);
   const modifier = new DataModel(Database);
-  const user = createUser(user_name, emailNorm, total_budget, user_type);
+  const user = createUser(name, emailNorm, total_budget, user_type);
   await createSession(user.id);
   await modifier.addUser(emailNorm, password, user);
   redirect('/dashboard');
