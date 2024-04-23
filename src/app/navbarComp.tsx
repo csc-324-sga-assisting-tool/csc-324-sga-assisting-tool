@@ -2,12 +2,13 @@
 
 import Image from 'next/image';
 import {Button, Navbar} from 'flowbite-react';
+import {signOutAction} from './auth';
 
 export function ComponentNav({buttonLabel}: {buttonLabel: string}) {
   return (
     <Navbar
       fluid
-      className="bg-pallete-1 items-center justify-between mx-auto md:w-auto p-3"
+      className="bg-pallete-1 items-center justify-between mx-auto md:w-auto p-3 order-1"
     >
       <Navbar.Brand href="/">
         <Image
@@ -32,7 +33,12 @@ export function ComponentNav({buttonLabel}: {buttonLabel: string}) {
             Help
           </Button>
         </a>
-        <Button className="bg-pallete-5 font-medium text-sm w-28 h-10">
+        <Button
+          className="bg-pallete-5 font-medium text-sm w-28 h-10"
+          onClick={() => {
+            signOutAction();
+          }}
+        >
           {buttonLabel}
         </Button>
         <Navbar.Toggle />

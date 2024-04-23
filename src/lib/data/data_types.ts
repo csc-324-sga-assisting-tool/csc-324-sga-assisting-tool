@@ -53,8 +53,15 @@ interface Budget extends Comments, Document {
   status_history: StatusChange[];
 }
 
-type UserType = 'RSO' | 'SEPC' | 'SGA_Treasurer' | 'SGA_Assistant_Treasurer';
+const UserTypes = [
+  'RSO',
+  'SEPC',
+  'SGA_Treasurer',
+  'SGA_Assistant_Treasurer',
+] as const;
+type UserType = (typeof UserTypes)[number];
 // User represents a single user
+//user.id is email of user
 interface User extends Document {
   user_name: string;
   remaining_budget: number;
@@ -65,5 +72,14 @@ interface User extends Document {
   completed_event: number;
 }
 
-export type {Budget, Document, EventType, Item, Status, StatusChange, User};
-export {EventTypes};
+export type {
+  Budget,
+  Document,
+  EventType,
+  UserType,
+  Item,
+  Status,
+  StatusChange,
+  User,
+};
+export {EventTypes, UserTypes};
