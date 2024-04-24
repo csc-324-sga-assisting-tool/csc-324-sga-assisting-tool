@@ -90,7 +90,7 @@ export function NewItemForm({
               </div>
               <div>
                 <div className="m-2 block">
-                  <Label htmlFor="item_cost" value="Cost (for singe item)" />
+                  <Label htmlFor="item_cost" value="Cost (for single item)" />
                 </div>
                 <TextInput
                   id="item_cost"
