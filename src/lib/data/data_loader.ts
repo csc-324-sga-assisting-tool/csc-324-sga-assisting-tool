@@ -41,8 +41,11 @@ export class DataModel {
     return this.getBudgets(filters, howMany, sort);
   }
 
-  // Adds the given budget to the database and assigns it an ID
   async addBudget(budget: Budget): Promise<void> {
+    const user_id = budget.user_id;
+    const user = (await this.getUser(user_id)) as User;
+    user.planned_event += 1;
+    await this.database.addDocument(Collections.Users, user);
     return this.database.addDocument(Collections.Budgets, budget);
   }
 }
