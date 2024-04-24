@@ -1,20 +1,19 @@
-import {BudgetDisplay} from './budget';
-import {SummarySidebar} from './sidebar';
-import {Budget, DataModel, User} from 'lib/data';
+import {BudgetList} from './budget';
+import {RSODashboardSidebar} from './sidebar';
+import {DataModel, User} from 'lib/data';
 import {NewBudgetForm} from './create_budget_form';
 import {createBudgetAction, TESTcreateBudgetAction} from './actions';
 
 export async function Dashboard({
-  userID,
+  user,
   dataModel: dataModel,
   TESTING_FLAG = false,
 }: {
-  userID: string;
+  user: User;
   dataModel: DataModel;
   TESTING_FLAG?: boolean;
 }) {
-  const user = (await dataModel.getUser(userID)) as User;
-  const userBudgets = await dataModel.getBudgetsForUser(userID);
+  const budgets = await dataModel.getBudgetsForUser(user.id);
   // THIS IS BAD Code
   // The problem is that we can only pass data, not functions from server side to client side components
   // UNLESS those functions are 'server side actions'. As far as I know, the underlying firebase sdk probably
@@ -30,19 +29,18 @@ export async function Dashboard({
 
   return (
     <>
-      <SummarySidebar
-        total={user.total_budget}
-        remaining={user.remaining_budget}
-        pendingEvents={user.pending_event}
-        plannedEvents={user.planned_event}
-        completedEvents={user.completed_event}
-      />
-      <main className="w-128 ml-72">
-        {userBudgets.map((budget: Budget) => (
-          <BudgetDisplay key={budget.id} budget={budget} />
-        ))}
+      <RSODashboardSidebar user={user} />
+
+      <main className="w-128">
+        <BudgetList budgets={budgets} show_organizer={false} />
+
       </main>
-      <NewBudgetForm user_id={userID} createBudgetAction={action} />
+
+      <NewBudgetForm
+        user_id={user.id}
+        user_name={user.name}
+        createBudgetAction={action}
+      />
     </>
   );
 }

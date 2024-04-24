@@ -5,6 +5,7 @@ import {normalizeID} from 'lib/util';
 
 function createBudget(
   user_id: string,
+  user_name: string,
   event_name: string,
   event_description: string,
   event_location: string,
@@ -16,6 +17,7 @@ function createBudget(
   return {
     id,
     user_id,
+    user_name,
     event_name,
     event_description,
     event_location,
@@ -36,6 +38,7 @@ function createBudget(
 export async function TESTcreateBudgetAction(
   dataModel: DataModel,
   user_id: string,
+  user_name: string,
   event_name: string,
   event_description: string,
   event_location: string,
@@ -45,6 +48,7 @@ export async function TESTcreateBudgetAction(
   return dataModel.addBudget(
     createBudget(
       user_id,
+      user_name,
       event_name,
       event_description,
       event_location,
@@ -56,6 +60,7 @@ export async function TESTcreateBudgetAction(
 
 export async function createBudgetAction(
   user_id: string,
+  user_name: string,
   event_name: string,
   event_description: string,
   event_location: string,
@@ -64,6 +69,7 @@ export async function createBudgetAction(
 ): Promise<void> {
   const budget = createBudget(
     user_id,
+    user_name,
     event_name,
     event_description,
     event_location,

@@ -1,10 +1,9 @@
 'use client';
 
-import {Status} from 'lib/data';
+import {Status, Budget} from 'lib/data';
 import {Color} from 'lib/color.types';
 import {FiCopy, FiEdit} from 'react-icons/fi';
 import Link from 'next/link';
-import {Budget} from 'lib/data';
 
 export type BudgetProps = {
   title: string;
@@ -13,6 +12,7 @@ export type BudgetProps = {
   status: Status;
   lastStatusDate: string;
   total: number;
+  organizer?: string;
 };
 
 function BudgetStatusDisplay({status}: {status: Status}) {
@@ -59,33 +59,63 @@ function DateDisplay({dateISO}: {dateISO: string}) {
     </span>
   );
 }
-
-export function BudgetDisplay({budget}: {budget: Budget}) {
+// If the organizer is false, it will not be displayed
+export function BudgetDisplay(props: BudgetProps) {
   return (
-    <Link href={`/budget/${budget.id}`}>
-      <div className="grid grid-cols-6 gap-4 bg-white hover:bg-gray-200 shadow-md rounded-lg p-4 m-5 divide-x divide-solid max-w-3xl">
-        <div className="h-full items-center justify-center col-span-1">
-          <span className="text-xl text-bold text-black justify-center h-full w-full p-2">
-            {budget.event_name}
+    <div
+      className="grid grid-cols-10 gap-4 bg-white shadow-md rounded-lg pt-4 pb-4 m-5 ml-72 divide-x divide-solid max-w-3xl budgetCard"
+      data-testid="BudgetDisplay"
+    >
+      {props.organizer && (
+        <div className="h-full col-span-1 items-center justify-center">
+          <span className="text-sm text-bold text-black justify-center h-full w-full p-2">
+            {props.organizer}
           </span>
         </div>
-        <div className="col-span-2 grid grid-row-2 p-2">
-          <BudgetStatusDisplay status={budget.current_status} />
-          <div>
-            <DateDisplay dateISO={budget.status_history[0]!.when} />
-          </div>
-        </div>
-        <div className="col-span-2 p-2">
-          <span className="text-lg text-black float-left">Cost: </span>
-          <span className="text-lg text-black float-right text-bold">
-            $ {budget.total_cost}
-          </span>
-        </div>
-        <div className="col-span-1 p-2 items-center justify-center grid grid-row-2 divide-y divide-dashed">
-          <FiEdit />
-          <FiCopy />
+      )}
+      <div className="h-full items-center justify-center col-span-2 p-4">
+        <span className="text-xl text-bold text-black justify-center h-full w-full">
+          {props.title}
+        </span>
+      </div>
+      <div className="col-span-3 grid grid-row-2 p-2">
+        <BudgetStatusDisplay status={props.status} />
+        <div>
+          <DateDisplay dateISO={props.lastStatusDate} />
         </div>
       </div>
-    </Link>
+      <div className="col-span-3 p-2">
+        <span className="text-lg text-black float-left">Cost: </span>
+        <span className="text-lg text-black float-right text-bold">
+          $ {props.total}
+        </span>
+      </div>
+      <div className="col-span-1 p-2 items-center justify-center grid grid-row-2 divide-y divide-dashed">
+        <FiEdit />
+        <FiCopy />
+      </div>
+    </div>
+  );
+}
+
+export function BudgetList(props: {
+  budgets: Budget[];
+  show_organizer: boolean;
+}) {
+  return (
+    <>
+      {props.budgets.map((budget: Budget) => (
+        <BudgetDisplay
+          id={budget.id}
+          key={budget.id}
+          organizer={props.show_organizer ? budget.user_name : undefined}
+          title={budget.event_name}
+          description={budget.event_description}
+          total={budget.total_cost}
+          status={budget.current_status}
+          lastStatusDate={budget.status_history[0]!.when}
+        />
+      ))}
+    </>
   );
 }

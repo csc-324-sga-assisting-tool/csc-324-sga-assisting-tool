@@ -3,25 +3,27 @@ import {expect, describe, it} from 'vitest';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
 import {LocalDatabase} from '../utils/database.local';
-import {DataModel} from 'lib/data';
+import {DataModel, User} from 'lib/data';
 import {Collections} from 'lib/firebase';
 
 describe('Test Dashboard works as Expected', () => {
-  const mockDatabase = new LocalDatabase();
-  mockDatabase.addDocument(Collections.Users, {
+  const mockUser: User = {
     id: 'test_user',
-    user_name: 'Test Org',
+    name: 'Test Org',
     user_type: 'RSO',
     remaining_budget: 100,
     total_budget: 1000,
     pending_event: 3,
     planned_event: 5,
     completed_event: 2,
-  });
+  };
+  const mockDatabase = new LocalDatabase();
+  mockDatabase.addDocument(Collections.Users, mockUser);
+
 
   const mockDataprovider = new DataModel(mockDatabase);
   const props = {
-    userID: 'test_user',
+    user: mockUser,
     dataModel: mockDataprovider,
     TESTING_FLAG: true,
   };
