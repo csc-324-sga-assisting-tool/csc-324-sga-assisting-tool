@@ -1,4 +1,3 @@
-
 import {Budget, Item, User} from '.';
 import {
   getAuth,
@@ -74,7 +73,7 @@ export class DataModel {
     filters.push(new Filter('current_status', '==', 'submitted'));
     return this.getBudgets(filters, howMany, sort);
   }
-  
+
   // Adds the given budget to the database
   // If budget does not have an ID, assigns it one
   // Else, use ID to get document from database
@@ -130,45 +129,25 @@ export class DataModel {
   async updateUser(user: User): Promise<void> {
     await this.database.addDocument(Collections.Users, user);
   }
- 
+
   //These should be moved
   async addUser(email: string, password: string, user: User): Promise<void> {
     const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        // Signed up
-        // const user = userCredential.user; might need this but not now for future testing
-        return this.database.addDocument(Collections.Users, user);
-      })
-      .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
+    await createUserWithEmailAndPassword(auth, email, password);
+    await this.database.addDocument(Collections.Users, user);
   }
 
-  signOutUser() {
+  async signOutUser() {
     const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-      })
-      .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
+    try {
+      await signOut(auth);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
-  signInUser(email: string, password: string) {
+  async signInUser(email: string, password: string) {
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        // Signed in
-        const user = userCredential.user;
-      })
-      .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // return `${errorCode} : ${errorMessage}`;
-      });
+    await signInWithEmailAndPassword(auth, email, password);
   }
 }

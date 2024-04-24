@@ -1,7 +1,7 @@
 'use server';
 import {revalidatePath} from 'next/cache';
 import {Budget, DataModel, EventType, Database} from 'lib/data';
-import {normalizeID} from 'lib/util';
+import {forceAlphanumeric, normalizeID} from 'lib/util';
 
 function createBudget(
   user_id: string,
@@ -13,7 +13,9 @@ function createBudget(
   event_type: EventType
 ): Budget {
   // Create the id by stripping
-  const id = normalizeID(`${user_id}-${event_name}-${new Date().getSeconds()}`);
+  const id = forceAlphanumeric(
+    normalizeID(`${user_id}-${event_name}-${new Date().getSeconds()}`)
+  );
   return {
     id,
     user_id,

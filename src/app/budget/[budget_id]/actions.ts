@@ -1,7 +1,7 @@
 'use server';
 import {revalidatePath} from 'next/cache';
 import {Budget, Item, DataModel, Database} from 'lib/data';
-import {normalizeID} from 'lib/util';
+import {forceAlphanumeric, normalizeID} from 'lib/util';
 import {redirect} from 'next/navigation';
 
 export async function TESTupdateBudgetAction(
@@ -19,6 +19,7 @@ export async function updateBudgetAction(
   const modifier = new DataModel(Database);
   const result = modifier.addBudget(budget);
   revalidatePath('/dashboard');
+  revalidatePath(`/budget/${budget.id}`);
   if (backToDashboard) {
     redirect('/dashboard');
   }
@@ -33,8 +34,8 @@ function createItem(
   quantity: number,
   url?: string
 ): Item {
-  const id = normalizeID(
-    `${budget_id}-${vendor}-${name}-${new Date().getSeconds()}`
+  const id = forceAlphanumeric(
+    normalizeID(`${budget_id}-${vendor}-${name}-${new Date().getSeconds()}`)
   );
   return {id, budget_id, name, vendor, url, unit_price, quantity};
 }
@@ -62,6 +63,6 @@ export async function createItemAction(
 ) {
   const item = createItem(budgetID, name, vendor, unit_price, quantity, url);
   const model = new DataModel(Database);
-  model.addItem(item);
-  revalidatePath('/dashboard');
+  await model.addItem(item);
+  revalidatePath(`/budget/${budgetID}`);
 }
