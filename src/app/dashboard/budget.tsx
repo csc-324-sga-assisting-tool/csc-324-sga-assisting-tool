@@ -62,39 +62,41 @@ function DateDisplay({dateISO}: {dateISO: string}) {
 // If the organizer is false, it will not be displayed
 export function BudgetDisplay(props: BudgetProps) {
   return (
-    <div
-      className="grid grid-cols-10 gap-4 bg-white shadow-md rounded-lg pt-4 pb-4 m-5 ml-72 divide-x divide-solid max-w-3xl budgetCard"
-      data-testid="BudgetDisplay"
-    >
-      {props.organizer && (
-        <div className="h-full col-span-1 items-center justify-center">
-          <span className="text-sm text-bold text-black justify-center h-full w-full p-2">
-            {props.organizer}
+    <Link href={`/budget/${props.id}`}>
+      <div
+        className="grid grid-cols-10 gap-4 bg-white hover:bg-gray=200 shadow-md rounded-lg pt-4 pb-4 m-5 ml-72 divide-x divide-solid max-w-3xl budgetCard"
+        data-testid="BudgetDisplay"
+      >
+        {props.organizer && (
+          <div className="h-full col-span-1 items-center justify-center">
+            <span className="text-sm text-bold text-black justify-center h-full w-full p-2">
+              {props.organizer}
+            </span>
+          </div>
+        )}
+        <div className="h-full items-center justify-center col-span-2 p-4">
+          <span className="text-xl text-bold text-black justify-center h-full w-full">
+            {props.title}
           </span>
         </div>
-      )}
-      <div className="h-full items-center justify-center col-span-2 p-4">
-        <span className="text-xl text-bold text-black justify-center h-full w-full">
-          {props.title}
-        </span>
-      </div>
-      <div className="col-span-3 grid grid-row-2 p-2">
-        <BudgetStatusDisplay status={props.status} />
-        <div>
-          <DateDisplay dateISO={props.lastStatusDate} />
+        <div className="col-span-3 grid grid-row-2 p-2">
+          <BudgetStatusDisplay status={props.status} />
+          <div>
+            <DateDisplay dateISO={props.lastStatusDate} />
+          </div>
+        </div>
+        <div className="col-span-3 p-2">
+          <span className="text-lg text-black float-left">Cost: </span>
+          <span className="text-lg text-black float-right text-bold">
+            $ {props.total}
+          </span>
+        </div>
+        <div className="col-span-1 p-2 items-center justify-center grid grid-row-2 divide-y divide-dashed">
+          <FiEdit />
+          <FiCopy />
         </div>
       </div>
-      <div className="col-span-3 p-2">
-        <span className="text-lg text-black float-left">Cost: </span>
-        <span className="text-lg text-black float-right text-bold">
-          $ {props.total}
-        </span>
-      </div>
-      <div className="col-span-1 p-2 items-center justify-center grid grid-row-2 divide-y divide-dashed">
-        <FiEdit />
-        <FiCopy />
-      </div>
-    </div>
+    </Link>
   );
 }
 
