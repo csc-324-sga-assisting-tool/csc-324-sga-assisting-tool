@@ -4,4 +4,8 @@ function normalizeID(dirtyID: string): string {
   return dirtyID.toLowerCase().replace(/\s+/g, '');
 }
 
-export {normalizeID};
+function forceAlphanumeric(str: string): string {
+  return str.replace(/[^A-Za-z0-9]/g, '');
+}
+
+export {normalizeID, forceAlphanumeric};

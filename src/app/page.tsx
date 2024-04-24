@@ -1,5 +1,4 @@
-import {ComponentLog} from './logIn';
-// import { SignUp } from './createAcc';
+import { ComponentLog } from './logIn';
 
 export default function Home() {
   return (

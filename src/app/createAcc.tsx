@@ -1,14 +1,17 @@
 'use client';
 
-import {Button, Label, Modal, TextInput, Select} from 'flowbite-react';
-import {FormEvent, FormEventHandler, useState} from 'react';
-import {createUserAction} from './auth';
-import {UserType, UserTypes} from 'lib/data';
+import { Alert, Button, Label, Modal, TextInput, Select } from 'flowbite-react';
+import { FormEvent, FormEventHandler, useState } from 'react';
+import { createUserAction } from './auth';
+import { UserType, UserTypes } from 'lib/data';
 
 export function SignUp() {
   const [openModal, setOpenModal] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [errorMessage, setError] = useState("");
 
-  const submit: FormEventHandler<HTMLFormElement> = (
+  const submit: FormEventHandler<HTMLFormElement> = async (
     e: FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
@@ -33,9 +36,14 @@ export function SignUp() {
 
     setOpenModal(false);
 
-    createUserAction(name, email, budget, userType, password);
+    const result = await createUserAction(name, email, budget, userType, password);
+    if (result) {
+      setShowErrorAlert(true);
+      setError(result.message)
+    } else {
+      setShowSuccessAlert(true);
+    }
   };
-
   return (
     <>
       <Button
@@ -119,6 +127,12 @@ export function SignUp() {
           </div>
         </Modal.Body>
       </Modal>
+      {showErrorAlert &&
+        <Alert className='max-w-md' color='failure' onDismiss={() => setShowErrorAlert(false)}> Create Account Failed: {errorMessage} </Alert>
+      }
+      {showSuccessAlert &&
+        <Alert className='max-w-md' color='success' onDismiss={() => setShowSuccessAlert(false)}> Success </Alert>
+      }
     </>
   );
 }
