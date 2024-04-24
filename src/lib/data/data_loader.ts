@@ -78,6 +78,10 @@ export class DataModel {
   // If budget does not have an ID, assigns it one
   // Else, use ID to get document from database
   async addBudget(budget: Budget): Promise<void> {
+    const user_id = budget.user_id;
+    const user = (await this.getUser(user_id)) as User;
+    user.planned_event += 1;
+    await this.database.addDocument(Collections.Users, user);
     return this.database.addDocument(Collections.Budgets, budget);
   }
   async addItem(item: Item): Promise<void> {
