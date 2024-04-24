@@ -1,13 +1,13 @@
-import { BudgetViewSidebar } from './sidebar';
-import { Item, Budget, DataModel } from 'lib/data';
+import {BudgetViewSidebar} from './sidebar';
+import {Item, Budget, DataModel} from 'lib/data';
 import {
   updateBudgetAction,
   TESTupdateBudgetAction,
   TESTcreateItemAction,
   createItemAction,
 } from './actions';
-import { ItemDisplay } from './itemDisplay';
-import { NewItemForm } from './addItemForm';
+import {ItemDisplay} from './itemDisplay';
+import {NewItemForm} from './addItemForm';
 
 export async function BudgetView({
   budget_id,
@@ -20,35 +20,7 @@ export async function BudgetView({
 }) {
   const budget = (await dataModel.getBudget(budget_id)) as Budget;
   // TODO: get items from db
-  //const items = await dataModel.getItemsForBudget(budget_id);
-  const items: Item[] = [
-    {
-      budget_id,
-      id: 'test-item',
-      name: 'Test Item',
-      quantity: 10,
-      vendor: 'Walmart',
-      unit_price: 5,
-    },
-    {
-      budget_id,
-      id: 'test-item-2',
-      name: 'Second Test Item',
-      quantity: 15,
-      vendor: 'Amazon',
-      unit_price: 10,
-    },
-    {
-      budget_id,
-      id: 'test-item-3',
-      name: 'Test Item with Link',
-      quantity: 15,
-      vendor: 'Amazon',
-      url: 'https://amazon.com',
-      unit_price: 10,
-    },
-  ];
-
+  const items: Item[] = await dataModel.getItemsForBudget(budget_id);
   // THIS IS BAD Code
   // The problem is that we can only pass data, not functions from server side to client side components
   // UNLESS those functions are 'server side actions'. As far as I know, the underlying firebase sdk probably
@@ -72,7 +44,9 @@ export async function BudgetView({
       />
       <main className="ml-72 w-3/5 bg-white">
         <ItemDisplay items={items} />
-        {budget.current_status === 'created' && <NewItemForm budget_id={budget_id} createItemAction={itemAddAction} />}
+        {budget.current_status === 'created' && (
+          <NewItemForm budget_id={budget_id} createItemAction={itemAddAction} />
+        )}
       </main>
     </>
   );
