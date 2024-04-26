@@ -1,4 +1,4 @@
-import {assert, beforeAll, it, describe, expect} from 'vitest';
+import {assert, beforeAll, it, describe, expect, test} from 'vitest';
 import {getFirestore} from 'firebase/firestore';
 import {Budget, DataModel} from 'lib/data';
 import {getLocalFirebase} from '../../utils/database.util';
@@ -12,6 +12,7 @@ beforeAll(async () => {
     return {
       id: `budget_${number}`,
       user_id: 'user_1',
+      user_name: 'user_1',
       event_name: `event_name_${number}`,
       event_description: 'test description',
       total_cost: number * 100,
@@ -23,12 +24,14 @@ beforeAll(async () => {
         },
       ],
       items: [],
+      event_type: 'Other',
     };
   });
 
   testBudgets.push({
     id: 'budget_user_2',
     user_id: 'user_2',
+    user_name: 'test user',
     event_name: 'event_name',
     event_description: 'test description',
     total_cost: 100,
@@ -40,6 +43,7 @@ beforeAll(async () => {
       },
     ],
     items: [],
+    event_type: 'Other',
   });
 
   await database.addManyDocuments(Collections.Budgets, testBudgets);
