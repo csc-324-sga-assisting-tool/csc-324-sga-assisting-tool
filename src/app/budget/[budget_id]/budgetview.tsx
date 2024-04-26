@@ -1,4 +1,4 @@
-import {BudgetViewSidebar} from './sidebar';
+import {RSOBudgetViewSidebar} from './sidebar';
 import {Item, Budget, DataModel} from 'lib/data';
 import {
   updateBudgetAction,
@@ -9,7 +9,7 @@ import {
 import {ItemDisplay} from './itemDisplay';
 import {NewItemForm} from './addItemForm';
 
-export async function BudgetView({
+export async function RSOBudgetView({
   budget_id,
   dataModel: dataModel,
   TESTING_FLAG = false,
@@ -37,7 +37,7 @@ export async function BudgetView({
   }
   return (
     <>
-      <BudgetViewSidebar
+      <RSOBudgetViewSidebar
         budget={budget}
         item_count={items.length}
         updateBudgetAction={updateAction}

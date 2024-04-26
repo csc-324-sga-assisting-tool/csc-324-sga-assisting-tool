@@ -1,5 +1,6 @@
 'use client';
 
+import {PropsWithChildren} from 'react';
 import {Sidebar, Button} from 'flowbite-react';
 import {Budget, Status, StatusChange} from 'lib/data';
 import {Color} from 'lib/color.types';
@@ -46,13 +47,81 @@ function StatusDisplay({status, when}: {status: Status; when: string}) {
   );
 }
 
-function BudgetViewSidebar({
-  budget,
-  item_count,
-  updateBudgetAction,
-}: {
+function BudgetViewSidebar(props: PropsWithChildren<{}>) {
+  return (
+    <Sidebar
+      className="sidebar h-screen fixed"
+      aria-label="RSO Summary Sidebar"
+    >
+      <Sidebar.Items> {props.children} </Sidebar.Items>
+    </Sidebar>
+  );
+}
+
+function BudgetTitle(props: {budget: Budget}) {
+  const budget = props.budget;
+  return (
+    <Sidebar.ItemGroup>
+      <Sidebar.Item>
+        <h1 className="text-lg">{budget.event_name}</h1>
+      </Sidebar.Item>
+
+      <StatusDisplay
+        status={budget.current_status}
+        when={budget.status_history[0]!.when}
+      />
+    </Sidebar.ItemGroup>
+  );
+}
+
+function EventSummary(props: {budget: Budget}) {
+  const budget = props.budget;
+  return (
+    <Sidebar.ItemGroup>
+      <Sidebar.Item label={budget.type}>Event Type</Sidebar.Item>
+      {budget.event_datetime && (
+        <Sidebar.Item label={dateToString(budget.event_datetime)}>
+          Date
+        </Sidebar.Item>
+      )}
+      {budget.event_location && (
+        <Sidebar.Item label={budget.event_location}>Location</Sidebar.Item>
+      )}
+    </Sidebar.ItemGroup>
+  );
+}
+
+function ItemsSummary(props: {budget: Budget; item_count: number}) {
+  const budget = props.budget;
+  const item_count = props.item_count;
+  return (
+    <Sidebar.ItemGroup>
+      <Sidebar.Item>
+        <h1 className="text-lg">Items</h1>
+      </Sidebar.Item>
+
+      <Sidebar.Item label={item_count} labelColor="amber">
+       Total Quantity
+      </Sidebar.Item>
+      <Sidebar.Item label={`${budget.total_cost}`} labelColor="green">
+        Total Cost
+      </Sidebar.Item>
+    </Sidebar.ItemGroup>
+  );
+}
+
+function BudgetDetails(props: {budget: Budget; item_count: number}) {
+ return (
+    <>
+      <BudgetTitle budget={props.budget} />
+      <EventSummary budget={props.budget} />
+      <ItemsSummary budget={props.budget} item_count={props.item_count} />
+    </>
+  );
+}
+
+function CreatedBudgetTools(props: {
   budget: Budget;
-  item_count: number;
   updateBudgetAction: (
     budget: Budget,
     backToDashboard?: boolean
@@ -66,72 +135,55 @@ function BudgetViewSidebar({
     };
     const updatedStatusHistory = [newStatus];
     //Add the old statuses to the status history
-    updatedStatusHistory.push(...budget.status_history);
-    updateBudgetAction(
+    updatedStatusHistory.push(...props.budget.status_history);
+    props.updateBudgetAction(
       {
-        ...budget,
+        ...props.budget,
         status_history: updatedStatusHistory,
         current_status: newStatus.status,
       },
       true
     );
   };
+
   return (
-    <Sidebar
-      className="sidebar h-screen fixed"
-      aria-label="Budget View Sidebar"
-    >
-      <Sidebar.Items>
-        <Sidebar.ItemGroup>
-          <Sidebar.Item>
-            <h1 className="text-lg">{budget.event_name}</h1>
-          </Sidebar.Item>
+    <Sidebar.ItemGroup>
+      <EditBudgetForm
+        budget={props.budget}
+        updateBudgetAction={props.updateBudgetAction}
+      />
+      <Button onClick={submitBudget} className="bg-pallete-5 w-full">
+        Submit
+      </Button>
+    </Sidebar.ItemGroup>
+  );
+}
 
-          <StatusDisplay
-            status={budget.current_status}
-            when={budget.status_history[0]!.when}
-          />
-        </Sidebar.ItemGroup>
+function RSOBudgetViewSidebar({
+  budget,
+  item_count,
+  updateBudgetAction,
+}: {
+  budget: Budget;
+  item_count: number;
+  updateBudgetAction: (
+    budget: Budget,
+    backToDashboard?: boolean
+  ) => Promise<void>;
+}) {
+  return (
+    <BudgetViewSidebar>
+      <BudgetDetails budget={budget} item_count={item_count} />
 
-        <Sidebar.ItemGroup>
-          <Sidebar.Item label={budget.type}>Event Type</Sidebar.Item>
-          {budget.event_datetime && (
-            <Sidebar.Item label={dateToString(budget.event_datetime)}>
-              Date
-            </Sidebar.Item>
-          )}
-          {budget.event_location && (
-            <Sidebar.Item label={budget.event_location}>Location</Sidebar.Item>
-          )}
-        </Sidebar.ItemGroup>
-
-        <Sidebar.ItemGroup>
-          <Sidebar.Item>
-            <h1 className="text-lg">Items</h1>
-          </Sidebar.Item>
-
-          <Sidebar.Item label={item_count} labelColor="amber">
-            Quantity
-          </Sidebar.Item>
-          <Sidebar.Item label={`${budget.total_cost}`} labelColor="green">
-            Total Cost
-          </Sidebar.Item>
-        </Sidebar.ItemGroup>
-        {budget.current_status === 'created' && (
-          <Sidebar.ItemGroup>
-            <EditBudgetForm
-              budget={budget}
-              updateBudgetAction={updateBudgetAction}
-            />
-            <Button onClick={submitBudget} className="bg-pallete-5 w-full">
-              Submit
-            </Button>
-          </Sidebar.ItemGroup>
-        )}
-      </Sidebar.Items>
-    </Sidebar>
+      {budget.current_status === 'created' && (
+        <CreatedBudgetTools
+          budget={budget}
+          updateBudgetAction={updateBudgetAction}
+        />
+      )}
+  </BudgetViewSidebar>
   );
 }
 
 export type {BudgetSidebarProps};
-export {BudgetViewSidebar};
+export {RSOBudgetViewSidebar};
