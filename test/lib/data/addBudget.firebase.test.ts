@@ -22,7 +22,7 @@ beforeAll(async () => {
   });
 
   testUser.push({
-    id: 'test_user1',
+    id: 'test_user4',
     total_budget: 1000,
     remaining_budget: 200,
     pending_event: 5,
@@ -35,7 +35,7 @@ beforeAll(async () => {
   const testBudget: Budget[] = [1, 2, 3].map(number => {
     return {
       id: `budget_${number}`,
-      user_id: 'user_1',
+      user_id: `test_user${number}`,
       event_name: `event_name_${number}`,
       event_description: 'test description',
       total_cost: number * 100,
@@ -51,8 +51,8 @@ beforeAll(async () => {
   });
 
   testBudget.push({
-    id: 'budget_user_1',
-    user_id: 'test_user1',
+    id: 'budget_user_4',
+    user_id: 'test_user4',
     event_name: 'event_name',
     event_description: 'test description',
     total_cost: 100,
@@ -73,10 +73,10 @@ beforeAll(async () => {
 describe('test addBudget', () => {
   const dataModel = new DataModel(database);
   it('should increment planned_event by 1 and add the budget if user exists', async () => {
-    const user = await dataModel.getUser('test_user1');
-    const budgetToAdd = await dataModel.getBudget('budget_user_1');
+    const user = await dataModel.getUser('test_user4');
+    const budgetToAdd = await dataModel.getBudget('budget_user_4');
     await dataModel.addBudget(budgetToAdd);
-    const updatedUser = await dataModel.getUser('test_user1');
+    const updatedUser = await dataModel.getUser('test_user4');
     expect(updatedUser.planned_event).toEqual(user.planned_event + 1);
   });
 });
