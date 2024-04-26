@@ -1,5 +1,6 @@
 'use client';
 
+import {FiEdit} from 'react-icons/fi';
 import {Item} from 'lib/data';
 import {Table} from 'flowbite-react';
 
@@ -19,6 +20,9 @@ function ItemRow(item: Item) {
       <Table.Cell>{item.quantity}</Table.Cell>
       <Table.Cell>{item.quantity * item.unit_price}</Table.Cell>
       <Table.Cell>{item.vendor}</Table.Cell>
+      <Table.Cell>
+        <FiEdit />
+      </Table.Cell>
     </Table.Row>
   );
 }
