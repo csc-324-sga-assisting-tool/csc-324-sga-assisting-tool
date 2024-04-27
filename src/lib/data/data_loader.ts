@@ -148,6 +148,7 @@ export class DataModel {
     }
   }
 
+<<<<<<< HEAD
   /** COMMENTS **/
   // Get a comment by ID
   getComment(commentID: string): Promise<Comment> {
@@ -217,6 +218,8 @@ export class DataModel {
     return await this.pushBudgetComment(budgetID);
   }
 
+=======
+>>>>>>> 8a881a6 (Added comment types and re-organized data_types.ts and data_loader.ts)
   /** USERS **/
   getUser(userID: string): Promise<User> {
     return this.database.getDocument<User>(Collections.Users, userID);
