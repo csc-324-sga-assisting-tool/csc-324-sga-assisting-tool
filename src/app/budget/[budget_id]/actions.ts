@@ -18,11 +18,24 @@ export async function updateBudgetAction(
 ): Promise<void> {
   const modifier = new DataModel(Database);
   const result = modifier.addBudget(budget);
+  // TODO: Is the redirect necessary if we have a separate submitBudgetAction?
   revalidatePath('/dashboard');
   revalidatePath(`/budget/${budget.id}`);
   if (backToDashboard) {
     redirect('/dashboard');
   }
+
+  return result;
+}
+
+export async function submitBudgetAction(budget: Budget): Promise<void> {
+  const modifier = new DataModel(Database);
+  const result = modifier.submitBudget(budget.id);
+
+  revalidatePath('/dashboard');
+  revalidatePath(`/budget/${budget.id}`);
+  redirect('/dashboard');
+
   return result;
 }
 

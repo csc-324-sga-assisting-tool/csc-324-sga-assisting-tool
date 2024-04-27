@@ -1,4 +1,4 @@
-import {Comment, Budget, Item, User} from '.';
+import {Comment, Budget, Item, User, StatusChange} from '.';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -65,6 +65,24 @@ export class DataModel {
     user.planned_event += 1;
     await this.database.addDocument(Collections.Users, user);
     return this.database.addDocument(Collections.Budgets, budget);
+  }
+
+  async submitBudget(budgetID: string): Promise<void> {
+    // TODO: Do validation here to make sure invalid budgets are not submitted
+    const budget = await this.getBudget(budgetID);
+
+    const newStatus: StatusChange = {
+      status: 'submitted',
+      when: new Date().toISOString(),
+    };
+    const updatedStatusHistory = [newStatus];
+
+    // Update the status history
+    updatedStatusHistory.push(...budget.status_history);
+    budget.status_history = updatedStatusHistory;
+    budget.current_status = newStatus.status;
+
+    return this.addBudget(budget);
   }
 
   /** ITEMS **/

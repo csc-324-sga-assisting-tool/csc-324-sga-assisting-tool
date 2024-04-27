@@ -5,6 +5,7 @@ import {Sidebar, Button} from 'flowbite-react';
 import {Budget, Status, StatusChange} from 'lib/data';
 import {Color} from 'lib/color.types';
 import {EditBudgetForm} from './editBudgetForm';
+import {submitBudgetAction} from './actions';
 
 type BudgetSidebarProps = {
   item_count: number;
@@ -127,23 +128,8 @@ function EditSubmitBudgetTools(props: {
     backToDashboard?: boolean
   ) => Promise<void>;
 }) {
-  const submitBudget = () => {
-    // TODO: Do validation here to make sure invalid budgets are not submitted
-    const newStatus: StatusChange = {
-      status: 'submitted',
-      when: new Date().toISOString(),
-    };
-    const updatedStatusHistory = [newStatus];
-    //Add the old statuses to the status history
-    updatedStatusHistory.push(...props.budget.status_history);
-    props.updateBudgetAction(
-      {
-        ...props.budget,
-        status_history: updatedStatusHistory,
-        current_status: newStatus.status,
-      },
-      true
-    );
+  const onSubmit = () => {
+    submitBudgetAction(props.budget);
   };
 
   return (
@@ -152,7 +138,7 @@ function EditSubmitBudgetTools(props: {
         budget={props.budget}
         updateBudgetAction={props.updateBudgetAction}
       />
-      <Button onClick={submitBudget} className="bg-pallete-5 w-full">
+      <Button onClick={onSubmit} className="bg-pallete-5 w-full">
         Submit
       </Button>
     </Sidebar.ItemGroup>
