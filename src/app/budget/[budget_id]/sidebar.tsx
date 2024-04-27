@@ -120,7 +120,7 @@ function BudgetDetails(props: {budget: Budget; item_count: number}) {
   );
 }
 
-function CreatedBudgetTools(props: {
+function EditSubmitBudgetTools(props: {
   budget: Budget;
   updateBudgetAction: (
     budget: Budget,
@@ -159,6 +159,15 @@ function CreatedBudgetTools(props: {
   );
 }
 
+function ApproveDenyBudgetTools(props: {budget:Budget}) {
+  return (
+    <Sidebar.ItemGroup>
+      <Button className="bg-pallate-5 w-full">Approve Budget</Button>
+      <Button className="bg-pallate-5 w-full">Deny Budget</Button>
+    </Sidebar.ItemGroup>
+  );
+}
+
 function RSOBudgetViewSidebar({
   budget,
   item_count,
@@ -176,7 +185,7 @@ function RSOBudgetViewSidebar({
       <BudgetDetails budget={budget} item_count={item_count} />
 
       {budget.current_status === 'created' && (
-        <CreatedBudgetTools
+        <EditSubmitBudgetTools
           budget={budget}
           updateBudgetAction={updateBudgetAction}
         />
@@ -185,5 +194,27 @@ function RSOBudgetViewSidebar({
   );
 }
 
+function SGABudgetViewSidebar({
+  budget,
+  item_count,
+  updateBudgetAction,
+}: {
+  budget: Budget;
+  item_count: number;
+  updateBudgetAction: (
+    budget: Budget,
+    backToDashboard?: boolean
+  ) => Promise<void>;
+}) {
+  return (
+    <BudgetViewSidebar>
+      <BudgetDetails budget={budget} item_count={item_count} />
+
+      {budget.current_status === 'submitted' && (
+        <ApproveDenyBudgetTools budget={budget}/>
+      )}
+  </BudgetViewSidebar>
+  );
+}
 export type {BudgetSidebarProps};
-export {RSOBudgetViewSidebar};
+export {RSOBudgetViewSidebar, SGABudgetViewSidebar};
