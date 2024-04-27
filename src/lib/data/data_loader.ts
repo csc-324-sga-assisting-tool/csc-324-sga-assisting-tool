@@ -1,4 +1,4 @@
-import {Budget, Item, User} from '.';
+import {Comment, Budget, Item, User} from '.';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -128,6 +128,75 @@ export class DataModel {
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  /** COMMENTS **/
+  // Get a comment by ID
+  getComment(commentID: string): Promise<Comment> {
+    return this.database.getDocument<Comment>(Collections.Comments, commentID);
+  }
+
+  // Adds a comment to an item
+  // The comment will not be added to the list of previous comments
+  // until pushItemComment is called.  If stageItemComment is called
+  // twice without a pushItemComment, the first comment will be lost
+  // [This function was generated with copilot and then edited]
+  async stageItemComment(itemID: string, comment: Comment): Promise<void> {
+    await this.database.addDocument(Collections.Comments, comment);
+    const item: Item = await this.database.getDocument<Item>(
+      Collections.Items,
+      itemID
+    );
+    item.comment = comment.id;
+    return await this.database.addDocument(Collections.Items, item);
+  }
+
+  // Pushes the staged comment to the item's list of previous comments
+  // Clear the current comment.  Once a comment is pushed, it cannot
+  // be edited.  RSO comments are intended to be pushed when the budget
+  // is resubmitted.  SGA comments are intended to be pushed when the
+  // budget review is submitted (i.e. denied)
+  async pushItemComment(itemID: string): Promise<void> {
+    const item: Item = await this.database.getDocument<Item>(
+      Collections.Items,
+      itemID
+    );
+    item.prev_comments.push(item.comment);
+    item.comment = '';
+    return await this.database.addDocument(Collections.Items, item);
+  }
+
+  // Stage a comment for a budget
+  // See the comment on stageItemComment for more information
+  async stageBudgetComment(budgetID: string, comment: Comment): Promise<void> {
+    await this.database.addDocument(Collections.Comments, comment);
+    const budget: Budget = await this.database.getDocument<Budget>(
+      Collections.Items,
+      budgetID
+    );
+    budget.comment = comment.id;
+    return await this.database.addDocument(Collections.Items, budget);
+  }
+
+  // Push a comment for a budget
+  // [This function was generated with copilot]
+  async pushBudgetComment(budgetID: string): Promise<void> {
+    const budget: Budget = await this.database.getDocument<Budget>(
+      Collections.Items,
+      budgetID
+    );
+    budget.prev_comments.push(budget.comment);
+    budget.comment = '';
+    return await this.database.addDocument(Collections.Items, budget);
+  }
+
+  // Push all comments for a budget including item comments
+  async pushAllBudgetComments(budgetID: string): Promise<void> {
+    const items = await this.getItemsForBudget(budgetID);
+    items.forEach(async item => {
+      await this.pushItemComment(item.id);
+    });
+    return await this.pushBudgetComment(budgetID);
   }
 
   /** USERS **/

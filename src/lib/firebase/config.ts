@@ -23,6 +23,7 @@ enum Collections {
   Users = 'users',
   Budgets = 'budgets',
   Items = 'items',
+  Comments = 'comments',
 }
 
 export {db, Collections};

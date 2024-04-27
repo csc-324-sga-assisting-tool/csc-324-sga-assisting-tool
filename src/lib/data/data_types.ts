@@ -12,7 +12,7 @@ type Document = {
 };
 
 // A comment is a message left by a user on a budget or item
-interface Comment {
+interface Comment extends Document {
   comment: string;
   userId: string;
 }
