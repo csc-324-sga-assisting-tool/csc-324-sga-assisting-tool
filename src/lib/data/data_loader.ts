@@ -15,14 +15,12 @@ export class DataModel {
     this.database = database;
   }
 
+  /** BUDGETS **/
   // Get a budget by ID
   getBudget(budgetID: string): Promise<Budget> {
     return this.database.getDocument<Budget>(Collections.Budgets, budgetID);
   }
 
-  getUser(userID: string): Promise<User> {
-    return this.database.getDocument<User>(Collections.Users, userID);
-  }
   // Get a sorted and filtered list of budgets
   getBudgets(
     filters: Filter[] = [],
@@ -31,22 +29,6 @@ export class DataModel {
   ): Promise<Budget[]> {
     return this.database.getDocuments<Budget>(
       Collections.Budgets,
-      filters,
-      sort,
-      howMany
-    );
-  }
-  /* getItemsForBudget returns 'howMany' items in budget 'budgetID's'
-   */
-  async getItemsForBudget(
-    budgetID: string,
-    sort?: Sort,
-    filters: Filter[] = [],
-    howMany = 25
-  ): Promise<Item[]> {
-    filters.push(new Filter('budget_id', '==', budgetID));
-    return this.database.getDocuments<Item>(
-      Collections.Items,
       filters,
       sort,
       howMany
@@ -84,6 +66,24 @@ export class DataModel {
     await this.database.addDocument(Collections.Users, user);
     return this.database.addDocument(Collections.Budgets, budget);
   }
+
+  /** ITEMS **/
+  // getItemsForBudget returns 'howMany' items in budget 'budgetID's'
+  async getItemsForBudget(
+    budgetID: string,
+    sort?: Sort,
+    filters: Filter[] = [],
+    howMany = 25
+  ): Promise<Item[]> {
+    filters.push(new Filter('budget_id', '==', budgetID));
+    return this.database.getDocuments<Item>(
+      Collections.Items,
+      filters,
+      sort,
+      howMany
+    );
+  }
+
   async addItem(item: Item): Promise<void> {
     await this.database.addDocument(Collections.Items, item);
     try {
@@ -128,6 +128,11 @@ export class DataModel {
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  /** USERS **/
+  getUser(userID: string): Promise<User> {
+    return this.database.getDocument<User>(Collections.Users, userID);
   }
 
   async updateUser(user: User): Promise<void> {
