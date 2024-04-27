@@ -101,7 +101,7 @@ function ItemsSummary(props: {budget: Budget; item_count: number}) {
       </Sidebar.Item>
 
       <Sidebar.Item label={item_count} labelColor="amber">
-       Total Quantity
+        Total Quantity
       </Sidebar.Item>
       <Sidebar.Item label={`${budget.total_cost}`} labelColor="green">
         Total Cost
@@ -111,7 +111,7 @@ function ItemsSummary(props: {budget: Budget; item_count: number}) {
 }
 
 function BudgetDetails(props: {budget: Budget; item_count: number}) {
- return (
+  return (
     <>
       <BudgetTitle budget={props.budget} />
       <EventSummary budget={props.budget} />
@@ -159,7 +159,7 @@ function EditSubmitBudgetTools(props: {
   );
 }
 
-function ApproveDenyBudgetTools(props: {budget:Budget}) {
+function ApproveDenyBudgetTools(props: {budget: Budget}) {
   return (
     <Sidebar.ItemGroup>
       <Button className="bg-pallate-5 w-full">Approve Budget</Button>
@@ -190,7 +190,7 @@ function RSOBudgetViewSidebar({
           updateBudgetAction={updateBudgetAction}
         />
       )}
-  </BudgetViewSidebar>
+    </BudgetViewSidebar>
   );
 }
 
@@ -211,9 +211,9 @@ function SGABudgetViewSidebar({
       <BudgetDetails budget={budget} item_count={item_count} />
 
       {budget.current_status === 'submitted' && (
-        <ApproveDenyBudgetTools budget={budget}/>
+        <ApproveDenyBudgetTools budget={budget} />
       )}
-  </BudgetViewSidebar>
+    </BudgetViewSidebar>
   );
 }
 export type {BudgetSidebarProps};

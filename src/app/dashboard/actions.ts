@@ -26,7 +26,6 @@ function createBudget(
     event_datetime,
     event_type,
     total_cost: 0,
-    items: [],
     current_status: 'created',
     status_history: [
       {
@@ -34,6 +33,9 @@ function createBudget(
         when: new Date().toISOString(),
       },
     ],
+    denied_items: [],
+    prev_comments: [],
+    comment: '',
   };
 }
 

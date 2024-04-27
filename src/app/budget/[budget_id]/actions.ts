@@ -37,7 +37,17 @@ function createItem(
   const id = forceAlphanumeric(
     normalizeID(`${budget_id}-${vendor}-${name}-${new Date().getSeconds()}`)
   );
-  return {id, budget_id, name, vendor, url, unit_price, quantity};
+  return {
+    id,
+    budget_id,
+    name,
+    vendor,
+    url,
+    unit_price,
+    quantity,
+    prev_comments: [],
+    comment: '',
+  };
 }
 
 export async function TESTcreateItemAction(
