@@ -30,13 +30,11 @@ export async function updateBudgetAction(
 
 export async function submitBudgetAction(budget: Budget): Promise<void> {
   const modifier = new DataModel(Database);
-  const result = modifier.submitBudget(budget.id);
+  await modifier.submitBudget(budget.id);
 
   revalidatePath('/dashboard');
   revalidatePath(`/budget/${budget.id}`);
   redirect('/dashboard');
-
-  return result;
 }
 
 function createItem(

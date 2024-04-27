@@ -15,6 +15,7 @@ beforeAll(async () => {
       user_name: 'user_1',
       event_name: `event_name_${number}`,
       event_description: 'test description',
+      event_type: 'Other',
       total_cost: number * 100,
       current_status: 'created',
       status_history: [
@@ -23,8 +24,9 @@ beforeAll(async () => {
           when: new Date('2001-01-01').toISOString(),
         },
       ],
-      items: [],
-      event_type: 'Other',
+      prev_comments: [],
+      comment: '',
+      denied_items: [],
     };
   });
 
@@ -42,8 +44,10 @@ beforeAll(async () => {
         when: new Date('2001-01-01').toISOString(),
       },
     ],
-    items: [],
     event_type: 'Other',
+    prev_comments: [],
+    comment: '',
+    denied_items: [],
   });
 
   await database.addManyDocuments(Collections.Budgets, testBudgets);
