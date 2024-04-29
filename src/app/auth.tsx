@@ -1,9 +1,8 @@
 'use server';
-
-import {User, DataModel, UserType, Database} from 'lib/data';
-import {createSession, deleteSession} from './session';
+import {User, UserType} from 'lib/data';
 import {redirect} from 'next/navigation';
 import {normalizeID} from 'lib/util';
+import {AuthModel} from 'lib/data/auth_model';
 
 function createUser(
   name: string,
@@ -34,11 +33,10 @@ export async function createUserAction(
   password: string
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
-  const modifier = new DataModel(Database);
+  const auth = AuthModel;
   const user = createUser(name, emailNorm, total_budget, user_type);
   try {
-    await modifier.addUser(emailNorm, password, user);
-    await createSession(user.id);
+    await auth.createUser(emailNorm, password, user);
   } catch (error) {
     return {
       message: error!.toString(),
@@ -48,10 +46,9 @@ export async function createUserAction(
 }
 
 export async function signOutAction(): Promise<{message: string} | void> {
-  const modifier = new DataModel(Database);
+  const auth = AuthModel;
   try {
-    modifier.signOutUser();
-    deleteSession();
+    auth.signOut();
   } catch (error) {
     return {
       message: 'sign out failed',
@@ -65,10 +62,9 @@ export async function signInAction(
   password: string
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
-  const modifier = new DataModel(Database);
+  const auth = AuthModel;
   try {
-    await modifier.signInUser(emailNorm, password);
-    await createSession(emailNorm);
+    await auth.signIn(emailNorm, password);
   } catch (error) {
     return {
       message: error!.toString(),

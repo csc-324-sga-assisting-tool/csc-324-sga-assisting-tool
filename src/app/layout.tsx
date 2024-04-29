@@ -3,6 +3,7 @@ import {Inter} from 'next/font/google';
 import './globals.css';
 import {ThemeModeScript} from 'flowbite-react';
 import {ComponentNav} from './navbarComp';
+import {Suspense} from 'react';
 
 const inter = Inter({subsets: ['latin']});
 
@@ -22,7 +23,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className}`}>
         <ComponentNav buttonLabel={'Log Out'} />
-        {children}
+        <Suspense fallback={<p>Loading ...</p>}>{children}</Suspense>
       </body>
     </html>
   );
