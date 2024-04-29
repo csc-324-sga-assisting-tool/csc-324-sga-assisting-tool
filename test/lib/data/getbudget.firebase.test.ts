@@ -8,7 +8,7 @@ const db = getFirestore();
 const database = getLocalFirebase(db);
 
 beforeEach(async () => {
-  clearCollection(database, Collections.Users);
+  await clearCollection(database, Collections.Users);
   const testBudgets: Budget[] = [1, 2, 3].map(number => {
     return {
       id: `budget_${number}`,
@@ -26,7 +26,7 @@ beforeEach(async () => {
         },
       ],
       prev_commentIDs: [],
-      comment: '',
+      commentID: '',
       denied_items: [],
     };
   });

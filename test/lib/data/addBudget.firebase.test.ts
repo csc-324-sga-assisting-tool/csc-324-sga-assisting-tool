@@ -2,12 +2,14 @@ import {assert, beforeAll, it, describe, expect} from 'vitest';
 import {getFirestore} from 'firebase/firestore';
 import {Budget, DataModel, User} from 'lib/data';
 import {Collections} from 'lib/firebase';
-import {getLocalFirebase} from '../../utils/database.util';
+import {getLocalFirebase, clearCollection} from '../../utils/database.util';
 
 const db = getFirestore();
 const database = getLocalFirebase(db);
 
 beforeAll(async () => {
+  await clearCollection(database, Collections.Users);
+  await clearCollection(database, Collections.Budgets);
   const testUser: User = {
     id: 'test_user',
     name: 'test_user',
