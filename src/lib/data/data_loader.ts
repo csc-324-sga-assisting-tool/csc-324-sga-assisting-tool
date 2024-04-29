@@ -174,6 +174,7 @@ export class DataModel {
 
     const budget: Budget = await this.getBudget(item.budget_id);
     budget.denied_items.push(item.id);
+    await this.database.addDocument(Collections.Budgets, budget);
   }
 
   // Deletes the item's staged comment.  If the comment is pushed, it can no longer
@@ -200,6 +201,12 @@ export class DataModel {
     );
     item.prev_comments.push(item.comment);
     item.comment = '';
+
+    // Remove the item from the budget's list of denied items
+    const budget = await this.getBudget(item.budget_id);
+    budget.denied_items = budget.denied_items.filter(id => id !== itemID); // Copilot
+    await this.database.addDocument(Collections.Budgets, budget);
+
     return await this.database.addDocument(Collections.Items, item);
   }
 

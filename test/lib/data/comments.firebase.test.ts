@@ -33,6 +33,7 @@ async function initializeUsers(): Promise<void> {
 
   await database.addDocument(Collections.Users, sgaUser);
   await database.addDocument(Collections.Users, rsoUser);
+  const rso_user = await dataModel.getUser('rso_user');
 }
 
 async function initializeBudget(id: string): Promise<void> {
@@ -61,7 +62,7 @@ async function initializeItems(budgetID: string): Promise<void> {
       name: `item_${i}`,
       quantity: i,
       unit_price: 10 - i,
-      vendor: undefined,
+      vendor: '',
       prev_comments: [],
       comment: '',
     };
@@ -82,10 +83,10 @@ beforeEach(async () => {
   await initializeBudget('budget_1');
   await initializeBudget('budget_2');
   await initializeItems('budget_1');
-  await initializeItems('budget_2');
+  //await initializeItems('budget_2');
 });
 
-describe('Test comments', async () => {
+describe('Test item comments', async () => {
   const sga_comment: Comment = {
     id: 'comment_1',
     comment: 'Item is is too expensive',
@@ -98,14 +99,42 @@ describe('Test comments', async () => {
     expect(retrievedComment).toEqual(sga_comment);
   });
 
-  //it('stagedItemComment works', async () => {
-  //await dataModel.stageItemComment('item_1', sga_comment);
+  it('stagedItemComment works', async () => {
+    await dataModel.stageItemComment('item_1', sga_comment);
 
-  //const item = await dataModel.getItem('item_1');
-  //const budget = await dataModel.getBudget(item.budget_id);
+    const item = await dataModel.getItem('item_1');
+    const item_comment = await dataModel.getComment(item.comment);
+    const budget = await dataModel.getBudget(item.budget_id);
 
-  //expect(item.comment).toEqual(sga_comment.comment);
-  //expect(item.prev_comments).toEqual([]);
-  //expect(budget.denied_items).toEqual([item.id]);
-  //});
+    expect(item_comment.comment).toEqual(sga_comment.comment);
+    expect(item.prev_comments).toEqual([]);
+    expect(budget.denied_items).toEqual([item.id]);
+  });
+
+  it('popItemComment works', async () => {
+    await dataModel.stageItemComment('item_1', sga_comment);
+    await dataModel.popItemComment('item_1');
+
+    const item = await dataModel.getItem('item_1');
+    const budget = await dataModel.getBudget(item.budget_id);
+
+    expect(item.comment).toEqual('');
+    expect(item.prev_comments).toEqual([]);
+    expect(budget.denied_items).toEqual([]);
+  });
+
+  it('pushItemComment works', async () => {
+    await dataModel.stageItemComment('item_1', sga_comment);
+    await dataModel.pushItemComment('item_1');
+
+    const item = await dataModel.getItem('item_1');
+    const budget = await dataModel.getBudget(item.budget_id);
+
+    expect(item.comment).toEqual('');
+    expect(item.prev_comments).toEqual([sga_comment.id]);
+    expect(budget.denied_items).toEqual([]);
+
+    const comment = await dataModel.getComment(item.prev_comments[0]);
+    expect(comment.comment).toEqual(sga_comment.comment);
+  });
 });
