@@ -17,7 +17,7 @@ export default async function Page() {
   // const session = await verifySession();
   try {
     const userId = await auth.getSignedInUser();
-    const user = await dataModel.getUser(userId);
+    const user = await dataModel.getUser('grintech@studentorg.grinnell.edu');
     const isSGA = userIsSGA(user);
     console.log(`User id from session is: ${userId}`);
 

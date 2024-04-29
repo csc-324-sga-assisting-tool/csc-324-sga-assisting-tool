@@ -6,15 +6,19 @@ import {
   setPersistence,
   browserSessionPersistence,
   onAuthStateChanged,
+  Auth,
+  deleteUser,
 } from 'firebase/auth';
 import {User, DataModel, Database} from '.';
 import {IAuthModel} from './auth_model';
-import {Collections} from 'lib/firebase';
+import {auth, Collections} from 'lib/firebase';
 
 export class FirestoreAuthModel implements IAuthModel {
   // private dm = new DataModel(Database);
-  private auth = getAuth();
-
+  private auth: Auth;
+  constructor(authFire: Auth = auth) {
+    this.auth = authFire;
+  }
   async createUser(
     email: string,
     password: string,
@@ -41,23 +45,13 @@ export class FirestoreAuthModel implements IAuthModel {
   }
 
   async getSignedInUser(): Promise<string> {
-    // onAuthStateChanged(this.auth, user => {
-    //   if (user !== null) {
-    //     return user.email!;
-    //   } else {
-    //     return Promise.reject('no user');
-    //   }
-    // });
     await this.auth.authStateReady();
     const user = this.auth.currentUser;
-    if (user !== null) {
+    if (user && user.email) {
       const email = user.email;
-      if (email !== null) {
-        return email;
-      }
-      return Promise.reject('no email');
+      return email;
     }
-    return Promise.reject('no user signed in');
+    return Promise.reject(new Error('no user signed in'));
     // return Promise.reject('failing');
   }
 
