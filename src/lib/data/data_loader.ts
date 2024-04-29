@@ -215,7 +215,7 @@ export class DataModel {
   async stageBudgetComment(budgetID: string, comment: Comment): Promise<void> {
     await this.database.addDocument(Collections.Comments, comment);
     const budget: Budget = await this.database.getDocument<Budget>(
-      Collections.Items,
+      Collections.Budgets,
       budgetID
     );
     budget.commentID = comment.id;

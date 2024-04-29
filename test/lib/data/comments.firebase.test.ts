@@ -137,4 +137,67 @@ describe('Test item comments', async () => {
     const comment = await dataModel.getComment(item.prev_commentIDs[0]);
     expect(comment.comment).toEqual(sga_comment.comment);
   });
+
+  it('popItemComment does nothing after a push', async () => {
+    await dataModel.stageItemComment('item_1', sga_comment);
+    await dataModel.pushItemComment('item_1');
+    await dataModel.popItemComment('item_1');
+
+    const item = await dataModel.getItem('item_1');
+    const budget = await dataModel.getBudget(item.budget_id);
+
+    expect(item.commentID).toEqual('');
+    expect(item.prev_commentIDs).toEqual([sga_comment.id]);
+    expect(budget.denied_items).toEqual([]);
+  });
+});
+
+describe('Test budget comments', async () => {
+  const sga_comment: Comment = {
+    id: 'comment_1',
+    comment: 'Budget is is too expensive',
+    userId: 'sga_user',
+  };
+
+  it('stagedBudgetComment works', async () => {
+    await dataModel.stageBudgetComment('budget_1', sga_comment);
+
+    const budget = await dataModel.getBudget('budget_1');
+    const budget_comment = await dataModel.getComment(budget.commentID);
+
+    expect(budget_comment.comment).toEqual(sga_comment.comment);
+    expect(budget.prev_commentIDs).toEqual([]);
+    expect(budget.denied_items).toEqual([]);
+  });
+
+  it('popBudgetComment works', async () => {
+    await dataModel.stageBudgetComment('budget_1', sga_comment);
+    await dataModel.popBudgetComment('budget_1');
+
+    const budget = await dataModel.getBudget('budget_1');
+
+    expect(budget.commentID).toEqual('');
+    expect(budget.prev_commentIDs).toEqual([]);
+  });
+
+  it('pushBudgetComment works', async () => {
+    await dataModel.stageBudgetComment('budget_1', sga_comment);
+    await dataModel.pushBudgetComment('budget_1');
+
+    const budget = await dataModel.getBudget('budget_1');
+
+    expect(budget.commentID).toEqual('');
+    expect(budget.prev_commentIDs).toEqual([sga_comment.id]);
+  });
+
+  it('popBudgetComment does nothing after push', async () => {
+    await dataModel.stageBudgetComment('budget_1', sga_comment);
+    await dataModel.pushBudgetComment('budget_1');
+    await dataModel.popBudgetComment('budget_1');
+
+    const budget = await dataModel.getBudget('budget_1');
+
+    expect(budget.commentID).toEqual('');
+    expect(budget.prev_commentIDs).toEqual([sga_comment.id]);
+  });
 });

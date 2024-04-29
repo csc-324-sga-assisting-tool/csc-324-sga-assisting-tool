@@ -19,7 +19,7 @@ interface Comment extends Document {
 
 interface Commentable {
   prev_commentIDs: string[]; // List of IDs of previous comments
-  commentID: string; // ID of latest comment.  Added to prev_commentIDs when review/budget is (re)submitted
+  commentID: string; // ID of latest comment.  Added to prev_comments when review/budget is (re)submitted
 }
 
 // an Item will represent a single item in a budget
