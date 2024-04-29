@@ -56,8 +56,8 @@ function createItem(
     url,
     unit_price,
     quantity,
-    prev_comments: [],
-    comment: '',
+    prev_commentIDs: [],
+    commentID: '',
   };
 }
 

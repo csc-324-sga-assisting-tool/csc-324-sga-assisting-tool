@@ -47,8 +47,8 @@ async function initializeBudget(id: string): Promise<void> {
     total_cost: 100,
     current_status: 'created',
     status_history: [],
-    prev_comments: [],
-    comment: '',
+    prev_commentIDs: [],
+    commentID: '',
     denied_items: [],
   };
   await dataModel.addBudget(budget);
@@ -63,8 +63,8 @@ async function initializeItems(budgetID: string): Promise<void> {
       quantity: i,
       unit_price: 10 - i,
       vendor: '',
-      prev_comments: [],
-      comment: '',
+      prev_commentIDs: [],
+      commentID: '',
     };
   });
 
@@ -103,11 +103,11 @@ describe('Test item comments', async () => {
     await dataModel.stageItemComment('item_1', sga_comment);
 
     const item = await dataModel.getItem('item_1');
-    const item_comment = await dataModel.getComment(item.comment);
+    const item_comment = await dataModel.getComment(item.commentID);
     const budget = await dataModel.getBudget(item.budget_id);
 
     expect(item_comment.comment).toEqual(sga_comment.comment);
-    expect(item.prev_comments).toEqual([]);
+    expect(item.prev_commentIDs).toEqual([]);
     expect(budget.denied_items).toEqual([item.id]);
   });
 
@@ -118,8 +118,8 @@ describe('Test item comments', async () => {
     const item = await dataModel.getItem('item_1');
     const budget = await dataModel.getBudget(item.budget_id);
 
-    expect(item.comment).toEqual('');
-    expect(item.prev_comments).toEqual([]);
+    expect(item.commentID).toEqual('');
+    expect(item.prev_commentIDs).toEqual([]);
     expect(budget.denied_items).toEqual([]);
   });
 
@@ -130,11 +130,11 @@ describe('Test item comments', async () => {
     const item = await dataModel.getItem('item_1');
     const budget = await dataModel.getBudget(item.budget_id);
 
-    expect(item.comment).toEqual('');
-    expect(item.prev_comments).toEqual([sga_comment.id]);
+    expect(item.commentID).toEqual('');
+    expect(item.prev_commentIDs).toEqual([sga_comment.id]);
     expect(budget.denied_items).toEqual([]);
 
-    const comment = await dataModel.getComment(item.prev_comments[0]);
+    const comment = await dataModel.getComment(item.prev_commentIDs[0]);
     expect(comment.comment).toEqual(sga_comment.comment);
   });
 });

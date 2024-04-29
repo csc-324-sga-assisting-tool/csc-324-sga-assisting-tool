@@ -169,7 +169,7 @@ export class DataModel {
       Collections.Items,
       itemID
     );
-    item.comment = comment.id;
+    item.commentID = comment.id;
     await this.database.addDocument(Collections.Items, item);
 
     const budget: Budget = await this.getBudget(item.budget_id);
@@ -183,7 +183,7 @@ export class DataModel {
   async popItemComment(itemID: string): Promise<void> {
     const item = await this.getItem(itemID);
     const budget = await this.getBudget(item.budget_id);
-    item.comment = '';
+    item.commentID = '';
     budget.denied_items = budget.denied_items.filter(id => id !== itemID); // Copilot
     await this.database.addDocument(Collections.Items, item);
     await this.database.addDocument(Collections.Budgets, budget);
@@ -199,8 +199,8 @@ export class DataModel {
       Collections.Items,
       itemID
     );
-    item.prev_comments.push(item.comment);
-    item.comment = '';
+    item.prev_commentIDs.push(item.commentID);
+    item.commentID = '';
 
     // Remove the item from the budget's list of denied items
     const budget = await this.getBudget(item.budget_id);
@@ -218,14 +218,14 @@ export class DataModel {
       Collections.Items,
       budgetID
     );
-    budget.comment = comment.id;
+    budget.commentID = comment.id;
     return await this.database.addDocument(Collections.Items, budget);
   }
 
   // Deletes the staged budget comment
   async popBudgetComment(budgetID: string): Promise<void> {
     const budget = await this.getBudget(budgetID);
-    budget.comment = '';
+    budget.commentID = '';
     return this.database.addDocument(Collections.Budgets, budget);
   }
 
@@ -236,8 +236,8 @@ export class DataModel {
       Collections.Items,
       budgetID
     );
-    budget.prev_comments.push(budget.comment);
-    budget.comment = '';
+    budget.prev_commentIDs.push(budget.commentID);
+    budget.commentID = '';
     return await this.database.addDocument(Collections.Items, budget);
   }
 

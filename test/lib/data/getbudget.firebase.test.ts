@@ -25,7 +25,7 @@ beforeEach(async () => {
           when: new Date('2001-01-01').toISOString(),
         },
       ],
-      prev_comments: [],
+      prev_commentIDs: [],
       comment: '',
       denied_items: [],
     };
@@ -46,8 +46,8 @@ beforeEach(async () => {
       },
     ],
     event_type: 'Other',
-    prev_comments: [],
-    comment: '',
+    prev_commentIDs: [],
+    commentID: '',
     denied_items: [],
   });
 

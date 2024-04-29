@@ -34,8 +34,8 @@ function createBudget(
       },
     ],
     denied_items: [],
-    prev_comments: [],
-    comment: '',
+    prev_commentIDs: [],
+    commentID: '',
   };
 }
 

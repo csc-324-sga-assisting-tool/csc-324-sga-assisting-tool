@@ -40,8 +40,8 @@ describe('test addBudget', () => {
           when: new Date('2001-01-01').toISOString(),
         },
       ],
-      prev_comments: [],
-      comment: '',
+      prev_commentIDs: [],
+      commentID: '',
       denied_items: [],
     };
   });
@@ -74,8 +74,8 @@ describe('test addBudget 2', async () => {
           when: new Date('2001-01-01').toISOString(),
         },
       ],
-      prev_comments: [],
-      comment: '',
+      prev_commentIDs: [],
+      commentID: '',
       denied_items: [],
     };
     try {

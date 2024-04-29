@@ -18,8 +18,8 @@ beforeAll(async () => {
       sga_item_comment: null,
       url: 'test',
       vendor: 'test',
-      prev_comments: [],
-      comment: '',
+      prev_commentIDs: [],
+      commentID: '',
     };
   });
   const testBudget: Budget = {
@@ -32,8 +32,8 @@ beforeAll(async () => {
     current_status: 'created',
     status_history: [],
     event_type: 'Harris',
-    prev_comments: [],
-    comment: '',
+    prev_commentIDs: [],
+    commentID: '',
     denied_items: [],
   };
 
@@ -47,8 +47,8 @@ beforeAll(async () => {
     current_status: 'created',
     status_history: [],
     event_type: 'Harris',
-    prev_comments: [],
-    comment: '',
+    prev_commentIDs: [],
+    commentID: '',
     denied_items: [],
   };
 
