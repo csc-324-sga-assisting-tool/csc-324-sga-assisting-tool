@@ -1,13 +1,14 @@
-import {assert, beforeAll, it, describe, expect, test} from 'vitest';
+import {assert, beforeEach, it, describe, expect, test} from 'vitest';
 import {getFirestore} from 'firebase/firestore';
 import {Budget, DataModel} from 'lib/data';
-import {getLocalFirebase} from '../../utils/database.util';
+import {getLocalFirebase, clearCollection} from '../../utils/database.util';
 import {Collections} from 'lib/firebase';
 
 const db = getFirestore();
 const database = getLocalFirebase(db);
 
-beforeAll(async () => {
+beforeEach(async () => {
+  clearCollection(database, Collections.Users);
   const testBudgets: Budget[] = [1, 2, 3].map(number => {
     return {
       id: `budget_${number}`,
