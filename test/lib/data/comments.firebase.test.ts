@@ -159,7 +159,7 @@ describe('Test budget comments', async () => {
     userId: 'sga_user',
   };
 
-  it('stagedBudgetComment works', async () => {
+  it('stageBudgetComment works', async () => {
     await dataModel.stageBudgetComment('budget_1', sga_comment);
 
     const budget = await dataModel.getBudget('budget_1');

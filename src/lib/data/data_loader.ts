@@ -219,7 +219,7 @@ export class DataModel {
       budgetID
     );
     budget.commentID = comment.id;
-    return await this.database.addDocument(Collections.Items, budget);
+    return await this.database.addDocument(Collections.Budgets, budget);
   }
 
   // Deletes the staged budget comment
@@ -233,12 +233,12 @@ export class DataModel {
   // [This function was generated with copilot]
   async pushBudgetComment(budgetID: string): Promise<void> {
     const budget: Budget = await this.database.getDocument<Budget>(
-      Collections.Items,
+      Collections.Budgets,
       budgetID
     );
     budget.prev_commentIDs.push(budget.commentID);
     budget.commentID = '';
-    return await this.database.addDocument(Collections.Items, budget);
+    return await this.database.addDocument(Collections.Budgets, budget);
   }
 
   // Push all comments for a budget including item comments
