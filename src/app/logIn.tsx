@@ -1,16 +1,16 @@
 'use client';
 
-import { Alert, Button, Checkbox, Label, TextInput } from 'flowbite-react';
-import { SignUp } from './createAcc';
-import { signInAction } from './auth';
-import { FormEvent, FormEventHandler, useState } from 'react';
-import { error } from 'console';
-import { errorMonitor } from 'events';
+import {Alert, Button, Checkbox, Label, TextInput} from 'flowbite-react';
+import {SignUp} from './createAcc';
+import {signInAction} from './auth';
+import {FormEvent, FormEventHandler, useState} from 'react';
+import {error} from 'console';
+import {errorMonitor} from 'events';
 
 export function ComponentLog() {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const [errorMessage, setError] = useState("");
+  const [errorMessage, setError] = useState('');
   const submit: FormEventHandler<HTMLFormElement> = async (
     e: FormEvent<HTMLFormElement>
   ) => {
@@ -25,12 +25,11 @@ export function ComponentLog() {
 
     const result = await signInAction(email, password);
     if (result) {
-      setShowErrorAlert(true)
+      setShowErrorAlert(true);
       setError(result.message);
     } else {
-      setShowSuccessAlert(true)
+      setShowSuccessAlert(true);
     }
-
   };
 
   return (
@@ -68,12 +67,26 @@ export function ComponentLog() {
         </Button>
       </form>
       <SignUp />
-      {showErrorAlert &&
-        <Alert className='max-w-md' color='failure' onDismiss={() => setShowErrorAlert(false)}> Sign In Failed: {errorMessage} </Alert>
-      }
-      {showSuccessAlert &&
-        <Alert className='max-w-md' color='success' onDismiss={() => setShowSuccessAlert(false)}> Success </Alert>
-      }
+      {showErrorAlert && (
+        <Alert
+          className="max-w-md"
+          color="failure"
+          onDismiss={() => setShowErrorAlert(false)}
+        >
+          {' '}
+          Sign In Failed: {errorMessage}{' '}
+        </Alert>
+      )}
+      {showSuccessAlert && (
+        <Alert
+          className="max-w-md"
+          color="success"
+          onDismiss={() => setShowSuccessAlert(false)}
+        >
+          {' '}
+          Success{' '}
+        </Alert>
+      )}
     </div>
   );
 }

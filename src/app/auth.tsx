@@ -1,9 +1,9 @@
 'use server';
 
-import { User, DataModel, UserType, Database } from 'lib/data';
-import { createSession, deleteSession } from './session';
-import { redirect } from 'next/navigation';
-import { normalizeID } from 'lib/util';
+import {User, DataModel, UserType, Database} from 'lib/data';
+import {createSession, deleteSession} from './session';
+import {redirect} from 'next/navigation';
+import {normalizeID} from 'lib/util';
 
 function createUser(
   name: string,
@@ -32,7 +32,7 @@ export async function createUserAction(
   total_budget: number,
   user_type: UserType,
   password: string
-): Promise<{ message: string } | void> {
+): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
   const modifier = new DataModel(Database);
   const user = createUser(name, emailNorm, total_budget, user_type);
@@ -41,26 +41,29 @@ export async function createUserAction(
     await createSession(user.id);
   } catch (error) {
     return {
-      message: error!.toString()
+      message: error!.toString(),
     };
   }
   redirect('/dashboard');
 }
 
-export async function signOutAction(): Promise<{ message: string } | void> {
+export async function signOutAction(): Promise<{message: string} | void> {
   const modifier = new DataModel(Database);
   try {
     modifier.signOutUser();
     deleteSession();
   } catch (error) {
     return {
-      message: 'sign out failed'
+      message: 'sign out failed',
     };
   }
   redirect('/');
 }
 
-export async function signInAction(email: string, password: string): Promise<{ message: string } | void> {
+export async function signInAction(
+  email: string,
+  password: string
+): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
   const modifier = new DataModel(Database);
   try {

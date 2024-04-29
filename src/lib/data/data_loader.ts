@@ -57,8 +57,6 @@ export class DataModel {
   }
 
   // Adds the given budget to the database
-  // If budget does not have an ID, assigns it one
-  // Else, use ID to get document from database
   async addBudget(budget: Budget): Promise<void> {
     const user_id = budget.user_id;
     const user = (await this.getUser(user_id)) as User;

@@ -1,4 +1,4 @@
-import { ComponentLog } from './logIn';
+import {ComponentLog} from './logIn';
 
 export default function Home() {
   return (
