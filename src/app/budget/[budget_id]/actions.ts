@@ -28,6 +28,26 @@ export async function updateBudgetAction(
   return result;
 }
 
+export async function approveBudgetAction(budget: Budget): Promise<void> {
+  const modifier = new DataModel(Database);
+  // TODO: Change budget status to approved
+
+  revalidatePath('/dashboard');
+  revalidatePath(`/budget/${budget.id}`);
+  redirect('/dashboard');
+}
+
+export async function TESTapproveBudgetAction(
+  dataModel: DataModel,
+  budget: Budget
+): Promise<void> {
+  // TODO: Change budget status to approved
+
+  revalidatePath('/dashboard');
+  revalidatePath(`/budget/${budget.id}`);
+  redirect('/dashboard');
+}
+
 export async function submitBudgetAction(budget: Budget): Promise<void> {
   const modifier = new DataModel(Database);
   await modifier.submitBudget(budget.id);

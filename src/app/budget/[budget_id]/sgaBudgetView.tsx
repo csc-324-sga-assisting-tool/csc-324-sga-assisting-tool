@@ -1,10 +1,12 @@
 import {SGABudgetViewSidebar} from './sidebar';
 import {Item, Budget, DataModel} from 'lib/data';
 import {
-  updateBudgetAction,
-  TESTupdateBudgetAction,
-  TESTcreateItemAction,
-  createItemAction,
+  approveBudgetAction,
+  denyBudgetAction,
+  clearCommentsAction,
+  TESTapproveBudgetAction,
+  TESTdenyBudgetAction,
+  TESTclearCommentsAction,
 } from './actions';
 import {ItemDisplay} from './itemDisplay';
 import {NewItemForm} from './addItemForm';
@@ -27,26 +29,27 @@ export async function SGABudgetView({
   // does not user server side functions so we need to decide the function at BUILD time meaning it can't be dynamic
   // So the createBudgetAction has Firebase fixed however, the TEST one allows us to set the dataModifier dynamically
   // at Runtime
-  let updateAction, itemAddAction;
+  let approveAction, denyAction, clearAction;
   if (TESTING_FLAG) {
-    updateAction = TESTupdateBudgetAction.bind(null, dataModel);
-    itemAddAction = TESTcreateItemAction.bind(null, dataModel);
+    approveAction = TESTapproveBudgetAction.bind(null, dataModel);
+    denyAction = TESTdenyBudgetAction.bind(null, dataModel);
+    clearAction = TESTclearCommentsAction.bind(null, dataModel);
   } else {
-    updateAction = updateBudgetAction;
-    itemAddAction = createItemAction;
+    approveAction = approveBudgetAction;
+    denyAction = denyBudgetAction;
+    clearAction = clearCommentsAction;
   }
   return (
     <>
       <SGABudgetViewSidebar
         budget={budget}
         item_count={items.length}
-        updateBudgetAction={updateAction}
+        approveBudgetAction={approveAction}
+        denyBudgetAction={denyAction}
+        clearCommentsAction={clearAction}
       />
       <main className="ml-72 w-3/5 bg-white">
         <ItemDisplay items={items} />
-        {budget.current_status === 'created' && (
-          <NewItemForm budget_id={budget_id} createItemAction={itemAddAction} />
-        )}
       </main>
     </>
   );

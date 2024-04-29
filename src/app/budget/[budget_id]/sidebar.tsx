@@ -183,14 +183,15 @@ function RSOBudgetViewSidebar({
 function SGABudgetViewSidebar({
   budget,
   item_count,
-  updateBudgetAction,
+  approveBudgetAction,
+  denyBudgetAction,
+  clearCommentsAction
 }: {
   budget: Budget;
   item_count: number;
-  updateBudgetAction: (
-    budget: Budget,
-    backToDashboard?: boolean
-  ) => Promise<void>;
+  approveBudgetAction: (budget: Budget) => Promise<void>;
+  denyBudgetAction: (budget: Budget) => Promise<void>;
+  clearCommentsAction: (budget: Budget) => Promise<void>;
 }) {
   return (
     <BudgetViewSidebar>
