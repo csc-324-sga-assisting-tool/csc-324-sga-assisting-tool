@@ -1,22 +1,19 @@
 'use server';
 import {SGABudgetViewSidebar} from './sidebar';
-import {Item, Budget, DataModel} from 'lib/data';
-import {
-  approveBudgetAction,
-  denyBudgetAction,
-  clearCommentsAction,
-  TESTapproveBudgetAction,
-  TESTdenyBudgetAction,
-  TESTclearCommentsAction,
-} from './review_actions';
+import {Item, Budget, DataModel, Comment} from 'lib/data';
+import * as review from './review_actions';
 import {ItemDisplay} from './itemDisplay';
+import {EventCommentThread} from './eventComments';
+import {createComment} from 'lib/data/utils';
 
 export async function SGABudgetView({
   budget_id,
+  user_id,
   dataModel: dataModel,
   TESTING_FLAG = false,
 }: {
   budget_id: string;
+  user_id: string;
   dataModel: DataModel;
   TESTING_FLAG?: boolean;
 }) {
@@ -30,15 +27,27 @@ export async function SGABudgetView({
   // So the createBudgetAction has Firebase fixed however, the TEST one allows us to set the dataModifier dynamically
   // at Runtime
   let approveAction, denyAction, clearAction;
+  let addEventCmnt, deleteEventCmnt, getPreviousCmnts;
   if (TESTING_FLAG) {
-    approveAction = TESTapproveBudgetAction.bind(null, dataModel);
-    denyAction = TESTdenyBudgetAction.bind(null, dataModel);
-    clearAction = TESTclearCommentsAction.bind(null, dataModel);
+    approveAction = review.TESTapproveBudgetAction.bind(null, dataModel);
+    denyAction = review.TESTdenyBudgetAction.bind(null, dataModel);
+    clearAction = review.TESTclearCommentsAction.bind(null, dataModel);
+    addEventCmnt = review.TESTaddEventCommentAction.bind(null, dataModel);
+    deleteEventCmnt = review.TESTdeleteEventCommentAction.bind(null, dataModel);
+    getPreviousCmnts = review.TESTgetPreviousEventCommentsAction.bind(null, dataModel);
   } else {
-    approveAction = approveBudgetAction;
-    denyAction = denyBudgetAction;
-    clearAction = clearCommentsAction;
+    approveAction = review.approveBudgetAction;
+    denyAction = review.denyBudgetAction;
+    clearAction = review.clearCommentsAction;
+    addEventCmnt = review.addEventCommentAction;
+    deleteEventCmnt = review.deleteEventCommentAction;
+    getPreviousCmnts = review.getPreviousEventCommentsAction;
   }
+
+  let eventComment: Comment;
+  if (budget.commentID === '') eventComment = createComment(user_id, '');
+  else eventComment = await dataModel.getComment(budget.commentID);
+
   return (
     <>
       <SGABudgetViewSidebar
@@ -51,6 +60,15 @@ export async function SGABudgetView({
         }}
       />
       <main className="ml-72 w-3/5 bg-white">
+        <EventCommentThread
+          budget={budget}
+          eventCommentThreadController={{
+            addEventComment: addEventCmnt,
+            deleteEventComment: deleteEventCmnt,
+            getPreviousComments: getPreviousCmnts,
+            comment: eventComment
+          }}
+        />
         <ItemDisplay items={items} />
       </main>
     </>

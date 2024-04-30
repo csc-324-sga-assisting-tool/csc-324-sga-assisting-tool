@@ -183,6 +183,8 @@ export class DataModel {
   async popItemComment(itemID: string): Promise<void> {
     const item = await this.getItem(itemID);
     const budget = await this.getBudget(item.budget_id);
+    const comment = await this.getComment(item.commentID);
+    await this.database.deleteDocument(Collections.Comments, comment);
     item.commentID = '';
     budget.denied_items = budget.denied_items.filter(id => id !== itemID); // Copilot
     await this.database.addDocument(Collections.Items, item);
@@ -226,6 +228,8 @@ export class DataModel {
   // Deletes the staged budget comment
   async popBudgetComment(budgetID: string): Promise<void> {
     const budget = await this.getBudget(budgetID);
+    const comment = await this.getComment(budget.commentID);
+    await this.database.deleteDocument(Collections.Comments, comment);
     budget.commentID = '';
     return this.database.addDocument(Collections.Budgets, budget);
   }

@@ -158,28 +158,28 @@ function ApproveDenyBudgetTools({
   reviewActionController: ReviewActionController;
 }) {
   const itemsAreDenied = budget.denied_items.length > 0;
-  const eventIsDenied = budget.commentID === '';
+  const eventIsDenied = budget.commentID !== '';
 
   return (
     <Sidebar.ItemGroup>
       <Button
         onClick={() => reviewActionController.approveBudget(budget)}
-        disabled={itemsAreDenied}
+        disabled={itemsAreDenied || eventIsDenied}
         className="bg-pallete-5 w-full"
       >
         Approve Budget
       </Button>
       <Button
         onClick={() => reviewActionController.denyBudget(budget)}
-        disabled={!itemsAreDenied || !eventIsDenied}
-        className="bg-pallete-1 w-full"
+        disabled={!(itemsAreDenied || eventIsDenied)}
+        className="bg-pallete-5 w-full"
       >
         Deny Budget
       </Button>
       <Button
         onClick={() => reviewActionController.clearComments(budget)}
         disabled={!itemsAreDenied}
-        className="bg-pallete-2 w-full"
+        className="bg-pallete-5 w-full"
       >
         Clear Comments
       </Button>
