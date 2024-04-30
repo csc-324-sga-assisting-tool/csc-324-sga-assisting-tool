@@ -182,39 +182,16 @@ describe('Test Budget View works as expected', () => {
       testDate.getDate()
     );
   });
-  // TODO: Implement this test
-  it.skip('check if submit button works as intended', async () => {
+  it('check if submit button works as intended', async () => {
     // setup the userEvents library
     const user = userEvent.setup();
-    mockDatabase.emptyCollection(Collections.Items);
-
     render(await BudgetView({...props}));
-    expect(
-      screen.queryByTestId('new-item-form-button-add')
-    ).toBeInTheDocument();
-    // Click the new button form
-    await user.click(screen.getByTestId('new-item-form-button-add'));
-    // Check that the form fields are present*
-    const formInputs = await screen.findAllByTestId(/new-item-form/);
-    formInputs.forEach(element => expect(element).toBeVisible());
+    expect(screen.queryByTestId('submit-budget-button')).toBeInTheDocument();
 
-    // submit a new budget
-    const nameInput = await screen.findByTestId('new-item-form-input-name');
-    const vendorInput = await screen.findByTestId('new-item-form-input-vendor');
-    const quantInput = await screen.findByTestId(
-      'new-item-form-input-quantity'
-    );
-    const submitButton = await screen.findByTestId(
-      'new-item-form-button-submit'
-    );
+    await user.click(screen.getByTestId('submit-budget-button'));
+    const budget = await mockDataprovider.getBudget(props.budget_id);
 
-    await user.type(nameInput, 'Diet Pepsi');
-    await user.type(vendorInput, 'Amazon');
-    await user.type(quantInput, '2');
-    await user.click(submitButton);
-
-    const items = await mockDataprovider.getItemsForBudget(props.budget_id);
-    expect(items.length).toBe(0);
+    expect(budget.current_status).toBe('submitted');
+    expect(budget.status_history.length).toBe(2);
   });
-
 });

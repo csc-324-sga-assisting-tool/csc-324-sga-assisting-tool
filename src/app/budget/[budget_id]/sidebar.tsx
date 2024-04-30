@@ -126,7 +126,7 @@ function BudgetViewSidebar({
             <Button
               onClick={submitBudget}
               className="bg-pallete-5 w-full"
-              // data-testid="submit-budget-button"
+              data-testid="submit-budget-button"
             >
               Submit
             </Button>
