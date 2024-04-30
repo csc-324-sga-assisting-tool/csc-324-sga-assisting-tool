@@ -6,6 +6,7 @@ import {Budget, Status, StatusChange} from 'lib/data';
 import {Color} from 'lib/color.types';
 import {EditBudgetForm} from './editBudgetForm';
 import {submitBudgetAction} from './actions';
+import {ReviewActionController} from './review_actions';
 
 type BudgetSidebarProps = {
   item_count: number;
@@ -151,22 +152,37 @@ function EditSubmitBudgetTools(props: {
 
 function ApproveDenyBudgetTools({
   budget,
-  approveBudgetAction,
-  denyBudgetAction,
-  clearCommentsAction,
+  reviewActionController,
 }: {
   budget: Budget;
-  approveBudgetAction: (budget: Budget) => Promise<void>;
-  denyBudgetAction: (budget: Budget) => Promise<void>;
-  clearCommentsAction: (budget: Budget) => Promise<void>;
+  reviewActionController: ReviewActionController;
 }) {
-  const onApprove = () => { approveBudgetAction(budget); };
-  const onDeny = () => { denyBudgetAction(budget); };
-  const onClear = () => { clearCommentsAction(budget); };
-  
+  const itemsAreDenied = budget.denied_items.length > 0;
+  const eventIsDenied = budget.commentID === '';
+
   return (
     <Sidebar.ItemGroup>
-      
+      <Button
+        onClick={() => reviewActionController.approveBudget(budget)}
+        disabled={itemsAreDenied}
+        className="bg-pallete-5 w-full"
+      >
+        Approve Budget
+      </Button>
+      <Button
+        onClick={() => reviewActionController.denyBudget(budget)}
+        disabled={!itemsAreDenied || !eventIsDenied}
+        className="bg-pallete-1 w-full"
+      >
+        Deny Budget
+      </Button>
+      <Button
+        onClick={() => reviewActionController.clearComments(budget)}
+        disabled={!itemsAreDenied}
+        className="bg-pallete-2 w-full"
+      >
+        Clear Comments
+      </Button>
     </Sidebar.ItemGroup>
   );
 }
@@ -200,15 +216,11 @@ function RSOBudgetViewSidebar({
 function SGABudgetViewSidebar({
   budget,
   item_count,
-  approveBudgetAction,
-  denyBudgetAction,
-  clearCommentsAction,
+  reviewActionController,
 }: {
   budget: Budget;
   item_count: number;
-  approveBudgetAction: (budget: Budget) => Promise<void>;
-  denyBudgetAction: (budget: Budget) => Promise<void>;
-  clearCommentsAction: (budget: Budget) => Promise<void>;
+  reviewActionController: ReviewActionController;
 }) {
   return (
     <BudgetViewSidebar>
@@ -217,9 +229,7 @@ function SGABudgetViewSidebar({
       {budget.current_status === 'submitted' && (
         <ApproveDenyBudgetTools
           budget={budget}
-          approveBudgetAction={approveBudgetAction}
-          denyBudgetAction={denyBudgetAction}
-          clearCommentsAction={clearCommentsAction}
+          reviewActionController={reviewActionController}
         />
       )}
     </BudgetViewSidebar>

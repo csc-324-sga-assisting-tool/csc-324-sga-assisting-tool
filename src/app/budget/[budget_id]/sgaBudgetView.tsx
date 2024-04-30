@@ -8,7 +8,7 @@ import {
   TESTapproveBudgetAction,
   TESTdenyBudgetAction,
   TESTclearCommentsAction,
-} from './actions';
+} from './review_actions';
 import {ItemDisplay} from './itemDisplay';
 
 export async function SGABudgetView({
@@ -44,9 +44,11 @@ export async function SGABudgetView({
       <SGABudgetViewSidebar
         budget={budget}
         item_count={items.length}
-        approveBudgetAction={approveAction}
-        denyBudgetAction={denyAction}
-        clearCommentsAction={clearAction}
+        reviewActionController={{
+          approveBudget: approveAction,
+          denyBudget: denyAction,
+          clearComments: clearAction,
+        }}
       />
       <main className="ml-72 w-3/5 bg-white">
         <ItemDisplay items={items} />
