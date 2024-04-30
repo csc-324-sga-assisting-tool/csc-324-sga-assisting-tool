@@ -194,6 +194,7 @@ export class DataModel {
   // be edited.  RSO comments are intended to be pushed when the budget
   // is resubmitted.  SGA comments are intended to be pushed when the
   // budget review is submitted (i.e. denied)
+  // TODO: Throw an error if there is no staged comment
   async pushItemComment(itemID: string): Promise<void> {
     const item: Item = await this.database.getDocument<Item>(
       Collections.Items,
@@ -230,6 +231,7 @@ export class DataModel {
   }
 
   // Push a comment for a budget
+  // TODO: Throw an error if there is no staged comment
   // [This function was generated with copilot]
   async pushBudgetComment(budgetID: string): Promise<void> {
     const budget: Budget = await this.database.getDocument<Budget>(
@@ -242,12 +244,21 @@ export class DataModel {
   }
 
   // Push all comments for a budget including item comments
+  // TODO: Throw an error if there is no staged comment
   async pushAllBudgetComments(budgetID: string): Promise<void> {
     const items = await this.getItemsForBudget(budgetID);
     items.forEach(async item => {
       await this.pushItemComment(item.id);
     });
     return await this.pushBudgetComment(budgetID);
+  }
+
+  // Clear all comments on items
+  async clearItemComments(budgetID: string): Promise<void> {
+    const items = await this.getItemsForBudget(budgetID);
+    items.forEach(async item => {
+      await this.popItemComment(item.id);
+    });
   }
 
   /** USERS **/

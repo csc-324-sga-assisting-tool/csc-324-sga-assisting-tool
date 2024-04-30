@@ -28,24 +28,14 @@ export async function updateBudgetAction(
   return result;
 }
 
-export async function approveBudgetAction(budget: Budget): Promise<void> {
-  const modifier = new DataModel(Database);
-  // TODO: Change budget status to approved
-
-  revalidatePath('/dashboard');
-  revalidatePath(`/budget/${budget.id}`);
-  redirect('/dashboard');
-}
-
-export async function TESTapproveBudgetAction(
+export async function TESTclearCommentsAction(
   dataModel: DataModel,
   budget: Budget
 ): Promise<void> {
-  // TODO: Change budget status to approved
-
-  revalidatePath('/dashboard');
-  revalidatePath(`/budget/${budget.id}`);
-  redirect('/dashboard');
+  dataModel.clearItemComments(budget.id);
+}
+export async function clearCommentsAction(budget: Budget): Promise<void> {
+  TESTclearCommentsAction(new DataModel(Database), budget);
 }
 
 export async function submitBudgetAction(budget: Budget): Promise<void> {
@@ -106,4 +96,50 @@ export async function createItemAction(
   const model = new DataModel(Database);
   await model.addItem(item);
   revalidatePath(`/budget/${budgetID}`);
+}
+
+export async function TESTapproveBudgetAction(
+  dataModel: DataModel,
+  budget: Budget
+): Promise<void> {
+  // TODO: Change budget status to approved
+
+  revalidatePath('/dashboard');
+  revalidatePath(`/budget/${budget.id}`);
+  redirect('/dashboard');
+}
+export async function approveBudgetAction(budget: Budget): Promise<void> {
+  TESTapproveBudgetAction(new DataModel(Database), budget);
+}
+
+export async function TESTdenyBudgetAction(
+  dataModel: DataModel,
+  budget: Budget
+): Promise<void> {
+  dataModel.pushAllBudgetComments(budget.id);
+  // TODO: Change budget status to denied
+  revalidatePath('/dashboard');
+  revalidatePath(`/budget/${budget.id}`);
+  redirect('/dashboard');
+}
+export async function denyBudgetAction(budget: Budget): Promise<void> {
+  TESTdenyBudgetAction(new DataModel(Database), budget);
+}
+
+type UIState = {
+  submit: 'approve' | 'deny';
+  showClear: boolean;
+};
+export async function TESTgetUIState(
+  dataModel: DataModel,
+  budget: Budget
+): Promise<UIState> {
+  const denied = budget.denied_items.length > 0;
+  return {
+    submit: denied ? 'approve' : 'deny',
+    showClear: denied,
+  };
+}
+export async function getUIState(budget: Budget): Promise<UIState> {
+  return TESTgetUIState(new DataModel(Database), budget);
 }

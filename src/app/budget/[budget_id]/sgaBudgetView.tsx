@@ -1,3 +1,4 @@
+'use server';
 import {SGABudgetViewSidebar} from './sidebar';
 import {Item, Budget, DataModel} from 'lib/data';
 import {
@@ -9,7 +10,6 @@ import {
   TESTclearCommentsAction,
 } from './actions';
 import {ItemDisplay} from './itemDisplay';
-import {NewItemForm} from './addItemForm';
 
 export async function SGABudgetView({
   budget_id,

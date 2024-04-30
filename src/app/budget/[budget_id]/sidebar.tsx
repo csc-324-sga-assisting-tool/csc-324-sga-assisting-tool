@@ -145,11 +145,24 @@ function EditSubmitBudgetTools(props: {
   );
 }
 
-function ApproveDenyBudgetTools(props: {budget: Budget}) {
+function ApproveDenyBudgetTools({
+  budget,
+  approveBudgetAction,
+  denyBudgetAction,
+  clearCommentsAction
+}: {
+  budget: Budget;
+  approveBudgetAction: (budget: Budget) => Promise<void>;
+  denyBudgetAction: (budget: Budget) => Promise<void>;
+  clearCommentsAction: (budget: Budget) => Promise<void>;
+}) {
+  const onApprove = () => { approveBudgetAction(budget); };
+  const onDeny = () => { denyBudgetAction(budget); };
+  const onClear = () => { clearCommentsAction(budget); };
+  
   return (
     <Sidebar.ItemGroup>
-      <Button className="bg-pallate-5 w-full">Approve Budget</Button>
-      <Button className="bg-pallate-5 w-full">Deny Budget</Button>
+      
     </Sidebar.ItemGroup>
   );
 }
@@ -198,7 +211,12 @@ function SGABudgetViewSidebar({
       <BudgetDetails budget={budget} item_count={item_count} />
 
       {budget.current_status === 'submitted' && (
-        <ApproveDenyBudgetTools budget={budget} />
+        <ApproveDenyBudgetTools 
+          budget={budget}
+          approveBudgetAction={approveBudgetAction}
+          denyBudgetAction={denyBudgetAction}
+          clearCommentsAction={clearCommentsAction}
+        />
       )}
     </BudgetViewSidebar>
   );
