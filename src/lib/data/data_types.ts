@@ -11,6 +11,7 @@ interface Item extends Comments, Document {
   unit_price: number;
   vendor: string | undefined;
   url?: string;
+  current_status: Status;
 }
 
 // Status represents the different status a budget can be in
