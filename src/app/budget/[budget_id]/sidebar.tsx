@@ -138,7 +138,11 @@ function EditSubmitBudgetTools(props: {
         budget={props.budget}
         updateBudgetAction={props.updateBudgetAction}
       />
-      <Button onClick={onSubmit} className="bg-pallete-5 w-full">
+      <Button
+        onClick={onSubmit}
+        className="bg-pallete-5 w-full"
+        data-testid="submit-budget-button"
+      >
         Submit
       </Button>
     </Sidebar.ItemGroup>
@@ -149,7 +153,7 @@ function ApproveDenyBudgetTools({
   budget,
   approveBudgetAction,
   denyBudgetAction,
-  clearCommentsAction
+  clearCommentsAction,
 }: {
   budget: Budget;
   approveBudgetAction: (budget: Budget) => Promise<void>;
@@ -198,7 +202,7 @@ function SGABudgetViewSidebar({
   item_count,
   approveBudgetAction,
   denyBudgetAction,
-  clearCommentsAction
+  clearCommentsAction,
 }: {
   budget: Budget;
   item_count: number;
@@ -211,7 +215,7 @@ function SGABudgetViewSidebar({
       <BudgetDetails budget={budget} item_count={item_count} />
 
       {budget.current_status === 'submitted' && (
-        <ApproveDenyBudgetTools 
+        <ApproveDenyBudgetTools
           budget={budget}
           approveBudgetAction={approveBudgetAction}
           denyBudgetAction={denyBudgetAction}
