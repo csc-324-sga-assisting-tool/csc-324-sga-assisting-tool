@@ -77,7 +77,13 @@ class LocalDatabase implements IDatabase {
 
   async addDocument(collection: Collections, doc: Document): Promise<void> {
     const documents = this.collections[collection] || [];
-    this.collections[collection] = [...documents, doc];
+    // I tried using array.includes() here but it didn't work...
+    if (documents.find(d => d.id === doc.id) === undefined) {
+      this.collections[collection] = [...documents, doc];
+    } else {
+      documents[documents.findIndex(d => d.id === doc.id)] = doc;
+      this.collections[collection] = documents;
+    }
   }
 
   async addManyDocuments(

@@ -123,7 +123,11 @@ function BudgetViewSidebar({
               budget={budget}
               updateBudgetAction={updateBudgetAction}
             />
-            <Button onClick={submitBudget} className="bg-pallete-5 w-full">
+            <Button
+              onClick={submitBudget}
+              className="bg-pallete-5 w-full"
+              // data-testid="submit-budget-button"
+            >
               Submit
             </Button>
           </Sidebar.ItemGroup>
