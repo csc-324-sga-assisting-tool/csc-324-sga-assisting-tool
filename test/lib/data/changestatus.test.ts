@@ -72,17 +72,13 @@ describe('Test changeItemStatus', async () => {
   const dataModel = new DataModel(database);
   it('should update status history of item', async () => {
     const items = await dataModel.getItemsForBudget('budget_1');
-    if (items.length > 0) {
-      await dataModel.changeItemStatus(items[0], 'denied');
-      const updatedItems = await dataModel.getItemsForBudget('budget_1');
-      const updatedItem = updatedItems.find(item => item.id === items[0].id);
-      if (updatedItem) {
-        expect(updatedItem.current_status).toEqual('denied');
-      } else {
-        throw new Error('Updated Item Not Found');
-      }
+    await dataModel.changeItemStatus(items[0], 'denied');
+    const updatedItems = await dataModel.getItemsForBudget('budget_1');
+    const updatedItem = updatedItems.find(item => item.id === items[0].id);
+    if (updatedItem) {
+      expect(updatedItem.current_status).toEqual('denied');
     } else {
-      throw new Error('No Items Found');
+      throw new Error('Updated Item Not Found');
     }
   });
 });
