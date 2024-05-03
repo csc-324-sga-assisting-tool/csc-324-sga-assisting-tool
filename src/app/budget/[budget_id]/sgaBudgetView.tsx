@@ -35,9 +35,9 @@ export async function SGABudgetView({
   let addEventCmnt, deleteEventCmnt, getPreviousCmnts;
   const itemRowActions: ItemRowActions = {
     toggleDeny: toggleDenyItemAction,
-    edit: async () => {'use server';},
-    delete: async () => {'use server';},
-    comment: async () => {'use server';},
+    comment: async () => {
+      'use server';
+    },
   };
   if (TESTING_FLAG) {
     approveAction = review.TESTapproveBudgetAction.bind(null, dataModel);

@@ -34,15 +34,19 @@ export async function RSOBudgetView({
   // at Runtime
   let updateAction, itemAddAction;
   const itemRowActions: ItemRowActions = {
-    toggleDeny: toggleDenyItemAction,
-    edit: async () => {'use server';},
-    delete: async () => {'use server';},
-    comment: async () => {'use server';},
+    edit: async () => {
+      'use server';
+    },
+    delete: async () => {
+      'use server';
+    },
+    comment: async () => {
+      'use server';
+    },
   };
   if (TESTING_FLAG) {
     updateAction = TESTupdateBudgetAction.bind(null, dataModel);
     itemAddAction = TESTcreateItemAction.bind(null, dataModel);
-    itemRowActions.toggleDeny = TESTtoggleDenyItemAction.bind(null, dataModel);
   } else {
     updateAction = updateBudgetAction;
     itemAddAction = createItemAction;

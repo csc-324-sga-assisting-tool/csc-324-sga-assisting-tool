@@ -16,9 +16,11 @@ export async function toggleDenyItemAction(item: Item) {
   await TESTtoggleDenyItemAction(new DataModel(Database), item);
 }
 
+// Only the actions that the user can perform should be included
+// I.e. RSO should not be able to deny an item
 export type ItemRowActions = {
-  toggleDeny: (item: Item) => Promise<void>;
-  edit: (item: Item) => Promise<void>;
-  delete: (item: Item) => Promise<void>;
+  toggleDeny?: (item: Item) => Promise<void>;
+  edit?: (item: Item) => Promise<void>;
+  delete?: (item: Item) => Promise<void>;
   comment: (item: Item, comment: Comment) => Promise<void>;
 };

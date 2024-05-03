@@ -4,6 +4,7 @@ import {FiX, FiCheck} from 'react-icons/fi';
 import {Item} from 'lib/data';
 import {Button, Table} from 'flowbite-react';
 import {ItemRowActions} from './itemRowActions';
+import {Color} from 'lib/color.types';
 
 function ItemRowDenyButton({
   item,
@@ -13,7 +14,10 @@ function ItemRowDenyButton({
   toggleDenyItemAction: (item: Item) => void;
 }) {
   return (
-    <Button onClick={() => toggleDenyItemAction(item)}>
+    <Button
+      onClick={() => toggleDenyItemAction(item)}
+      className="bg-pallete-5 w-full"
+    >
       {item.current_status !== 'denied' && <FiX />}
       {item.current_status === 'denied' && <FiCheck />}
     </Button>
@@ -21,8 +25,9 @@ function ItemRowDenyButton({
 }
 
 function ItemRow(item: Item, itemRowActions: ItemRowActions) {
+  const color = item.current_status === 'denied' ? 'bg-pallete-1' : 'bg-white';
   return (
-    <Table.Row key={item.id} className="bg-white rounded-none">
+    <Table.Row key={item.id} className={`${color} rounded-none`}>
       <Table.Cell>
         {item.url ? (
           <a href={item.url} target="_blank">
@@ -37,10 +42,16 @@ function ItemRow(item: Item, itemRowActions: ItemRowActions) {
       <Table.Cell>{item.quantity * item.unit_price}</Table.Cell>
       <Table.Cell>{item.vendor}</Table.Cell>
       <Table.Cell>
-        <ItemRowDenyButton
-          item={item}
-          toggleDenyItemAction={itemRowActions.toggleDeny}
-        />
+        {itemRowActions.toggleDeny !== undefined && (
+          <ItemRowDenyButton
+            item={item}
+            toggleDenyItemAction={itemRowActions.toggleDeny}
+          />
+        )}
+        {itemRowActions.toggleDeny === undefined &&
+        item.current_status === 'denied'
+          ? 'Denied'
+          : 'Approved'}
       </Table.Cell>
     </Table.Row>
   );
@@ -55,7 +66,7 @@ export function ItemDisplay({
 }) {
   return (
     <div className="overflow-x-auto mt-4 rounded-none">
-      <Table hoverable striped className="rounded-none">
+      <Table className="rounded-none">
         <Table.Head>
           <Table.HeadCell>Name</Table.HeadCell>
           <Table.HeadCell>Unit Price</Table.HeadCell>
