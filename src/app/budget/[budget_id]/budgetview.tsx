@@ -6,6 +6,11 @@ import {
   TESTcreateItemAction,
   createItemAction,
 } from './actions';
+import {
+  TESTdenyItemAction,
+  denyItemAction,
+  ItemRowActions,
+} from './itemRowActions';
 import {ItemDisplay} from './itemDisplay';
 import {NewItemForm} from './addItemForm';
 
@@ -28,12 +33,20 @@ export async function RSOBudgetView({
   // So the createBudgetAction has Firebase fixed however, the TEST one allows us to set the dataModifier dynamically
   // at Runtime
   let updateAction, itemAddAction;
+  const itemRowActions: ItemRowActions = {
+    deny: denyItemAction,
+    edit: async () => {},
+    delete: async () => {},
+    comment: async () => {},
+  };
   if (TESTING_FLAG) {
     updateAction = TESTupdateBudgetAction.bind(null, dataModel);
     itemAddAction = TESTcreateItemAction.bind(null, dataModel);
+    itemRowActions.deny = TESTdenyItemAction.bind(null, dataModel);
   } else {
     updateAction = updateBudgetAction;
     itemAddAction = createItemAction;
+    itemRowActions.deny = denyItemAction;
   }
   return (
     <>
@@ -43,7 +56,7 @@ export async function RSOBudgetView({
         updateBudgetAction={updateAction}
       />
       <main className="ml-72 w-3/5 bg-white">
-        <ItemDisplay items={items} />
+        <ItemDisplay items={items} itemRowActions={itemRowActions} />
         {budget.current_status === 'created' && (
           <NewItemForm budget_id={budget_id} createItemAction={itemAddAction} />
         )}

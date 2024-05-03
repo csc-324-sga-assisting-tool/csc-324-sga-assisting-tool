@@ -1,10 +1,19 @@
 'use client';
 
-import {FiEdit} from 'react-icons/fi';
+import {FiX} from 'react-icons/fi';
 import {Item} from 'lib/data';
-import {Table} from 'flowbite-react';
+import {Button, Table} from 'flowbite-react';
+import {ItemRowActions} from './itemRowActions';
 
-function ItemRow(item: Item) {
+function ItemRowDenyButton(item: Item, denyItemAction: (item: Item) => void) {
+  return (
+    <Button onClick={() => denyItemAction(item)}>
+      <FiX />
+    </Button>
+  );
+}
+
+function ItemRow(item: Item, itemRowActions: ItemRowActions) {
   return (
     <Table.Row key={item.id} className="bg-white rounded-none">
       <Table.Cell>
@@ -21,13 +30,19 @@ function ItemRow(item: Item) {
       <Table.Cell>{item.quantity * item.unit_price}</Table.Cell>
       <Table.Cell>{item.vendor}</Table.Cell>
       <Table.Cell>
-        <FiEdit />
+        <ItemRowDenyButton item={item} denyItemAction={itemRowActions.deny}/>
       </Table.Cell>
     </Table.Row>
   );
 }
 
-export function ItemDisplay({items}: {items: Item[]}) {
+export function ItemDisplay({
+  items,
+  itemRowActions,
+}: {
+  items: Item[];
+  itemRowActions: ItemRowActions;
+}) {
   return (
     <div className="overflow-x-auto mt-4 rounded-none">
       <Table hoverable striped className="rounded-none">
@@ -42,7 +57,7 @@ export function ItemDisplay({items}: {items: Item[]}) {
           </Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {items.map(item => ItemRow(item))}
+          {items.map(item => ItemRow(item, itemRowActions))}
         </Table.Body>
       </Table>
     </div>

@@ -3,6 +3,11 @@ import {SGABudgetViewSidebar} from './sidebar';
 import {Item, Budget, DataModel, Comment} from 'lib/data';
 import * as review from './review_actions';
 import {ItemDisplay} from './itemDisplay';
+import {
+  TESTdenyItemAction,
+  denyItemAction,
+  ItemRowActions,
+} from './itemRowActions';
 import {EventCommentThread} from './eventComments';
 import {createComment} from 'lib/data/utils';
 
@@ -28,6 +33,12 @@ export async function SGABudgetView({
   // at Runtime
   let approveAction, denyAction, clearAction;
   let addEventCmnt, deleteEventCmnt, getPreviousCmnts;
+  const itemRowActions: ItemRowActions = {
+    deny: denyItemAction,
+    edit: async () => {},
+    delete: async () => {},
+    comment: async () => {},
+  };
   if (TESTING_FLAG) {
     approveAction = review.TESTapproveBudgetAction.bind(null, dataModel);
     denyAction = review.TESTdenyBudgetAction.bind(null, dataModel);
@@ -38,6 +49,7 @@ export async function SGABudgetView({
       null,
       dataModel
     );
+    itemRowActions.deny = TESTdenyItemAction.bind(null, dataModel);
   } else {
     approveAction = review.approveBudgetAction;
     denyAction = review.denyBudgetAction;
@@ -45,6 +57,7 @@ export async function SGABudgetView({
     addEventCmnt = review.addEventCommentAction;
     deleteEventCmnt = review.deleteEventCommentAction;
     getPreviousCmnts = review.getPreviousEventCommentsAction;
+    itemRowActions.deny = denyItemAction;
   }
 
   let eventComment: Comment;
@@ -72,7 +85,7 @@ export async function SGABudgetView({
             comment: eventComment,
           }}
         />
-        <ItemDisplay items={items} />
+        <ItemDisplay items={items} itemRowActions={itemRowActions} />
       </main>
     </>
   );
