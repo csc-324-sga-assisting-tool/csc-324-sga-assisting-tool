@@ -1,4 +1,13 @@
-import {Item, Budget, User, Comment, EventType, DataModel, UserType} from '.';
+import {
+  Item,
+  Budget,
+  User,
+  Comment,
+  EventType,
+  DataModel,
+  UserType,
+  Status,
+} from '.';
 import {forceAlphanumeric, normalizeID} from 'lib/util';
 
 export function userIsSGA(user: User) {
@@ -116,6 +125,7 @@ export function createItem({
   url,
   commentID,
   prev_commentIDs,
+  current_status,
 }: {
   id: string;
   budget_id: string;
@@ -126,6 +136,7 @@ export function createItem({
   url?: string;
   commentID?: string;
   prev_commentIDs?: string[];
+  current_status?: Status;
 }): Item {
   return {
     id,
@@ -137,6 +148,7 @@ export function createItem({
     url,
     commentID: commentID || '',
     prev_commentIDs: prev_commentIDs || [],
+    current_status: current_status || 'created',
   };
 }
 

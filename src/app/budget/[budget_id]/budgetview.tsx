@@ -7,8 +7,8 @@ import {
   createItemAction,
 } from './actions';
 import {
-  TESTdenyItemAction,
-  denyItemAction,
+  TESTtoggleDenyItemAction,
+  toggleDenyItemAction,
   ItemRowActions,
 } from './itemRowActions';
 import {ItemDisplay} from './itemDisplay';
@@ -34,19 +34,18 @@ export async function RSOBudgetView({
   // at Runtime
   let updateAction, itemAddAction;
   const itemRowActions: ItemRowActions = {
-    deny: denyItemAction,
-    edit: async () => {},
-    delete: async () => {},
-    comment: async () => {},
+    toggleDeny: toggleDenyItemAction,
+    edit: async () => {'use server';},
+    delete: async () => {'use server';},
+    comment: async () => {'use server';},
   };
   if (TESTING_FLAG) {
     updateAction = TESTupdateBudgetAction.bind(null, dataModel);
     itemAddAction = TESTcreateItemAction.bind(null, dataModel);
-    itemRowActions.deny = TESTdenyItemAction.bind(null, dataModel);
+    itemRowActions.toggleDeny = TESTtoggleDenyItemAction.bind(null, dataModel);
   } else {
     updateAction = updateBudgetAction;
     itemAddAction = createItemAction;
-    itemRowActions.deny = denyItemAction;
   }
   return (
     <>

@@ -1,6 +1,6 @@
 import {assert, beforeEach, it, describe, expect} from 'vitest';
 import {getFirestore} from 'firebase/firestore';
-import {Comment, Budget, DataModel, User} from 'lib/data';
+import {Comment, Budget, DataModel, User, createItem} from 'lib/data';
 import {Collections} from 'lib/firebase';
 import {getLocalFirebase, clearCollection} from '../../utils/database.util';
 
@@ -56,16 +56,13 @@ async function initializeBudget(id: string): Promise<void> {
 
 async function initializeItems(budgetID: string): Promise<void> {
   const items = [0, 1, 2, 3].map(i => {
-    return {
+    return createItem({
       id: `item_${i}`,
       budget_id: budgetID,
       name: `item_${i}`,
       quantity: i,
       unit_price: 10 - i,
-      vendor: '',
-      prev_commentIDs: [],
-      commentID: '',
-    };
+    });
   });
 
   await dataModel.addItems(items);

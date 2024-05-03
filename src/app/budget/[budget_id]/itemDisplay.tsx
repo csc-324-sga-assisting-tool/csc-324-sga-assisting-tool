@@ -1,11 +1,17 @@
 'use client';
 
-import {FiX FiCheck} from 'react-icons/fi';
+import {FiX, FiCheck} from 'react-icons/fi';
 import {Item} from 'lib/data';
 import {Button, Table} from 'flowbite-react';
 import {ItemRowActions} from './itemRowActions';
 
-function ItemRowDenyButton(item: Item, toggleDenyItemAction: (item: Item) => void) {
+function ItemRowDenyButton({
+  item,
+  toggleDenyItemAction,
+}: {
+  item: Item;
+  toggleDenyItemAction: (item: Item) => void;
+}) {
   return (
     <Button onClick={() => toggleDenyItemAction(item)}>
       {item.current_status !== 'denied' && <FiX />}
