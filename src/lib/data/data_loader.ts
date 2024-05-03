@@ -1,4 +1,4 @@
-import {Comment, Budget, Item, User, StatusChange} from '.';
+import {Comment, Budget, Item, User, StatusChange, Status} from '.';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -81,6 +81,21 @@ export class DataModel {
     budget.current_status = newStatus.status;
 
     return this.addBudget(budget);
+  }
+
+  async changeBudgetStatus(budget: Budget, newStatus: Status) {
+    budget.current_status = newStatus;
+    const currentDateTime = new Date().toISOString();
+    // Create new status by tuple type format
+    const newStatusChange: StatusChange = {
+      status: newStatus,
+      when: currentDateTime,
+    };
+    // Chage the tuple to array to save previous status. Tuple -> Array -> Add newStatusChange -> Tuple
+    const historyLog: StatusChange[] = budget.status_history as StatusChange[];
+    historyLog.unshift(newStatusChange);
+    budget.status_history = historyLog as [StatusChange];
+    return this.database.addDocument(Collections.Budgets, budget); // Save the change to the document
   }
 
   /** ITEMS **/

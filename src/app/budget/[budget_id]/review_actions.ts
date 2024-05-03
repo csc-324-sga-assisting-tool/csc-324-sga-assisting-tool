@@ -8,41 +8,48 @@ export async function TESTapproveBudgetAction(
   dataModel: DataModel,
   budget: Budget
 ): Promise<void> {
-  // TODO: Change budget status to approved
+  // Change budget status
+  await dataModel.changeBudgetStatus(budget, 'approved');
 
   revalidatePath('/dashboard');
   revalidatePath(`/budget/${budget.id}`);
-  redirect('/dashboard');
 }
 export async function approveBudgetAction(budget: Budget): Promise<void> {
-  TESTapproveBudgetAction(new DataModel(Database), budget);
+  await TESTapproveBudgetAction(new DataModel(Database), budget);
+
+  redirect('/dashboard');
 }
 
 export async function TESTdenyBudgetAction(
   dataModel: DataModel,
   budget: Budget
 ): Promise<void> {
+  // Change budget status to denied
+  await dataModel.changeBudgetStatus(budget, 'denied');
+
   // Commit all the comments for each item
-  dataModel.pushAllBudgetComments(budget.id);
+  await dataModel.pushAllBudgetComments(budget.id);
 
   // TODO: Change budget status to denied
   // Redirect to the dashboard
   revalidatePath('/dashboard');
   revalidatePath(`/budget/${budget.id}`);
-  redirect('/dashboard');
 }
 export async function denyBudgetAction(budget: Budget): Promise<void> {
-  TESTdenyBudgetAction(new DataModel(Database), budget);
+  await TESTdenyBudgetAction(new DataModel(Database), budget);
+
+  redirect('/dashboard');
 }
 
 export async function TESTclearCommentsAction(
   dataModel: DataModel,
   budget: Budget
 ): Promise<void> {
-  dataModel.clearItemComments(budget.id);
+  await dataModel.clearItemComments(budget.id);
+  revalidatePath(`/budget/${budget.id}`);
 }
 export async function clearCommentsAction(budget: Budget): Promise<void> {
-  TESTclearCommentsAction(new DataModel(Database), budget);
+  await TESTclearCommentsAction(new DataModel(Database), budget);
 }
 
 export type ReviewActionController = {
@@ -57,14 +64,14 @@ export async function TESTaddEventCommentAction(
   budget: Budget,
   comment: Comment
 ): Promise<void> {
-  if (comment.comment === '') dataModel.popBudgetComment(budget.id);
-  else dataModel.stageBudgetComment(budget.id, comment);
+  if (comment.comment === '') await dataModel.popBudgetComment(budget.id);
+  else await dataModel.stageBudgetComment(budget.id, comment);
 }
 export async function addEventCommentAction(
   budget: Budget,
   comment: Comment
 ): Promise<void> {
-  TESTaddEventCommentAction(new DataModel(Database), budget, comment);
+  await TESTaddEventCommentAction(new DataModel(Database), budget, comment);
 }
 
 // [These two functions were generated with copilot]
@@ -72,10 +79,10 @@ export async function TESTdeleteEventCommentAction(
   dataModel: DataModel,
   budget: Budget
 ): Promise<void> {
-  dataModel.popBudgetComment(budget.id);
+  await dataModel.popBudgetComment(budget.id);
 }
 export async function deleteEventCommentAction(budget: Budget): Promise<void> {
-  TESTdeleteEventCommentAction(new DataModel(Database), budget);
+  await TESTdeleteEventCommentAction(new DataModel(Database), budget);
 }
 
 export async function TESTgetPreviousEventCommentsAction(

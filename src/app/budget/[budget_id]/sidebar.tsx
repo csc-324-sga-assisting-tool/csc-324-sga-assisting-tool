@@ -157,6 +157,7 @@ function ApproveDenyBudgetTools({
   budget: Budget;
   reviewActionController: ReviewActionController;
 }) {
+  // TODO: Impelment logic for disabling buttons
   const itemsAreDenied = budget.denied_items.length > 0;
   const eventIsDenied = budget.commentID !== '';
 
@@ -164,25 +165,25 @@ function ApproveDenyBudgetTools({
     <Sidebar.ItemGroup>
       <Button
         onClick={() => reviewActionController.approveBudget(budget)}
-        disabled={itemsAreDenied || eventIsDenied}
+        disabled={false}
         className="bg-pallete-5 w-full"
       >
         Approve Budget
       </Button>
       <Button
         onClick={() => reviewActionController.denyBudget(budget)}
-        disabled={!(itemsAreDenied || eventIsDenied)}
+        disabled={false}
         className="bg-pallete-5 w-full"
       >
         Deny Budget
       </Button>
-      <Button
+      {/*<Button
         onClick={() => reviewActionController.clearComments(budget)}
         disabled={!itemsAreDenied}
         className="bg-pallete-5 w-full"
       >
         Clear Comments
-      </Button>
+      </Button>*/}
     </Sidebar.ItemGroup>
   );
 }
