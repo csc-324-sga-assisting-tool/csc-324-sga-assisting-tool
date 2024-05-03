@@ -50,7 +50,7 @@ describe('Test Budget View works as expected', () => {
     const user = userEvent.setup();
 
     mockDatabase.emptyCollection(Collections.Items);
-    //render the daashboard
+    //render the dashboard
     render(await BudgetView({...props}));
     expect(
       screen.queryByTestId('new-item-form-button-add')
@@ -79,7 +79,7 @@ describe('Test Budget View works as expected', () => {
     await user.click(submitButton);
 
     const items = await mockDataprovider.getItemsForBudget(props.budget_id);
-    expect(items.length).toBe(1);
+    expect(items.length).toBe(1); // Error
   });
 
   it('incorrectly filled add item form will not create a new item', async () => {

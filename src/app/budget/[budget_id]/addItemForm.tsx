@@ -41,12 +41,6 @@ export function NewItemForm({
       e.currentTarget.elements.namedItem('item_quantity') as HTMLInputElement
     ).value as unknown as number;
 
-    const current_status = (
-      e.currentTarget.elements.namedItem(
-        'item_current_status'
-      ) as HTMLInputElement
-    ).value as unknown as Status;
-
     const url = (
       e.currentTarget.elements.namedItem('item_url') as HTMLInputElement
     ).value as EventType;
@@ -59,7 +53,7 @@ export function NewItemForm({
       vendor,
       unit_cost,
       quantity,
-      current_status,
+      'created',
       url
     );
   };
