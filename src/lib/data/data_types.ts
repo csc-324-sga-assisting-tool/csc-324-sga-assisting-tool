@@ -28,7 +28,7 @@ interface Item extends Commentable, Document {
   name: string;
   quantity: number;
   unit_price: number;
-  vendor: string | undefined;
+  vendor: string;
   url?: string;
 }
 

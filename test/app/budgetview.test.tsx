@@ -2,12 +2,12 @@ import {expect, describe, it} from 'vitest';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {LocalDatabase} from '../utils/database.local';
 import {userEvent} from '@testing-library/user-event';
-import {DataModel, User} from 'lib/data';
+import {DataModel, User, createUser, createBudget} from 'lib/data';
 import {Collections} from 'lib/firebase';
-import {BudgetView} from 'app/budget/[budget_id]/budgetview';
+import {RSOBudgetView} from 'app/budget/[budget_id]/budgetview';
 
-describe('Test Budget View works as expected', () => {
-  const userSGA: User = {
+describe('Test Budget View works as expected', async () => {
+  const userSEPC = createUser({
     id: 'test_budget_view_user',
     name: 'John Doe',
     user_type: 'SEPC',
@@ -16,29 +16,26 @@ describe('Test Budget View works as expected', () => {
     pending_event: 3,
     planned_event: 5,
     completed_event: 2,
-  };
+  });
+
   const mockDatabase = new LocalDatabase();
   mockDatabase.emptyCollection(Collections.Budgets);
-  mockDatabase.addDocument(Collections.Users, userSGA);
+  mockDatabase.addDocument(Collections.Users, userSEPC);
 
   const mockDataprovider = new DataModel(mockDatabase);
   mockDatabase.setCollection(Collections.Budgets, [
-    {
+    await createBudget({
+      dataModel: mockDataprovider,
       id: 'test_budget_view',
       user_id: 'test_budget_view_user',
-      user_name: 'John Doe',
       event_name: 'Test Event',
       event_description: 'Test Event Description',
-      current_status: 'created',
-      total_cost: 0,
-      status_history: [{status: 'created', when: '2024-3-1'}],
-      eent_location: 'Harris',
+      event_location: 'Harris',
       event_type: 'Harris',
       event_datetime: '2024-5-1',
-      items: [],
-    },
+    }),
   ]);
-  // console.log(await mockDataprovider.getBudgets());
+
   const props = {
     budget_id: 'test_budget_view',
     dataModel: mockDataprovider,
@@ -51,7 +48,7 @@ describe('Test Budget View works as expected', () => {
 
     mockDatabase.emptyCollection(Collections.Items);
     //render the daashboard
-    render(await BudgetView({...props}));
+    render(await RSOBudgetView({...props}));
     expect(
       screen.queryByTestId('new-item-form-button-add')
     ).toBeInTheDocument();
@@ -87,7 +84,7 @@ describe('Test Budget View works as expected', () => {
     const user = userEvent.setup();
     mockDatabase.emptyCollection(Collections.Items);
 
-    render(await BudgetView({...props}));
+    render(await RSOBudgetView({...props}));
     expect(
       screen.queryByTestId('new-item-form-button-add')
     ).toBeInTheDocument();
@@ -120,7 +117,7 @@ describe('Test Budget View works as expected', () => {
     // setup the userEvents library
     const user = userEvent.setup();
     // print(dataModel
-    render(await BudgetView({...props}));
+    render(await RSOBudgetView({...props}));
 
     // Check that the form fields are present*
     expect(
@@ -185,7 +182,7 @@ describe('Test Budget View works as expected', () => {
   it('check if submit button works as intended', async () => {
     // setup the userEvents library
     const user = userEvent.setup();
-    render(await BudgetView({...props}));
+    render(await RSOBudgetView({...props}));
     expect(screen.queryByTestId('submit-budget-button')).toBeInTheDocument();
 
     await user.click(screen.getByTestId('submit-budget-button'));
