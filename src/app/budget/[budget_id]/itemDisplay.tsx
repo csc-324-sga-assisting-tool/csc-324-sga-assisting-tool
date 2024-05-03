@@ -1,14 +1,15 @@
 'use client';
 
-import {FiX} from 'react-icons/fi';
+import {FiX FiCheck} from 'react-icons/fi';
 import {Item} from 'lib/data';
 import {Button, Table} from 'flowbite-react';
 import {ItemRowActions} from './itemRowActions';
 
-function ItemRowDenyButton(item: Item, denyItemAction: (item: Item) => void) {
+function ItemRowDenyButton(item: Item, toggleDenyItemAction: (item: Item) => void) {
   return (
-    <Button onClick={() => denyItemAction(item)}>
-      <FiX />
+    <Button onClick={() => toggleDenyItemAction(item)}>
+      {item.current_status !== 'denied' && <FiX />}
+      {item.current_status === 'denied' && <FiCheck />}
     </Button>
   );
 }
@@ -30,7 +31,10 @@ function ItemRow(item: Item, itemRowActions: ItemRowActions) {
       <Table.Cell>{item.quantity * item.unit_price}</Table.Cell>
       <Table.Cell>{item.vendor}</Table.Cell>
       <Table.Cell>
-        <ItemRowDenyButton item={item} denyItemAction={itemRowActions.deny}/>
+        <ItemRowDenyButton
+          item={item}
+          toggleDenyItemAction={itemRowActions.toggleDeny}
+        />
       </Table.Cell>
     </Table.Row>
   );
