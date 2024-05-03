@@ -136,7 +136,7 @@ export function NewItemForm({
                   name="item_url"
                   type="url"
                   placeholder="Optional"
-                  data-testid="new-item-form-input-quantity"
+                  data-testid="new-item-form-input-url"
                 />
               </div>
               <Button
