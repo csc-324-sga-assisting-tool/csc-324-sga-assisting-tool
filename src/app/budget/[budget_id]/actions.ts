@@ -1,6 +1,6 @@
 'use server';
 import {revalidatePath} from 'next/cache';
-import {Budget, Item, DataModel, Database} from 'lib/data';
+import {Budget, Item, DataModel, Database, Status} from 'lib/data';
 import {forceAlphanumeric, normalizeID} from 'lib/util';
 import {redirect} from 'next/navigation';
 
@@ -43,6 +43,7 @@ function createItem(
   vendor: string,
   unit_price: number,
   quantity: number,
+  current_status: Status,
   url?: string
 ): Item {
   const id = forceAlphanumeric(
@@ -58,6 +59,7 @@ function createItem(
     quantity,
     prev_commentIDs: [],
     commentID: '',
+    current_status,
   };
 }
 
@@ -68,9 +70,18 @@ export async function TESTcreateItemAction(
   vendor: string,
   unit_price: number,
   quantity: number,
+  current_status: Status,
   url?: string
 ) {
-  const item = createItem(budgetID, name, vendor, unit_price, quantity, url);
+  const item = createItem(
+    budgetID,
+    name,
+    vendor,
+    unit_price,
+    quantity,
+    current_status,
+    url
+  );
   return dataModel.addItem(item);
 }
 
@@ -80,9 +91,18 @@ export async function createItemAction(
   vendor: string,
   unit_price: number,
   quantity: number,
+  current_status: Status,
   url?: string
 ) {
-  const item = createItem(budgetID, name, vendor, unit_price, quantity, url);
+  const item = createItem(
+    budgetID,
+    name,
+    vendor,
+    unit_price,
+    quantity,
+    current_status,
+    url
+  );
   const model = new DataModel(Database);
   await model.addItem(item);
   revalidatePath(`/budget/${budgetID}`);

@@ -1,7 +1,7 @@
 'use client';
 
 import {Button, Label, Modal, TextInput} from 'flowbite-react';
-import {EventType} from 'lib/data';
+import {EventType, Status} from 'lib/data';
 import {FormEvent, FormEventHandler, useState} from 'react';
 import {HiPlusCircle} from 'react-icons/hi';
 
@@ -16,6 +16,7 @@ export function NewItemForm({
     vendor: string,
     unit_price: number,
     quantity: number,
+    current_status: Status,
     url?: string
   ) => Promise<void>;
 }) {
@@ -46,7 +47,15 @@ export function NewItemForm({
 
     setOpenModal(false);
 
-    createItemAction(budget_id, name, vendor, unit_cost, quantity, url);
+    createItemAction(
+      budget_id,
+      name,
+      vendor,
+      unit_cost,
+      quantity,
+      'created',
+      url
+    );
   };
 
   return (

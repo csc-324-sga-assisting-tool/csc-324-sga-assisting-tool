@@ -30,6 +30,7 @@ interface Item extends Commentable, Document {
   unit_price: number;
   vendor: string;
   url?: string;
+  current_status: Status;
 }
 
 // Budget represents a single budget request
