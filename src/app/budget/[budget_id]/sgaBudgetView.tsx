@@ -34,7 +34,10 @@ export async function SGABudgetView({
     clearAction = review.TESTclearCommentsAction.bind(null, dataModel);
     addEventCmnt = review.TESTaddEventCommentAction.bind(null, dataModel);
     deleteEventCmnt = review.TESTdeleteEventCommentAction.bind(null, dataModel);
-    getPreviousCmnts = review.TESTgetPreviousEventCommentsAction.bind(null, dataModel);
+    getPreviousCmnts = review.TESTgetPreviousEventCommentsAction.bind(
+      null,
+      dataModel
+    );
   } else {
     approveAction = review.approveBudgetAction;
     denyAction = review.denyBudgetAction;
@@ -45,7 +48,7 @@ export async function SGABudgetView({
   }
 
   let eventComment: Comment;
-  if (budget.commentID === '') eventComment = createComment(user_id, '');
+  if (budget.commentID === '') eventComment = createComment({userId: user_id});
   else eventComment = await dataModel.getComment(budget.commentID);
 
   return (
@@ -66,7 +69,7 @@ export async function SGABudgetView({
             addEventComment: addEventCmnt,
             deleteEventComment: deleteEventCmnt,
             getPreviousComments: getPreviousCmnts,
-            comment: eventComment
+            comment: eventComment,
           }}
         />
         <ItemDisplay items={items} />

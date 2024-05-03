@@ -13,7 +13,9 @@ export function EventCommentThread({
   budget: Budget;
   eventCommentThreadController: EventCommentThreadController;
 }) {
-  const [comment, setComment] = useState(eventCommentThreadController.comment.comment);
+  const [comment, setComment] = useState(
+    eventCommentThreadController.comment.comment
+  );
 
   const saveComment: FormEventHandler = async (e: FormEvent) => {
     e.preventDefault();

@@ -65,24 +65,6 @@ export class DataModel {
     return this.database.addDocument(Collections.Budgets, budget);
   }
 
-  async submitBudget(budgetID: string): Promise<void> {
-    // TODO: Do validation here to make sure invalid budgets are not submitted
-    const budget = await this.getBudget(budgetID);
-
-    const newStatus: StatusChange = {
-      status: 'submitted',
-      when: new Date().toISOString(),
-    };
-    const updatedStatusHistory = [newStatus];
-
-    // Update the status history
-    updatedStatusHistory.push(...budget.status_history);
-    budget.status_history = updatedStatusHistory;
-    budget.current_status = newStatus.status;
-
-    return this.addBudget(budget);
-  }
-
   async changeBudgetStatus(budget: Budget, newStatus: Status) {
     budget.current_status = newStatus;
     const currentDateTime = new Date().toISOString();

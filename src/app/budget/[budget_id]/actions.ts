@@ -30,7 +30,7 @@ export async function updateBudgetAction(
 
 export async function submitBudgetAction(budget: Budget): Promise<void> {
   const modifier = new DataModel(Database);
-  await modifier.submitBudget(budget.id);
+  await modifier.changeBudgetStatus(budget, 'submitted');
 
   revalidatePath('/dashboard');
   revalidatePath(`/budget/${budget.id}`);

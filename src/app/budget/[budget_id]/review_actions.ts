@@ -30,7 +30,6 @@ export async function TESTdenyBudgetAction(
   // Commit all the comments for each item
   await dataModel.pushAllBudgetComments(budget.id);
 
-  // TODO: Change budget status to denied
   // Redirect to the dashboard
   revalidatePath('/dashboard');
   revalidatePath(`/budget/${budget.id}`);
