@@ -29,7 +29,7 @@ interface Item extends Commentable, Document {
   quantity: number;
   unit_price: number;
   vendor: string;
-  url?: string;
+  url: string;
   current_status: Status;
 }
 
@@ -40,9 +40,9 @@ interface Budget extends Commentable, Document {
   user_name: string; // the name of the user this budget belongs to
   event_name: string;
   event_description: string;
-  event_datetime?: string;
-  event_location?: string;
-  event_type: EventType; // shouldn't be string but restricted to a specific string like 'food', cultural'... once we know types
+  event_datetime: string;
+  event_location: string;
+  event_type: EventType;
   total_cost: number;
   current_status: Status;
   status_history: StatusChange[];
