@@ -34,7 +34,8 @@ function ItemRow(
   // but SGA has not yet submitted reviewal
   const rsoShowDenied = !sgaUser && budget.current_status === 'denied';
   const sgaShowDenied = sgaUser && budget.current_status === 'submitted';
-  const showDenied = item.current_status === 'denied' && (rsoShowDenied || sgaShowDenied);
+  const showDenied =
+    item.current_status === 'denied' && (rsoShowDenied || sgaShowDenied);
 
   const color = showDenied ? 'bg-pallete-1' : 'bg-white';
   return (
@@ -59,7 +60,9 @@ function ItemRow(
             toggleDenyItemAction={itemRowActions.toggleDeny}
           />
         )}
-        {!sgaUser && item.current_status === 'denied' ? 'Denied' : 'Approved'}
+        {!sgaUser && showDenied && item.current_status === 'denied'
+          ? 'Denied'
+          : 'Approved'}
       </Table.Cell>
     </Table.Row>
   );

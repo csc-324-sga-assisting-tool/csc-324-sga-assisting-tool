@@ -2,7 +2,7 @@
 
 import {PropsWithChildren} from 'react';
 import {Sidebar, Button} from 'flowbite-react';
-import {Budget, Status, StatusChange} from 'lib/data';
+import {Budget, Item, Status, StatusChange} from 'lib/data';
 import {Color} from 'lib/color.types';
 import {EditBudgetForm} from './editBudgetForm';
 import {submitBudgetAction} from './actions';
@@ -152,20 +152,26 @@ function EditSubmitBudgetTools(props: {
 
 function ApproveDenyBudgetTools({
   budget,
+  items,
   reviewActionController,
 }: {
   budget: Budget;
+  items: Item[];
   reviewActionController: ReviewActionController;
 }) {
-  // TODO: Impelment logic for disabling buttons
-  const itemsAreDenied = budget.denied_items.length > 0;
-  const eventIsDenied = budget.commentID !== '';
+  let itemsAreDenied = false;
+  for (const item of items) {
+    if (item.current_status === 'denied') {
+      itemsAreDenied = true;
+      break;
+    }
+  }
 
   return (
     <Sidebar.ItemGroup>
       <Button
         onClick={() => reviewActionController.approveBudget(budget)}
-        disabled={false}
+        disabled={itemsAreDenied}
         className="bg-pallete-5 w-full"
       >
         Approve Budget
@@ -216,20 +222,21 @@ function RSOBudgetViewSidebar({
 
 function SGABudgetViewSidebar({
   budget,
-  item_count,
+  items,
   reviewActionController,
 }: {
   budget: Budget;
-  item_count: number;
+  items: Item[];
   reviewActionController: ReviewActionController;
 }) {
   return (
     <BudgetViewSidebar>
-      <BudgetDetails budget={budget} item_count={item_count} />
+      <BudgetDetails budget={budget} item_count={items.length} />
 
       {budget.current_status === 'submitted' && (
         <ApproveDenyBudgetTools
           budget={budget}
+          items={items}
           reviewActionController={reviewActionController}
         />
       )}

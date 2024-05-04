@@ -67,7 +67,7 @@ export async function SGABudgetView({
     <>
       <SGABudgetViewSidebar
         budget={budget}
-        item_count={items.length}
+        items={items}
         reviewActionController={{
           approveBudget: approveAction,
           denyBudget: denyAction,
