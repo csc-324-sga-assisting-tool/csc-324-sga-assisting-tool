@@ -1,58 +1,52 @@
 import {assert, beforeAll, it, describe} from 'vitest';
 import {Budget, Item, Sort, DataModel, User} from 'lib/data';
 import {getFirestore} from 'firebase/firestore';
-import {getLocalFirebase} from '../../utils/database.util';
+import {getLocalFirebase, clearCollection} from '../../utils/database.util';
 import {Collections} from 'lib/firebase';
+import {
+  createItem,
+  createBudget,
+  createBudgetSync,
+  createUser,
+} from 'lib/data/utils';
 
 const db = getFirestore();
 const database = getLocalFirebase(db);
 beforeAll(async () => {
+  await clearCollection(database, Collections.Users);
+  await clearCollection(database, Collections.Budgets);
+  await clearCollection(database, Collections.Items);
+
   const testItems: Item[] = [1, 2, 3].map(number => {
-    return {
+    return createItem({
       budget_id: 'test_budget_for_items',
       unit_price: 10.0,
       id: `item_${number}`,
       name: `testing item ${number}`,
       quantity: 2,
-      rso_item_comment: null,
-      sga_item_comment: null,
       url: 'test',
       vendor: 'test',
-      prev_commentIDs: [],
-      commentID: '',
-    };
+    });
   });
-  const testBudget: Budget = {
+  const testBudget: Budget = createBudgetSync({
     id: 'test_budget_for_items',
     user_id: 'user_items', // the user this budget belongs to
     user_name: 'user_items',
     event_name: 'test_for_items',
     event_description: 'test_for_items',
-    total_cost: 10.0 * 3 * 2,
-    current_status: 'created',
-    status_history: [],
     event_type: 'Harris',
-    prev_commentIDs: [],
-    commentID: '',
-    denied_items: [],
-  };
+  });
 
-  const addItemTestBudget: Budget = {
+  const addItemTestBudget: Budget = createBudgetSync({
     id: 'test_budget_for_add_items',
     user_id: 'user_items', // the user this budget belongs to
     user_name: 'user_items',
     event_name: 'test_for_add_items',
     event_description: 'test_for_add_items',
-    total_cost: 0,
-    current_status: 'created',
-    status_history: [],
     event_type: 'Harris',
-    prev_commentIDs: [],
-    commentID: '',
-    denied_items: [],
-  };
+  });
 
-  const testUser: User = {
+  const testUser: User = createUser({
     id: 'user_items',
     name: 'user_items',
     remaining_budget: 500,
@@ -61,12 +55,12 @@ beforeAll(async () => {
     planned_event: 1,
     completed_event: 1,
     user_type: 'SEPC',
-  };
+  });
 
-  database.addManyDocuments(Collections.Items, testItems);
-  database.addDocument(Collections.Budgets, testBudget);
-  database.addDocument(Collections.Budgets, addItemTestBudget);
-  database.addDocument(Collections.Users, testUser);
+  await database.addManyDocuments(Collections.Items, testItems);
+  await database.addDocument(Collections.Budgets, testBudget);
+  await database.addDocument(Collections.Budgets, addItemTestBudget);
+  await database.addDocument(Collections.Users, testUser);
 });
 
 describe('Test getBudgetItems', async () => {
