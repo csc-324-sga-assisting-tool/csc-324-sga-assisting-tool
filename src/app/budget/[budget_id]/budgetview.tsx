@@ -59,7 +59,12 @@ export async function RSOBudgetView({
         updateBudgetAction={updateAction}
       />
       <main className="ml-72 w-3/5 bg-white">
-        <ItemDisplay items={items} itemRowActions={itemRowActions} />
+        <ItemDisplay
+          items={items}
+          budget={budget}
+          sgaUser={false}
+          itemRowActions={itemRowActions}
+        />
         {budget.current_status === 'created' && (
           <NewItemForm budget_id={budget_id} createItemAction={itemAddAction} />
         )}

@@ -84,7 +84,12 @@ export async function SGABudgetView({
             comment: eventComment,
           }}
         />
-        <ItemDisplay items={items} itemRowActions={itemRowActions} />
+        <ItemDisplay
+          items={items}
+          budget={budget}
+          sgaUser={true}
+          itemRowActions={itemRowActions}
+        />
       </main>
     </>
   );
