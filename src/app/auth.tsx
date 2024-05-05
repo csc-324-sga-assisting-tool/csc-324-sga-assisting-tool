@@ -30,7 +30,8 @@ export async function createUserAction(
   email: string,
   total_budget: number,
   user_type: UserType,
-  password: string
+  password: string,
+  TESTING_FLAG = false
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
   const auth = AuthModel;
@@ -42,10 +43,14 @@ export async function createUserAction(
       message: error!.toString(),
     };
   }
-  redirect('/dashboard');
+  if (!TESTING_FLAG) {
+    redirect('/dashboard');
+  }
 }
 
-export async function signOutAction(): Promise<{message: string} | void> {
+export async function signOutAction(
+  TESTING_FLAG = false
+): Promise<{message: string} | void> {
   const auth = AuthModel;
   try {
     auth.signOut();
@@ -54,12 +59,15 @@ export async function signOutAction(): Promise<{message: string} | void> {
       message: 'sign out failed',
     };
   }
-  redirect('/');
+  if (!TESTING_FLAG) {
+    redirect('/dashboard');
+  }
 }
 
 export async function signInAction(
   email: string,
-  password: string
+  password: string,
+  TESTING_FLAG = false
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
   const auth = AuthModel;
@@ -70,5 +78,7 @@ export async function signInAction(
       message: error!.toString(),
     };
   }
-  redirect('/dashboard');
+  if (!TESTING_FLAG) {
+    redirect('/dashboard');
+  }
 }
