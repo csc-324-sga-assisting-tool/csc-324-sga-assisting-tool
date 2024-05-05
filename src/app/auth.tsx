@@ -25,18 +25,36 @@ function createUser(
   return user;
 }
 
+export async function deterUserType(email: string): Promise<UserType> {
+  switch (true) {
+    case /.*?sepc.*?@grinnell\.edu/gim.test(email):
+      return 'SEPC';
+    case /.*?@studentorg\.grinnell\.edu/gim.test(email):
+      return 'RSO';
+    case /sgatreasurer@grinnell\.edu/gim.test(email):
+      return 'SGA_Treasurer';
+    case /sgaat@grinnell\.edu/gim.test(email):
+      return 'SGA_Assistant_Treasurer';
+    default:
+      Promise.reject(
+        new Error('email does not satisfy RSO/SEPC/SGA user type')
+      );
+  }
+  return 'RSO';
+}
+
 export async function createUserAction(
   name: string,
   email: string,
   total_budget: number,
-  user_type: UserType,
   password: string,
   TESTING_FLAG = false
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
   const auth = AuthModel;
-  const user = createUser(name, emailNorm, total_budget, user_type);
   try {
+    const user_type = await deterUserType(email);
+    const user = createUser(name, emailNorm, total_budget, user_type);
     await auth.createUser(emailNorm, password, user);
   } catch (error) {
     return {
@@ -60,7 +78,7 @@ export async function signOutAction(
     };
   }
   if (!TESTING_FLAG) {
-    redirect('/dashboard');
+    redirect('/');
   }
 }
 

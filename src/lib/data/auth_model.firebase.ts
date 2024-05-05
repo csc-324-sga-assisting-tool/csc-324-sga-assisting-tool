@@ -1,13 +1,11 @@
 import {
   createUserWithEmailAndPassword,
-  getAuth,
   signInWithEmailAndPassword,
   signOut,
   setPersistence,
   browserSessionPersistence,
   onAuthStateChanged,
   Auth,
-  deleteUser,
 } from 'firebase/auth';
 import {User, DataModel, Database} from '.';
 import {IAuthModel} from './auth_model';

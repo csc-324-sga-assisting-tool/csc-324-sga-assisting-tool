@@ -1,9 +1,8 @@
 'use client';
 
-import {Alert, Button, Label, Modal, TextInput, Select} from 'flowbite-react';
+import {Alert, Button, Label, Modal, TextInput} from 'flowbite-react';
 import {FormEvent, FormEventHandler, useState} from 'react';
 import {createUserAction} from './auth';
-import {UserType, UserTypes} from 'lib/data';
 
 export function SignUp({TESTING_FLAG}: {TESTING_FLAG?: boolean}) {
   const [openModal, setOpenModal] = useState(false);
@@ -30,17 +29,12 @@ export function SignUp({TESTING_FLAG}: {TESTING_FLAG?: boolean}) {
       e.currentTarget.elements.namedItem('budget') as HTMLInputElement
     ).value as unknown as number;
 
-    const userType = (
-      e.currentTarget.elements.namedItem('user_type') as HTMLInputElement
-    ).value as UserType;
-
     setOpenModal(false);
 
     const result = await createUserAction(
       name,
       email,
       budget,
-      userType,
       password,
       TESTING_FLAG
     );
@@ -115,21 +109,6 @@ export function SignUp({TESTING_FLAG}: {TESTING_FLAG?: boolean}) {
                   placeholder="2000"
                   required
                 />
-              </div>
-              <div>
-                <div className="m-2 block">
-                  <Label htmlFor="user_type" value="Are you?" />
-                </div>
-                <Select
-                  id="user_type"
-                  name="user_type"
-                  data-testid="sign-up-form-input-user_type"
-                  required
-                >
-                  {UserTypes.map(userType => (
-                    <option key={userType}>{userType}</option>
-                  ))}
-                </Select>
               </div>
 
               <Button
