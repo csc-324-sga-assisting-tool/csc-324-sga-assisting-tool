@@ -162,6 +162,29 @@ describe('Test Login works as Expected', async () => {
 
     await authModel.signOut();
   });
+  it('create account should fail with bad email type', async () => {
+    const user = userEvent.setup();
+    render(<LogIn TESTING_FLAG={true} />);
+    expect(screen.queryByTestId('login-form')).toBeInTheDocument();
+    expect(screen.queryByTestId('sign-up-form-button')).toBeInTheDocument();
+    await user.click(screen.getByTestId('sign-up-form-button'));
+    const formInputs = await screen.findAllByTestId(/sign-up-form/);
+    formInputs.forEach(element => expect(element).toBeVisible());
+
+    const emailInput = await screen.findByTestId('sign-up-form-email');
+    const passwordInput = await screen.findByTestId('sign-up-form-password');
+    const nameInput = await screen.findByTestId('sign-up-form-name');
+    const budgetInput = await screen.findByTestId('sign-up-form-budget');
+    const submitButton = await screen.findByTestId('sign-up-form-submit');
+
+    await user.type(emailInput, 'test_user_fe@grinnell.edu');
+    await user.type(passwordInput, passwords[2]);
+    await user.type(nameInput, testUsers[2].name);
+    await user.type(budgetInput, testUsers[2].total_budget.toString());
+    await user.click(submitButton);
+
+    expect(await screen.findByText('Create Account Failed:', {exact: false}));
+  });
   it('render login form with empty create account form', async () => {
     const user = userEvent.setup();
     render(<LogIn TESTING_FLAG={true} />);

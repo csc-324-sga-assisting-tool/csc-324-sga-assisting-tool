@@ -35,12 +35,10 @@ export async function deterUserType(email: string): Promise<UserType> {
       return 'SGA_Treasurer';
     case /sgaat@grinnell\.edu/gim.test(email):
       return 'SGA_Assistant_Treasurer';
-    default:
-      Promise.reject(
-        new Error('email does not satisfy RSO/SEPC/SGA user type')
-      );
   }
-  return 'RSO';
+  return Promise.reject(
+    new Error('email does not satisfy RSO/SEPC/SGA user type')
+  );
 }
 
 export async function createUserAction(
@@ -52,6 +50,7 @@ export async function createUserAction(
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
   const auth = AuthModel;
+
   try {
     const user_type = await deterUserType(email);
     const user = createUser(name, emailNorm, total_budget, user_type);
@@ -61,6 +60,7 @@ export async function createUserAction(
       message: error!.toString(),
     };
   }
+
   if (!TESTING_FLAG) {
     redirect('/dashboard');
   }
