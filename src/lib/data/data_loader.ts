@@ -127,24 +127,23 @@ export class DataModel {
     await this.database.addDocument(Collections.Users, user);
   }
 
-  //These should be moved
-  // async addUser(email: string, password: string, user: User): Promise<void> {
-  //   const auth = getAuth();
-  //   await createUserWithEmailAndPassword(auth, email, password);
-  //   await this.database.addDocument(Collections.Users, user);
-  // }
+  async changeBudgetStatus(budget: Budget, newStatus: Status) {
+    budget.current_status = newStatus;
+    const currentDateTime = new Date().toISOString();
+    // Create new status by tuple type format
+    const newStatusChange: StatusChange = {
+      status: newStatus,
+      when: currentDateTime,
+    };
+    // Chage the tuple to array to save previous status. Tuple -> Array -> Add newStatusChange -> Tuple
+    const historyLog: StatusChange[] = budget.status_history as StatusChange[];
+    historyLog.unshift(newStatusChange);
+    budget.status_history = historyLog as [StatusChange];
+    return this.database.addDocument(Collections.Budgets, budget); // Save the change to the document
+  }
 
-  // async signOutUser() {
-  //   const auth = getAuth();
-  //   try {
-  //     await signOut(auth);
-  //   } catch (error) {
-  //     return Promise.reject(error);
-  //   }
-  // }
-
-  // async signInUser(email: string, password: string) {
-  //   const auth = getAuth();
-  //   await signInWithEmailAndPassword(auth, email, password);
-  // }
+  async changeItemStatus(item: Item, newStatus: Status) {
+    item.current_status = newStatus;
+    return this.database.addDocument(Collections.Items, item);
+  }
 }

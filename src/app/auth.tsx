@@ -25,27 +25,50 @@ function createUser(
   return user;
 }
 
+export async function deterUserType(email: string): Promise<UserType> {
+  switch (true) {
+    case /.*?sepc.*?@grinnell\.edu/gim.test(email):
+      return 'SEPC';
+    case /.*?@studentorg\.grinnell\.edu/gim.test(email):
+      return 'RSO';
+    case /sgatreasurer@grinnell\.edu/gim.test(email):
+      return 'SGA_Treasurer';
+    case /sgaat@grinnell\.edu/gim.test(email):
+      return 'SGA_Assistant_Treasurer';
+  }
+  return Promise.reject(
+    new Error('email does not satisfy RSO/SEPC/SGA user type')
+  );
+}
+
 export async function createUserAction(
   name: string,
   email: string,
   total_budget: number,
-  user_type: UserType,
-  password: string
+  password: string,
+  TESTING_FLAG = false
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
   const auth = AuthModel;
-  const user = createUser(name, emailNorm, total_budget, user_type);
+
   try {
+    const user_type = await deterUserType(email);
+    const user = createUser(name, emailNorm, total_budget, user_type);
     await auth.createUser(emailNorm, password, user);
   } catch (error) {
     return {
       message: error!.toString(),
     };
   }
-  redirect('/dashboard');
+
+  if (!TESTING_FLAG) {
+    redirect('/dashboard');
+  }
 }
 
-export async function signOutAction(): Promise<{message: string} | void> {
+export async function signOutAction(
+  TESTING_FLAG = false
+): Promise<{message: string} | void> {
   const auth = AuthModel;
   try {
     auth.signOut();
@@ -54,12 +77,15 @@ export async function signOutAction(): Promise<{message: string} | void> {
       message: 'sign out failed',
     };
   }
-  redirect('/');
+  if (!TESTING_FLAG) {
+    redirect('/');
+  }
 }
 
 export async function signInAction(
   email: string,
-  password: string
+  password: string,
+  TESTING_FLAG = false
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
   const auth = AuthModel;
@@ -70,5 +96,7 @@ export async function signInAction(
       message: error!.toString(),
     };
   }
-  redirect('/dashboard');
+  if (!TESTING_FLAG) {
+    redirect('/dashboard');
+  }
 }
