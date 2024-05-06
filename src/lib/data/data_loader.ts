@@ -1,10 +1,4 @@
 import {Budget, Item, User} from '.';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signOut,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';

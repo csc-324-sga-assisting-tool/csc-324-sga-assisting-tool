@@ -4,8 +4,6 @@ import {Alert, Button, Checkbox, Label, TextInput} from 'flowbite-react';
 import {SignUp} from './createAcc';
 import {signInAction} from './auth';
 import {FormEvent, FormEventHandler, useState} from 'react';
-import {error} from 'console';
-import {errorMonitor} from 'events';
 
 export function ComponentLog() {
   const [showErrorAlert, setShowErrorAlert] = useState(false);

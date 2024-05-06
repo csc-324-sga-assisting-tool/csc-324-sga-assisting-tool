@@ -1,18 +1,37 @@
-import {DataModel, Document, User} from 'lib/data';
-import {beforeEach, beforeAll, describe, expect, test, assert} from 'vitest';
+import {DataModel, User} from 'lib/data';
+import {beforeEach, describe, expect, test, assert, vi} from 'vitest';
 import {
+  clearAuthUsers,
   clearCollection,
   getLocalAuth,
   getLocalFirebase,
 } from '../../utils/database.util';
-import {Filter, Sort} from 'lib/data/database';
-import {LocalDatabase} from '../../utils/database.local';
 import {Collections} from 'lib/firebase';
 import {getFirestore} from 'firebase/firestore';
-import {deleteUser, getAuth} from 'firebase/auth';
 import {FirestoreAuthModel} from 'lib/data/auth_model.firebase';
 
-const testCollection = Collections.Users;
+vi.mock('next/headers', async () => {
+  const cookiesMap: Record<string, string> = {};
+
+  return {
+    cookies: () => {
+      return {
+        get: (name: string) => {
+          return {
+            value: cookiesMap[name] || '',
+          };
+        },
+        set: (name: string, value: string) => {
+          cookiesMap[name] = value;
+        },
+        delete: (name: string) => {
+          delete cookiesMap[name];
+        },
+      };
+    },
+  };
+});
+
 // const database = new LocalDatabase();
 const db = getFirestore();
 const database = getLocalFirebase(db);
@@ -46,7 +65,8 @@ const passwords: string[] = testUsers.map(user => {
 });
 
 beforeEach(async () => {
-  await clearCollection(database, testCollection);
+  await clearCollection(database, Collections.Users);
+  await clearAuthUsers();
 });
 
 describe('Test FirestoreAuthModel class', async () => {
@@ -59,8 +79,10 @@ describe('Test FirestoreAuthModel class', async () => {
     );
 
     const user1 = await dataModel.getUser(testUsers[0].id);
+    const userId = await authModel.getSignedInUser();
 
     assert.equal(user1!.id, testUsers[0].id);
+    assert.equal(userId, testUsers[0].id);
     expect(user1).toEqual(testUsers[0]);
   });
 

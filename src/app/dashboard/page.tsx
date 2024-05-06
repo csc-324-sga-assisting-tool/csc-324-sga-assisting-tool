@@ -1,5 +1,4 @@
 'use server';
-import {verifySession} from 'app/dal';
 import {Dashboard} from './dashboard';
 import {DataModel, Database} from 'lib/data';
 import {SGADashboard} from './sgaDashboard';
@@ -14,13 +13,10 @@ export default async function Page() {
   const dataModel = new DataModel(db);
   const auth = AuthModel;
 
-  // const session = await verifySession();
   try {
     const userId = await auth.getSignedInUser();
-    const user = await dataModel.getUser('grintech@studentorg.grinnell.edu');
+    const user = await dataModel.getUser(userId);
     const isSGA = userIsSGA(user);
-    console.log(`User id from session is: ${userId}`);
-
     return isSGA ? (
       <SGADashboard user={user} dataModel={dataModel} />
     ) : (

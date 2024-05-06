@@ -23,6 +23,7 @@ beforeAll(async () => {
   const testBudget: Budget = {
     id: 'test_budget_for_items',
     user_id: 'user_items', // the user this budget belongs to
+    user_name: 'user_item',
     event_name: 'test_for_items',
     event_description: 'test_for_items',
     total_cost: 10.0 * 3 * 2,
@@ -35,6 +36,7 @@ beforeAll(async () => {
   const addItemTestBudget: Budget = {
     id: 'test_budget_for_add_items',
     user_id: 'user_items', // the user this budget belongs to
+    user_name: 'user_item',
     event_name: 'test_for_add_items',
     event_description: 'test_for_add_items',
     total_cost: 0,
@@ -46,7 +48,7 @@ beforeAll(async () => {
 
   const testUser: User = {
     id: 'user_items',
-    user_name: 'user_items',
+    name: 'user_items',
     remaining_budget: 500,
     total_budget: 500,
     pending_event: 1,
