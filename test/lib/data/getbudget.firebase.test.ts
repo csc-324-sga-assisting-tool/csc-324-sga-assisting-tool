@@ -1,11 +1,9 @@
 import {assert, beforeAll, it, describe, expect, test} from 'vitest';
-import {getFirestore} from 'firebase/firestore';
 import {Budget, DataModel} from 'lib/data';
 import {getLocalFirebase} from '../../utils/database.util';
 import {Collections} from 'lib/firebase';
 
-const db = getFirestore();
-const database = getLocalFirebase(db);
+const database = getLocalFirebase();
 
 beforeAll(async () => {
   const testBudgets: Budget[] = [1, 2, 3].map(number => {

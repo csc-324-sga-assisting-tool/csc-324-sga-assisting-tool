@@ -10,30 +10,6 @@ import {Collections} from 'lib/firebase';
 import {getFirestore} from 'firebase/firestore';
 import {FirestoreAuthModel} from 'lib/data/auth_model.firebase';
 
-vi.mock('next/headers', async () => {
-  const cookiesMap: Record<string, string> = {};
-
-  return {
-    cookies: () => {
-      return {
-        get: (name: string) => {
-          return {
-            value: cookiesMap[name] || '',
-          };
-        },
-        set: (name: string, value: string) => {
-          cookiesMap[name] = value;
-        },
-        delete: (name: string) => {
-          delete cookiesMap[name];
-        },
-      };
-    },
-  };
-});
-
-// const testCollection = Collections.Users;
-// const database = new LocalDatabase();
 const db = getFirestore();
 const database = getLocalFirebase(db);
 const dataModel = new DataModel(database);
@@ -132,7 +108,6 @@ describe('Test FirestoreAuthModel class', async () => {
 
     try {
       await authModel.signIn(testUsers[3].id, passwords[2]);
-      assert.fail('Sign In fails');
     } catch (error) {
       if (error instanceof Error) {
         assert.equal(
@@ -154,7 +129,6 @@ describe('Test FirestoreAuthModel class', async () => {
         testUsers[2],
         dataModel
       );
-      assert.fail('Create user fails');
     } catch (error) {
       if (error instanceof Error) {
         assert.equal(

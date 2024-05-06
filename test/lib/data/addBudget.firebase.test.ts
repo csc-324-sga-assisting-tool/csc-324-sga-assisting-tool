@@ -1,82 +1,38 @@
 import {assert, beforeAll, it, describe, expect} from 'vitest';
-import {getFirestore} from 'firebase/firestore';
 import {Budget, DataModel, User} from 'lib/data';
 import {Collections} from 'lib/firebase';
 import {getLocalFirebase} from '../../utils/database.util';
+import {defaultTestUser, defaultTestBudget} from '../../utils/defaults';
 
-const db = getFirestore();
-const database = getLocalFirebase(db);
+const database = getLocalFirebase();
 
 beforeAll(async () => {
-  const testUser: User[] = [1, 2, 3].map(number => {
+  const testUsers: User[] = [1, 2, 3].map(number => {
     return {
+      ...defaultTestUser,
       id: `test_user${number}`,
-      total_budget: 2000,
-      remaining_budget: 1000,
-      pending_event: 10,
-      completed_event: 10,
-      planned_event: 10,
-      user_name: 'test_user1',
-      user_type: 'RSO',
     };
-  });
-
-  testUser.push({
-    id: 'test_user4',
-    total_budget: 1000,
-    remaining_budget: 200,
-    pending_event: 5,
-    completed_event: 5,
-    planned_event: 0,
-    user_name: 'test_user1',
-    user_type: 'SEPC',
   });
 
   const testBudget: Budget[] = [1, 2, 3].map(number => {
     return {
+      ...defaultTestBudget,
       id: `budget_${number}`,
       user_id: `test_user${number}`,
-      event_name: `event_name_${number}`,
-      event_description: 'test description',
-      total_cost: number * 100,
-      current_status: 'created',
-      status_history: [
-        {
-          status: 'created',
-          when: new Date('2001-01-01').toISOString(),
-        },
-      ],
-      items: [],
     };
   });
 
-  testBudget.push({
-    id: 'budget_user_4',
-    user_id: 'test_user4',
-    event_name: 'event_name',
-    event_description: 'test description',
-    total_cost: 100,
-    current_status: 'created',
-    status_history: [
-      {
-        status: 'created',
-        when: new Date('2001-01-01').toISOString(),
-      },
-    ],
-    items: [],
-  });
-
-  await database.addManyDocuments(Collections.Users, testUser);
+  await database.addManyDocuments(Collections.Users, testUsers);
   await database.addManyDocuments(Collections.Budgets, testBudget);
 });
 
 describe('test addBudget', () => {
   const dataModel = new DataModel(database);
   it('should increment planned_event by 1 and add the budget if user exists', async () => {
-    const user = await dataModel.getUser('test_user4');
-    const budgetToAdd = await dataModel.getBudget('budget_user_4');
+    const user = await dataModel.getUser('test_user3');
+    const budgetToAdd = await dataModel.getBudget('budget_3');
     await dataModel.addBudget(budgetToAdd);
-    const updatedUser = await dataModel.getUser('test_user4');
+    const updatedUser = await dataModel.getUser('test_user3');
     expect(updatedUser.planned_event).toEqual(user.planned_event + 1);
   });
 });
@@ -87,6 +43,7 @@ describe('test addBudget 2', async () => {
     const budgetToAddError: Budget = {
       id: 'test_error',
       user_id: 'user_error',
+      user_name: 'user_error',
       event_name: 'error_event',
       event_description: 'error_description',
       event_datetime: 'error_000',

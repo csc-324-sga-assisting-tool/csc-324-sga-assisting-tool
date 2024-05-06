@@ -1,4 +1,4 @@
-import {Budget, Item, User} from '.';
+import {Budget, Item, User, StatusChange, Status} from '.';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
@@ -88,7 +88,7 @@ export class DataModel {
 
       // Write changes to Firestore
       await this.addBudget(budget);
-      await this.updateUser(user);
+      await this.setUser(user);
     } catch (err) {
       return Promise.reject(err);
     }
@@ -117,13 +117,13 @@ export class DataModel {
       // Write changes to Firestore
       await this.database.addManyDocuments(Collections.Items, items);
       await this.addBudget(budget);
-      await this.updateUser(user);
+      await this.setUser(user);
     } catch (err) {
       return Promise.reject(err);
     }
   }
 
-  async updateUser(user: User): Promise<void> {
+  async setUser(user: User): Promise<void> {
     await this.database.addDocument(Collections.Users, user);
   }
 
@@ -147,3 +147,5 @@ export class DataModel {
     return this.database.addDocument(Collections.Items, item);
   }
 }
+
+export const DefaultModel = new DataModel(Database);

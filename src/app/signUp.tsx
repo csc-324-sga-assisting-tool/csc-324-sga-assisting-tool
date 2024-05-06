@@ -3,8 +3,18 @@
 import {Alert, Button, Label, Modal, TextInput} from 'flowbite-react';
 import {FormEvent, FormEventHandler, useState} from 'react';
 import {createUserAction} from './auth';
+import {DataModel} from 'lib/data';
+import {IAuthModel} from 'lib/data/auth_model';
 
-export function SignUp({TESTING_FLAG}: {TESTING_FLAG?: boolean}) {
+export function SignUp({
+  TESTING_FLAG,
+  TEST_AUTH,
+  TEST_MODEL,
+}: {
+  TESTING_FLAG?: boolean;
+  TEST_AUTH?: IAuthModel;
+  TEST_MODEL?: DataModel;
+}) {
   const [openModal, setOpenModal] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -36,7 +46,9 @@ export function SignUp({TESTING_FLAG}: {TESTING_FLAG?: boolean}) {
       email,
       budget,
       password,
-      TESTING_FLAG
+      TESTING_FLAG,
+      TEST_AUTH,
+      TEST_MODEL
     );
     if (result) {
       setShowErrorAlert(true);
