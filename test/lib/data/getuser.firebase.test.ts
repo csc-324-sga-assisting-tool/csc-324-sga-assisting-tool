@@ -3,12 +3,18 @@ import {getFirestore} from 'firebase/firestore';
 import {DataModel, User, createUser} from 'lib/data';
 import {Collections} from 'lib/firebase';
 import {clearCollection, getLocalFirebase} from '../../utils/database.util';
+import {
+  createItem,
+  createBudget,
+  createBudgetSync,
+  createUser,
+  createComment,
+} from 'lib/data/utils';
 
 const db = getFirestore();
 const database = getLocalFirebase(db);
 
 beforeEach(async () => {
-  await clearCollection(database, Collections.Users);
   const testUsers: User[] = [1, 2, 3].map(number => {
     return createUser({
       id: `test_user${number}`,
@@ -22,6 +28,7 @@ beforeEach(async () => {
     });
   });
 
+  await clearCollection(database, Collections.Users);
   await database.addManyDocuments(Collections.Users, testUsers);
 });
 

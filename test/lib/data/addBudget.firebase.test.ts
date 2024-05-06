@@ -3,6 +3,12 @@ import {getFirestore} from 'firebase/firestore';
 import {Budget, DataModel, User} from 'lib/data';
 import {Collections} from 'lib/firebase';
 import {getLocalFirebase, clearCollection} from '../../utils/database.util';
+import {
+  createItem,
+  createBudget,
+  createBudgetSync,
+  createUser,
+} from 'lib/data/utils';
 
 const db = getFirestore();
 const database = getLocalFirebase(db);
@@ -10,7 +16,7 @@ const database = getLocalFirebase(db);
 beforeAll(async () => {
   await clearCollection(database, Collections.Users);
   await clearCollection(database, Collections.Budgets);
-  const testUser: User = {
+  const testUser: User = createUser({
     id: 'test_user',
     name: 'test_user',
     total_budget: 2000,
@@ -18,34 +24,22 @@ beforeAll(async () => {
     pending_event: 10,
     completed_event: 10,
     planned_event: 10,
-    user_name: 'test_user1',
     user_type: 'RSO',
-  };
+  });
 
   await database.addDocument(Collections.Users, testUser);
 });
 
 describe('test addBudget', () => {
   const testBudgets: Budget[] = [1, 2, 3].map(number => {
-    return {
+    return createBudgetSync({
       id: `budget_${number}`,
       user_id: 'test_user',
       user_name: 'test_user',
       event_name: `event_name_${number}`,
       event_description: 'test description',
       event_type: 'Harris',
-      total_cost: number * 100,
-      current_status: 'created',
-      status_history: [
-        {
-          status: 'created',
-          when: new Date('2001-01-01').toISOString(),
-        },
-      ],
-      prev_commentIDs: [],
-      commentID: '',
-      denied_items: [],
-    };
+    });
   });
   const dataModel = new DataModel(database);
   it('should increment planned_event by 1 and add the budget if user exists', async () => {
@@ -59,7 +53,7 @@ describe('test addBudget', () => {
 describe('test addBudget 2', async () => {
   const dataModel = new DataModel(database);
   it('should send error message if user does not exist', async () => {
-    const budgetToAddError: Budget = {
+    const budgetToAddError: Budget = createBudgetSync({
       id: 'test_error',
       user_name: 'user_error',
       user_id: 'user_error',
@@ -68,18 +62,7 @@ describe('test addBudget 2', async () => {
       event_datetime: 'error_000',
       event_location: 'error_test',
       event_type: 'Other',
-      total_cost: 100,
-      current_status: 'created',
-      status_history: [
-        {
-          status: 'created',
-          when: new Date('2001-01-01').toISOString(),
-        },
-      ],
-      prev_commentIDs: [],
-      commentID: '',
-      denied_items: [],
-    };
+    });
     try {
       await dataModel.addBudget(budgetToAddError);
       assert.fail('The function should have thrown an error but did not');

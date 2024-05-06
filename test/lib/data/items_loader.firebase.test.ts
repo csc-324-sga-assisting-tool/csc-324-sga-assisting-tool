@@ -94,17 +94,15 @@ describe('Test addItem and addItems', async () => {
   const dataModel = new DataModel(database);
 
   it('addItem correctly adds one item to a budget', async () => {
-    const item: Item = {
+    const item: Item = createItem({
       budget_id: 'test_budget_for_add_items',
       unit_price: 10.0,
       id: 'test_additem',
       name: 'testing additem',
       quantity: 2,
-      rso_item_comment: null,
-      sga_item_comment: null,
       url: 'test',
       vendor: 'test',
-    };
+    });
     await dataModel.addItem(item);
     const test_budget_upd = await dataModel.getBudget(
       'test_budget_for_add_items'
@@ -119,17 +117,15 @@ describe('Test addItem and addItems', async () => {
   });
   it('addItems correctly adds items to a budget', async () => {
     const items: Item[] = [1, 2, 3].map(number => {
-      return {
+      return createItem({
         budget_id: 'test_budget_for_add_items',
         unit_price: 10.0,
         id: `item_add_item${number}`,
         name: `testing add_item ${number}`,
         quantity: 2,
-        rso_item_comment: null,
-        sga_item_comment: null,
         url: 'test',
         vendor: 'test',
-      };
+      });
     });
     await dataModel.addItems(items);
     const test_budget_upd = await dataModel.getBudget(

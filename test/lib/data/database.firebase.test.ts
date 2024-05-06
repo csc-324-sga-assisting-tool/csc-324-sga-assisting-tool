@@ -4,6 +4,13 @@ import {getFirestore} from 'firebase/firestore';
 import {clearCollection, getLocalFirebase} from '../../utils/database.util';
 import {Filter, Sort} from 'lib/data/database';
 import {beforeEach} from 'node:test';
+import {
+  createItem,
+  createBudget,
+  createBudgetSync,
+  createUser,
+  createComment,
+} from 'lib/data/utils';
 
 // Set up a Firestore Database for testing
 const testCollection = 'test_collection';

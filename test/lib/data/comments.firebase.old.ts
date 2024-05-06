@@ -3,13 +3,20 @@ import {getFirestore} from 'firebase/firestore';
 import {Comment, Budget, DataModel, User, createItem} from 'lib/data';
 import {Collections} from 'lib/firebase';
 import {getLocalFirebase, clearCollection} from '../../utils/database.util';
+import {
+  createItem,
+  createBudget,
+  createBudgetSync,
+  createUser,
+  createComment,
+} from 'lib/data/utils';
 
 const db = getFirestore();
 const database = getLocalFirebase(db);
 const dataModel = new DataModel(database);
 
 async function initializeUsers(): Promise<void> {
-  const sgaUser: User = {
+  const sgaUser: User = createUser({
     id: 'sga_user',
     name: 'SGA Treasurer',
     remaining_budget: 0,
@@ -18,9 +25,9 @@ async function initializeUsers(): Promise<void> {
     pending_event: 0,
     planned_event: 0,
     completed_event: 0,
-  };
+  });
 
-  const rsoUser: User = {
+  const rsoUser: User = createUser({
     id: 'rso_user',
     name: 'RSO',
     remaining_budget: 1000,
@@ -29,28 +36,23 @@ async function initializeUsers(): Promise<void> {
     pending_event: 0,
     planned_event: 0,
     completed_event: 0,
-  };
+  });
+
+  await clearCollection(database, Collections.Users);
 
   await database.addDocument(Collections.Users, sgaUser);
   await database.addDocument(Collections.Users, rsoUser);
-  const rso_user = await dataModel.getUser('rso_user');
 }
 
 async function initializeBudget(id: string): Promise<void> {
-  const budget: Budget = {
+  const budget: Budget = createBudgetSync({
     id: id,
     user_id: 'rso_user',
     user_name: 'RSO',
     event_name: id,
     event_description: 'test description',
     event_type: 'Harris',
-    total_cost: 100,
-    current_status: 'created',
-    status_history: [],
-    prev_commentIDs: [],
-    commentID: '',
-    denied_items: [],
-  };
+  });
   await dataModel.addBudget(budget);
 }
 
@@ -84,11 +86,11 @@ beforeEach(async () => {
 });
 
 describe('Test item comments', async () => {
-  const sga_comment: Comment = {
+  const sga_comment: Comment = createComment({
     id: 'comment_1',
     comment: 'Item is is too expensive',
     userId: 'sga_user',
-  };
+  });
 
   it('getComment works', async () => {
     await database.addDocument(Collections.Comments, sga_comment);

@@ -18,14 +18,16 @@ export function userIsSGA(user: User) {
 }
 
 export function createComment({
+  id,
   userId,
   comment,
 }: {
+  id?: string;
   userId: string;
   comment?: string;
 }): Comment {
   return {
-    id: `${userId}_${new Date().getSeconds()}`,
+    id: id || `${userId}_${new Date().getSeconds()}`,
     userId,
     comment: comment || 'denied',
   };

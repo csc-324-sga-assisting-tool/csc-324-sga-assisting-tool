@@ -3,54 +3,41 @@ import {getFirestore} from 'firebase/firestore';
 import {Budget, DataModel} from 'lib/data';
 import {getLocalFirebase, clearCollection} from '../../utils/database.util';
 import {Collections} from 'lib/firebase';
+import {
+  createItem,
+  createBudget,
+  createBudgetSync,
+  createUser,
+  createComment,
+} from 'lib/data/utils';
 
 const db = getFirestore();
 const database = getLocalFirebase(db);
 
 beforeEach(async () => {
-  await clearCollection(database, Collections.Users);
   const testBudgets: Budget[] = [1, 2, 3].map(number => {
-    return {
+    return createBudgetSync({
       id: `budget_${number}`,
       user_id: 'user_1',
       user_name: 'user_1',
       event_name: `event_name_${number}`,
       event_description: 'test description',
       event_type: 'Other',
-      total_cost: number * 100,
-      current_status: 'created',
-      status_history: [
-        {
-          status: 'created',
-          when: new Date('2001-01-01').toISOString(),
-        },
-      ],
-      prev_commentIDs: [],
-      commentID: '',
-      denied_items: [],
-    };
+    });
   });
 
-  testBudgets.push({
-    id: 'budget_user_2',
-    user_id: 'user_2',
-    user_name: 'test user',
-    event_name: 'event_name',
-    event_description: 'test description',
-    total_cost: 100,
-    current_status: 'created',
-    status_history: [
-      {
-        status: 'created',
-        when: new Date('2001-01-01').toISOString(),
-      },
-    ],
-    event_type: 'Other',
-    prev_commentIDs: [],
-    commentID: '',
-    denied_items: [],
-  });
+  testBudgets.push(
+    createBudgetSync({
+      id: 'budget_user_2',
+      user_id: 'user_2',
+      user_name: 'test user',
+      event_name: 'event_name',
+      event_description: 'test description',
+      event_type: 'Other',
+    })
+  );
 
+  await clearCollection(database, Collections.Budgets);
   await database.addManyDocuments(Collections.Budgets, testBudgets);
 });
 
