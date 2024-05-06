@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import {initializeApp} from 'firebase/app';
+import {getAuth} from 'firebase/auth';
 import {getFirestore} from 'firebase/firestore';
 
 // Your web app's Firebase configuration
@@ -19,10 +20,12 @@ const app = initializeApp(firebaseConfig);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const db = getFirestore(app);
 
+const auth = getAuth(app);
+
 enum Collections {
   Users = 'users',
   Budgets = 'budgets',
   Items = 'items',
 }
 
-export {db, Collections};
+export {db, auth, Collections};

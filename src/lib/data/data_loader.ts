@@ -134,20 +134,20 @@ export class DataModel {
   }
 
   //These should be moved
-  async addUser(email: string, password: string, user: User): Promise<void> {
-    const auth = getAuth();
-    await createUserWithEmailAndPassword(auth, email, password);
-    await this.database.addDocument(Collections.Users, user);
-  }
+  // async addUser(email: string, password: string, user: User): Promise<void> {
+  //   const auth = getAuth();
+  //   await createUserWithEmailAndPassword(auth, email, password);
+  //   await this.database.addDocument(Collections.Users, user);
+  // }
 
-  async signOutUser() {
-    const auth = getAuth();
-    try {
-      await signOut(auth);
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
+  // async signOutUser() {
+  //   const auth = getAuth();
+  //   try {
+  //     await signOut(auth);
+  //   } catch (error) {
+  //     return Promise.reject(error);
+  //   }
+  // }
 
   async signInUser(email: string, password: string) {
     const auth = getAuth();
