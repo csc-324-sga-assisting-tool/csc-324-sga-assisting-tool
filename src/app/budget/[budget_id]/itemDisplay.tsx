@@ -34,8 +34,8 @@ function ItemRow(
   // but SGA has not yet submitted reviewal
   const rsoShowDenied = !sgaUser && budget.current_status === 'denied';
   const sgaShowDenied = sgaUser && budget.current_status === 'submitted';
-  const showDenied =
-    item.current_status === 'denied' && (rsoShowDenied || sgaShowDenied);
+  const showStatus = rsoShowDenied || sgaShowDenied;
+  const showDenied = item.current_status === 'denied' && showStatus;
 
   const color = showDenied ? 'bg-pallete-1' : 'bg-white';
   return (
@@ -53,17 +53,18 @@ function ItemRow(
       <Table.Cell>{item.quantity}</Table.Cell>
       <Table.Cell>{item.quantity * item.unit_price}</Table.Cell>
       <Table.Cell>{item.vendor}</Table.Cell>
-      <Table.Cell>
-        {sgaUser && itemRowActions.toggleDeny !== undefined && (
-          <ItemRowDenyButton
-            item={item}
-            toggleDenyItemAction={itemRowActions.toggleDeny}
-          />
-        )}
-        {!sgaUser && showDenied && item.current_status === 'denied'
-          ? 'Denied'
-          : 'Approved'}
-      </Table.Cell>
+      {showStatus && (
+        <Table.Cell data-testid={showDenied ? 'item-denied' : 'item-approved'}>
+          {sgaUser && itemRowActions.toggleDeny !== undefined && (
+            <ItemRowDenyButton
+              item={item}
+              toggleDenyItemAction={itemRowActions.toggleDeny}
+            />
+          )}
+          {rsoShowDenied &&
+            (item.current_status === 'denied' ? 'Denied' : 'Approved')}
+        </Table.Cell>
+      )}
     </Table.Row>
   );
 }
