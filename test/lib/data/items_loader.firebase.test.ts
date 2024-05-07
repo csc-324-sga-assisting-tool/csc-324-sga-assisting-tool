@@ -119,11 +119,8 @@ describe('Test getBudgetItems', async () => {
     const items: Item[] = [1, 2, 3].map(number => {
       return {
         ...defaultTestItem,
+        budget_id: 'test_budget_for_add_items',
         id: `item_add_item${number}`,
-        url: 'test',
-        vendor: 'test',
-        unit_price: 10,
-        quantity: 2,
       };
     });
     await dataModel.addItems(items);
