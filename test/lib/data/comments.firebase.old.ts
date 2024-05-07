@@ -1,6 +1,6 @@
 import {assert, beforeEach, it, describe, expect} from 'vitest';
 import {getFirestore} from 'firebase/firestore';
-import {Comment, Budget, DataModel, User, createItem} from 'lib/data';
+import {Comment, Budget, DataModel, User} from 'lib/data';
 import {Collections} from 'lib/firebase';
 import {getLocalFirebase, clearCollection} from '../../utils/database.util';
 import {

@@ -32,7 +32,6 @@ export async function SGABudgetView({
   // So the createBudgetAction has Firebase fixed however, the TEST one allows us to set the dataModifier dynamically
   // at Runtime
   let approveAction, denyAction, clearAction;
-  let addEventCmnt, deleteEventCmnt, getPreviousCmnts;
   const itemRowActions: ItemRowActions = {
     toggleDeny: toggleDenyItemAction,
     comment: async () => {
@@ -43,25 +42,12 @@ export async function SGABudgetView({
     approveAction = review.TESTapproveBudgetAction.bind(null, dataModel);
     denyAction = review.TESTdenyBudgetAction.bind(null, dataModel);
     clearAction = review.TESTclearCommentsAction.bind(null, dataModel);
-    addEventCmnt = review.TESTaddEventCommentAction.bind(null, dataModel);
-    deleteEventCmnt = review.TESTdeleteEventCommentAction.bind(null, dataModel);
-    getPreviousCmnts = review.TESTgetPreviousEventCommentsAction.bind(
-      null,
-      dataModel
-    );
     itemRowActions.toggleDeny = TESTtoggleDenyItemAction.bind(null, dataModel);
   } else {
     approveAction = review.approveBudgetAction;
     denyAction = review.denyBudgetAction;
     clearAction = review.clearCommentsAction;
-    addEventCmnt = review.addEventCommentAction;
-    deleteEventCmnt = review.deleteEventCommentAction;
-    getPreviousCmnts = review.getPreviousEventCommentsAction;
   }
-
-  let eventComment: Comment;
-  if (budget.commentID === '') eventComment = createComment({userId: user_id});
-  else eventComment = await dataModel.getComment(budget.commentID);
 
   return (
     <>
@@ -75,15 +61,6 @@ export async function SGABudgetView({
         }}
       />
       <main className="ml-72 w-3/5 bg-white">
-        <EventCommentThread
-          budget={budget}
-          eventCommentThreadController={{
-            addEventComment: addEventCmnt,
-            deleteEventComment: deleteEventCmnt,
-            getPreviousComments: getPreviousCmnts,
-            comment: eventComment,
-          }}
-        />
         <ItemDisplay
           items={items}
           budget={budget}

@@ -129,7 +129,7 @@ export function createItem({
   prev_commentIDs,
   current_status,
 }: {
-  id: string;
+  id?: string;
   budget_id: string;
   name?: string;
   quantity?: number;
@@ -140,14 +140,17 @@ export function createItem({
   prev_commentIDs?: string[];
   current_status?: Status;
 }): Item {
+  const auto_id = forceAlphanumeric(
+    normalizeID(`${budget_id}-${vendor}-${name}-${new Date().getSeconds()}`)
+  );
   return {
-    id,
+    id: id || auto_id,
     budget_id,
     name: name || 'Untitled Item',
     quantity: quantity || 1,
     unit_price: unit_price || 1,
     vendor: vendor || '',
-    url,
+    url: url || '',
     commentID: commentID || '',
     prev_commentIDs: prev_commentIDs || [],
     current_status: current_status || 'created',
