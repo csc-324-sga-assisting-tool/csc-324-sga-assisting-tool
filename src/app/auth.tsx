@@ -1,8 +1,8 @@
 'use server';
-import {User, UserType} from 'lib/data';
+import {DataModel, DefaultModel, User, UserType} from 'lib/data';
 import {redirect} from 'next/navigation';
 import {normalizeID} from 'lib/util';
-import {AuthModel} from 'lib/data/auth_model';
+import {AuthModel, IAuthModel} from 'lib/data/auth_model';
 
 function createUser(
   name: string,
@@ -46,15 +46,15 @@ export async function createUserAction(
   email: string,
   total_budget: number,
   password: string,
-  TESTING_FLAG = false
+  TESTING_FLAG = false,
+  auth: IAuthModel = AuthModel,
+  dm: DataModel = DefaultModel
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
-  const auth = AuthModel;
-
   try {
     const user_type = await deterUserType(email);
     const user = createUser(name, emailNorm, total_budget, user_type);
-    await auth.createUser(emailNorm, password, user);
+    await auth.createUser(emailNorm, password, user, dm);
   } catch (error) {
     return {
       message: error!.toString(),
@@ -67,9 +67,9 @@ export async function createUserAction(
 }
 
 export async function signOutAction(
-  TESTING_FLAG = false
+  TESTING_FLAG = false,
+  auth: IAuthModel = AuthModel
 ): Promise<{message: string} | void> {
-  const auth = AuthModel;
   try {
     auth.signOut();
   } catch (error) {
@@ -85,10 +85,10 @@ export async function signOutAction(
 export async function signInAction(
   email: string,
   password: string,
-  TESTING_FLAG = false
+  TESTING_FLAG = false,
+  auth: IAuthModel = AuthModel
 ): Promise<{message: string} | void> {
   const emailNorm = normalizeID(email);
-  const auth = AuthModel;
   try {
     await auth.signIn(emailNorm, password);
   } catch (error) {

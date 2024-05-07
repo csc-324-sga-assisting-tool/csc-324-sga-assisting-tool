@@ -4,8 +4,18 @@ import {Alert, Button, Checkbox, Label, TextInput} from 'flowbite-react';
 import {SignUp} from './signUp';
 import {signInAction} from './auth';
 import {FormEvent, FormEventHandler, useState} from 'react';
+import {IAuthModel} from 'lib/data/auth_model';
+import {DataModel} from 'lib/data';
 
-export function LogIn({TESTING_FLAG}: {TESTING_FLAG?: boolean}) {
+export function LogIn({
+  TESTING_FLAG,
+  TEST_AUTH,
+  TEST_MODEL,
+}: {
+  TESTING_FLAG?: boolean;
+  TEST_AUTH?: IAuthModel;
+  TEST_MODEL?: DataModel;
+}) {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [errorMessage, setError] = useState('');
@@ -21,7 +31,12 @@ export function LogIn({TESTING_FLAG}: {TESTING_FLAG?: boolean}) {
       e.currentTarget.elements.namedItem('password') as HTMLInputElement
     ).value;
 
-    const result = await signInAction(email, password, TESTING_FLAG);
+    let result;
+    if (TESTING_FLAG) {
+      result = await signInAction(email, password, TESTING_FLAG, TEST_AUTH);
+    } else {
+      result = await signInAction(email, password);
+    }
     if (result) {
       setShowErrorAlert(true);
       setError(result.message);
@@ -72,7 +87,11 @@ export function LogIn({TESTING_FLAG}: {TESTING_FLAG?: boolean}) {
           Log In
         </Button>
       </form>
-      <SignUp TESTING_FLAG={TESTING_FLAG} />
+      <SignUp
+        TESTING_FLAG={TESTING_FLAG}
+        TEST_AUTH={TEST_AUTH}
+        TEST_MODEL={TEST_MODEL}
+      />
       {showErrorAlert && (
         <Alert
           className="max-w-md"

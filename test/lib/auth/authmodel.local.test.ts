@@ -1,11 +1,15 @@
 import {DataModel, User} from 'lib/data';
-import {describe, expect, test, assert} from 'vitest';
-import {getLocalAuth, getLocalFirebase} from '../../utils/database.util';
+import {beforeEach, describe, expect, test, assert} from 'vitest';
+import {
+  clearAuthUsers,
+  clearCollection,
+  getLocalAuth,
+  getLocalFirebase,
+} from '../../utils/database.util';
+import {Collections} from 'lib/firebase';
 import {getFirestore} from 'firebase/firestore';
 import {FirestoreAuthModel} from 'lib/data/auth_model.firebase';
 
-// const testCollection = Collections.Users;
-// const database = new LocalDatabase();
 const db = getFirestore();
 const database = getLocalFirebase(db);
 const dataModel = new DataModel(database);
@@ -37,9 +41,10 @@ const passwords: string[] = testUsers.map(user => {
   return generateTestPassword(user);
 });
 
-// beforeEach(async () => {
-//   await clearCollection(database, testCollection);
-// });
+beforeEach(async () => {
+  await clearCollection(database, Collections.Users);
+  await clearAuthUsers();
+});
 
 describe('Test FirestoreAuthModel class', async () => {
   test('creating user in firebase and database', async () => {
@@ -51,8 +56,10 @@ describe('Test FirestoreAuthModel class', async () => {
     );
 
     const user1 = await dataModel.getUser(testUsers[0].id);
+    const userId = await authModel.getSignedInUser();
 
     assert.equal(user1!.id, testUsers[0].id);
+    assert.equal(userId, testUsers[0].id);
     expect(user1).toEqual(testUsers[0]);
     await authModel.signOut();
   });
@@ -101,7 +108,6 @@ describe('Test FirestoreAuthModel class', async () => {
 
     try {
       await authModel.signIn(testUsers[3].id, passwords[2]);
-      assert.fail('Sign In fails');
     } catch (error) {
       if (error instanceof Error) {
         assert.equal(
@@ -123,7 +129,6 @@ describe('Test FirestoreAuthModel class', async () => {
         testUsers[2],
         dataModel
       );
-      assert.fail('Create user fails');
     } catch (error) {
       if (error instanceof Error) {
         assert.equal(

@@ -1,10 +1,4 @@
-import {Budget, Item, Status, StatusChange, User} from '.';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signOut,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
+import {Budget, Item, User, StatusChange, Status} from '.';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
@@ -94,7 +88,7 @@ export class DataModel {
 
       // Write changes to Firestore
       await this.addBudget(budget);
-      await this.updateUser(user);
+      await this.setUser(user);
     } catch (err) {
       return Promise.reject(err);
     }
@@ -123,35 +117,14 @@ export class DataModel {
       // Write changes to Firestore
       await this.database.addManyDocuments(Collections.Items, items);
       await this.addBudget(budget);
-      await this.updateUser(user);
+      await this.setUser(user);
     } catch (err) {
       return Promise.reject(err);
     }
   }
 
-  async updateUser(user: User): Promise<void> {
+  async setUser(user: User): Promise<void> {
     await this.database.addDocument(Collections.Users, user);
-  }
-
-  //These should be moved
-  // async addUser(email: string, password: string, user: User): Promise<void> {
-  //   const auth = getAuth();
-  //   await createUserWithEmailAndPassword(auth, email, password);
-  //   await this.database.addDocument(Collections.Users, user);
-  // }
-
-  // async signOutUser() {
-  //   const auth = getAuth();
-  //   try {
-  //     await signOut(auth);
-  //   } catch (error) {
-  //     return Promise.reject(error);
-  //   }
-  // }
-
-  async signInUser(email: string, password: string) {
-    const auth = getAuth();
-    await signInWithEmailAndPassword(auth, email, password);
   }
 
   async changeBudgetStatus(budget: Budget, newStatus: Status) {
@@ -174,3 +147,5 @@ export class DataModel {
     return this.database.addDocument(Collections.Items, item);
   }
 }
+
+export const DefaultModel = new DataModel(Database);
