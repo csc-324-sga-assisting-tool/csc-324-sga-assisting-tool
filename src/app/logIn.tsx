@@ -1,13 +1,21 @@
 'use client';
 
 import {Alert, Button, Checkbox, Label, TextInput} from 'flowbite-react';
-import {SignUp} from './createAcc';
+import {SignUp} from './signUp';
 import {signInAction} from './auth';
 import {FormEvent, FormEventHandler, useState} from 'react';
-import {error} from 'console';
-import {errorMonitor} from 'events';
+import {IAuthModel} from 'lib/data/auth_model';
+import {DataModel} from 'lib/data';
 
-export function ComponentLog() {
+export function LogIn({
+  TESTING_FLAG,
+  TEST_AUTH,
+  TEST_MODEL,
+}: {
+  TESTING_FLAG?: boolean;
+  TEST_AUTH?: IAuthModel;
+  TEST_MODEL?: DataModel;
+}) {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [errorMessage, setError] = useState('');
@@ -23,7 +31,12 @@ export function ComponentLog() {
       e.currentTarget.elements.namedItem('password') as HTMLInputElement
     ).value;
 
-    const result = await signInAction(email, password);
+    let result;
+    if (TESTING_FLAG) {
+      result = await signInAction(email, password, TESTING_FLAG, TEST_AUTH);
+    } else {
+      result = await signInAction(email, password);
+    }
     if (result) {
       setShowErrorAlert(true);
       setError(result.message);
@@ -35,6 +48,7 @@ export function ComponentLog() {
   return (
     <div className="place-self-center">
       <form
+        data-testid="login-form"
         className="bg-white flex max-w-lg flex-col gap-4  justify-items-center justify-self-center"
         onSubmit={submit}
       >
@@ -44,6 +58,7 @@ export function ComponentLog() {
           </div>
           <TextInput
             id="email"
+            data-testid="login-form-email"
             type="email"
             placeholder="name@grinnell.edu"
             required
@@ -53,7 +68,12 @@ export function ComponentLog() {
           <div className="mb-2 block">
             <Label htmlFor="password1" value="Your password" />
           </div>
-          <TextInput id="password" type="password" required />
+          <TextInput
+            id="password"
+            type="password"
+            data-testid="login-form-password"
+            required
+          />
         </div>
         <div className="flex items-center gap-2">
           <Checkbox id="remember" />
@@ -61,12 +81,17 @@ export function ComponentLog() {
         </div>
         <Button
           type="submit"
+          data-testid="login-form-submit"
           className="bg-pallete-5 font-medium text-sm w-28 h-10"
         >
           Log In
         </Button>
       </form>
-      <SignUp />
+      <SignUp
+        TESTING_FLAG={TESTING_FLAG}
+        TEST_AUTH={TEST_AUTH}
+        TEST_MODEL={TEST_MODEL}
+      />
       {showErrorAlert && (
         <Alert
           className="max-w-md"
