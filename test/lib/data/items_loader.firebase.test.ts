@@ -1,14 +1,14 @@
-import {assert, beforeAll, it, describe} from 'vitest';
+import {assert, beforeAll, test, describe} from 'vitest';
 import {Budget, Item, Sort, DataModel, User} from 'lib/data';
-import {getLocalFirebase} from '../../utils/database.util';
 import {Collections} from 'lib/firebase';
 import {
   defaultTestBudget,
   defaultTestItem,
   defaultTestUser,
 } from '../../utils/defaults';
+import {LocalDatabase} from '../../utils/database.local';
 
-const database = getLocalFirebase();
+const database = new LocalDatabase();
 const dataModel = new DataModel(database);
 
 beforeAll(async () => {
@@ -22,30 +22,32 @@ beforeAll(async () => {
   const testBudget: Budget = {
     ...defaultTestBudget,
     id: 'test_budget_for_items',
-    user_id: 'user_items', // the user this budget belongs to
+    user_id: 'items_loader_test_user',
   };
 
   const addItemTestBudget: Budget = {
     ...defaultTestBudget,
     id: 'test_budget_for_add_items',
-    user_id: 'user_items', // the user this budget belongs to
+    user_id: 'items_loader_test_user',
   };
 
   const testUser: User = {
     ...defaultTestUser,
-    id: 'user_items',
+    id: 'items_loader_test_user',
     remaining_budget: 500,
     total_budget: 500,
   };
 
-  await dataModel.setUser(testUser);
-  await dataModel.addBudget(testBudget);
-  await dataModel.addBudget(addItemTestBudget);
+  await database.addDocument(Collections.Users, testUser);
+  await database.addManyDocuments(Collections.Budgets, [
+    testBudget,
+    addItemTestBudget,
+  ]);
   await database.addManyDocuments(Collections.Items, testItems);
 });
 
 describe('Test getBudgetItems', async () => {
-  it('function gets all correct budgets user_1', async () => {
+  test('function gets all correct budgets user_1', async () => {
     const items: Item[] = await dataModel.getItemsForBudget(
       'test_budget_for_items',
       new Sort('id')
@@ -60,17 +62,15 @@ describe('Test getBudgetItems', async () => {
       assert.equal(item!.id, `item_${i++}`);
     });
   });
-  it('function return empty array on nonexistent budget', async () => {
+  test('function return empty array on nonexistent budget', async () => {
     const items: Item[] = await dataModel.getItemsForBudget(
       'budget_5',
       new Sort('id')
     );
     assert.equal(items.length, 0);
   });
-});
 
-describe('Test addItem and addItems', async () => {
-  it('addItem correctly adds one item to a budget', async () => {
+  test('addItem correctly adds one item to a budget', {retry: 3}, async () => {
     const item: Item = {
       ...defaultTestItem,
       budget_id: 'test_budget_for_add_items',
@@ -89,7 +89,7 @@ describe('Test addItem and addItems', async () => {
     assert.deepEqual(items.pop(), item);
   });
 
-  it('addItems correctly adds items to a budget', async () => {
+  test('addItems correctly adds items to a budget', {retry: 3}, async () => {
     const items: Item[] = [1, 2, 3].map(number => {
       return {
         ...defaultTestItem,

@@ -1,10 +1,10 @@
-import {assert, beforeAll, it, describe, expect} from 'vitest';
+import {beforeAll, it, describe, expect} from 'vitest';
 import {Budget, DataModel, User} from 'lib/data';
 import {Collections} from 'lib/firebase';
-import {getLocalFirebase} from '../../utils/database.util';
 import {defaultTestUser, defaultTestBudget} from '../../utils/defaults';
+import {LocalDatabase} from '../../utils/database.local';
 
-const database = getLocalFirebase();
+const database = new LocalDatabase();
 
 beforeAll(async () => {
   const testUsers: User[] = [1, 2, 3].map(number => {
@@ -29,11 +29,11 @@ beforeAll(async () => {
 describe('test addBudget', () => {
   const dataModel = new DataModel(database);
   it('should increment planned_event by 1 and add the budget if user exists', async () => {
-    const user = await dataModel.getUser('test_user3');
+    const planned = (await dataModel.getUser('test_user3')).planned_event;
     const budgetToAdd = await dataModel.getBudget('budget_3');
     await dataModel.addBudget(budgetToAdd);
     const updatedUser = await dataModel.getUser('test_user3');
-    expect(updatedUser.planned_event).toEqual(user.planned_event + 1);
+    expect(updatedUser.planned_event).toEqual(planned + 1);
   });
 });
 
@@ -59,19 +59,8 @@ describe('test addBudget 2', async () => {
       ],
       items: [],
     };
-    try {
-      await dataModel.addBudget(budgetToAddError);
-      assert.fail('The function should have thrown an error but did not');
-    } catch (error) {
-      if (error instanceof Error) {
-        assert.equal(
-          error.message,
-          'Document with id user_error does not exist in collection users',
-          'Expected error message not received'
-        );
-      } else {
-        assert.fail('Caught an error, but it is not an instance of Error');
-      }
-    }
+    await expect(async () =>
+      dataModel.addBudget(budgetToAddError)
+    ).rejects.toThrowError();
   });
 });

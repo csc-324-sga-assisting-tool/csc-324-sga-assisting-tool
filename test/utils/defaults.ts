@@ -6,9 +6,9 @@ export const defaultTestUser: User = {
   id: 'test_user',
   total_budget: 2000,
   remaining_budget: 2000,
-  pending_event: 1,
-  completed_event: 1,
-  planned_event: 1,
+  pending_event: 0,
+  completed_event: 0,
+  planned_event: 0,
   name: 'test_user',
   user_type: 'RSO',
 };

@@ -1,5 +1,5 @@
 import {DataModel, User} from 'lib/data';
-import {beforeEach, describe, expect, test, assert, vi} from 'vitest';
+import {beforeEach, describe, expect, test, assert} from 'vitest';
 import {
   clearAuthUsers,
   clearCollection,
