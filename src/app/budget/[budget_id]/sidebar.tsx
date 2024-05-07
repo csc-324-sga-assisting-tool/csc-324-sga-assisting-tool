@@ -173,6 +173,7 @@ function ApproveDenyBudgetTools({
         onClick={() => reviewActionController.approveBudget(budget)}
         disabled={itemsAreDenied}
         className="bg-pallete-5 w-full"
+        data-testid="approve-budget-button"
       >
         Approve Budget
       </Button>
@@ -180,6 +181,7 @@ function ApproveDenyBudgetTools({
         onClick={() => reviewActionController.denyBudget(budget)}
         disabled={false}
         className="bg-pallete-5 w-full"
+        data-testid="deny-budget-button"
       >
         Deny Budget
       </Button>

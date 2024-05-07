@@ -36,10 +36,10 @@ function generateTestDocuments(howMany: number) {
 
 // On cold starts Firebase emulator is slow causing our tests to timeout
 // I am adding a few documents then clearing for perfomance
-beforeAll(async () => {
-  await database.addManyDocuments(testCollection, generateTestDocuments(10));
-  await clearCollection(database, testCollection);
-});
+//beforeAll(async () => {
+//await database.addManyDocuments(testCollection, generateTestDocuments(10));
+//await clearCollection(database, testCollection);
+//});
 
 beforeEach(async () => {
   await clearCollection(database, testCollection);
@@ -73,7 +73,7 @@ describe('Test FirestoreDatabase class', async () => {
   });
 
   test('adding many documents with addManyDocuments works', async () => {
-    const testDocuments = generateTestDocuments(3);
+    //const testDocuments = generateTestDocuments(3);
     // Add test documents to collection with batch adder addManyDocuments
     await database.addManyDocuments(testCollection, testDocuments);
 

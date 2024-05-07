@@ -16,6 +16,7 @@ function ItemRowDenyButton({
     <Button
       onClick={() => toggleDenyItemAction(item)}
       className="bg-pallete-5 w-full"
+      data-testid="item-deny-button"
     >
       {item.current_status !== 'denied' && <FiX />}
       {item.current_status === 'denied' && <FiCheck />}

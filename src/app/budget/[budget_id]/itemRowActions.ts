@@ -6,14 +6,14 @@ export async function TESTtoggleDenyItemAction(
   dataModel: DataModel,
   item: Item
 ) {
-  dataModel.changeItemStatus(
+  await dataModel.changeItemStatus(
     item,
     item.current_status === 'denied' ? 'created' : 'denied'
   );
-  revalidatePath(`/budget/${item.budget_id}`);
 }
 export async function toggleDenyItemAction(item: Item) {
   await TESTtoggleDenyItemAction(new DataModel(Database), item);
+  revalidatePath(`/budget/${item.budget_id}`);
 }
 
 // Only the actions that the user can perform should be included
