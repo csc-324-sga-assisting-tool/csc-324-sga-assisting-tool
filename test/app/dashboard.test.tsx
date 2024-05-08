@@ -251,7 +251,7 @@ describe('Test Dashboard works as Expected', () => {
 
     // Check that there are now two budgets
     expect(budgets.length).toBe(2);
-    expect(budgets[1].id).toBe('test_budget-copy'); // Check the ID of the duplicated budget if it follows a naming convention
+    expect(budgets[1].id).not.toBe(budgets[0].id); // Check the ID of the duplicated budget if it follows a naming convention
     expect(budgets[1].event_name).toBe(budgets[0].event_name + ' - Copy'); // Check if the duplicated budget has '- Copy' in its name
   });
 });

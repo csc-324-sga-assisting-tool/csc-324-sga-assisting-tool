@@ -84,6 +84,18 @@ export async function createBudgetAction(
   return result;
 }
 
+export async function TESTduplicateBudgetAction(
+  modifier: DataModel,
+  budget: Budget
+) {
+  const newId = forceAlphanumeric(
+    normalizeID(
+      `${budget.user_id}-${budget.event_name}-${new Date().getSeconds()}`
+    )
+  );
+  modifier.duplicateBudget(budget, newId);
+}
+
 export async function duplicateBudgetAction(budget: Budget) {
   const modifier = new DataModel(Database);
   const newId = forceAlphanumeric(

@@ -6,11 +6,12 @@ import {FiCopy, FiEdit, FiTrash2} from 'react-icons/fi';
 import Link from 'next/link';
 import {HiPlusCircle} from 'react-icons/hi';
 import {Button} from 'flowbite-react';
-import {deleteBudgetAction, duplicateBudgetAction} from './actions';
+import {duplicateBudgetAction} from './actions';
 
 export type BudgetProps = {
   budget: Budget;
   organizer?: string;
+  updateAction: (budget: Budget) => Promise<void>;
 };
 
 function BudgetStatusDisplay({status}: {status: Status}) {
@@ -91,7 +92,10 @@ export function BudgetDisplay(props: BudgetProps) {
           </span>
         </div>
         <div className="col-span-1 items-center">
-          <DuplicateBudgetButton budget={budget} />
+          <DuplicateBudgetButton
+            updateAction={props.updateAction}
+            budget={budget}
+          />
         </div>
         <div className="col-span-1 items-center">
           <DeleteBudgetButton budget={budget} />
@@ -101,21 +105,27 @@ export function BudgetDisplay(props: BudgetProps) {
   );
 }
 
-function DuplicateBudgetButton({budget}: {budget: Budget}) {
+function DuplicateBudgetButton({
+  budget,
+  updateAction,
+}: {
+  budget: Budget;
+  updateAction: (budget: Budget) => Promise<void>;
+}) {
   return (
     <Button
       data-testid="budget-view-duplicate-budget"
-      onClick={() => duplicateBudgetAction(budget)}
+      onClick={() => updateAction(budget)}
     >
       <FiCopy className="text-pallete-4 hover:text-pallete-5" />
     </Button>
   );
 }
+// Add onClick={() => deleteBudgetAction(budget)} once implemented
 function DeleteBudgetButton({budget}: {budget: Budget}) {
   return (
     <Button
       data-testid="budget-view-delete-budget"
-      onClick={() => deleteBudgetAction(budget)}
       className="text-palette-4 hover:text-palette-5"
     >
       <FiTrash2 />
@@ -125,6 +135,7 @@ function DeleteBudgetButton({budget}: {budget: Budget}) {
 export function BudgetList(props: {
   budgets: Budget[];
   show_organizer: boolean;
+  updateAction: (budget: Budget) => Promise<void>;
 }) {
   return (
     <>
@@ -133,6 +144,7 @@ export function BudgetList(props: {
           key={budget.id}
           budget={budget}
           organizer={props.show_organizer ? budget.user_name : undefined}
+          updateAction={props.updateAction}
         />
       ))}
     </>
