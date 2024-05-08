@@ -1,40 +1,44 @@
-import {assert, beforeAll, it, describe, expect, test} from 'vitest';
+import {assert, beforeEach, it, describe, expect, test} from 'vitest';
 import {Budget, DataModel} from 'lib/data';
-import {getLocalFirebase} from '../../utils/database.util';
+import {getLocalFirebase, clearCollection} from '../../utils/database.util';
 import {Collections} from 'lib/firebase';
+import {
+  createItem,
+  createBudget,
+  createBudgetSync,
+  createUser,
+  createComment,
+} from 'lib/data/utils';
 import {getFirestore, waitForPendingWrites} from 'firebase/firestore';
 import {defaultTestBudget} from '../../utils/defaults';
 
 const db = getFirestore();
 const database = getLocalFirebase(db);
 
-beforeAll(async () => {
+beforeEach(async () => {
   const testBudgets: Budget[] = [1, 2, 3].map(number => {
-    return {
-      ...defaultTestBudget,
+    return createBudgetSync({
       id: `get_budget_test_budget_${number}`,
       user_id: 'get_budget_test_user_1',
+      user_name: 'get_budget_test_user_1',
       event_name: `event_name_${number}`,
       event_description: 'test description',
-      total_cost: number * 100,
-      current_status: 'created',
-      status_history: [
-        {
-          status: 'created',
-          when: new Date('2001-01-01').toISOString(),
-        },
-      ],
-      items: [],
       event_type: 'Other',
-    };
+    });
   });
 
-  testBudgets.push({
-    ...defaultTestBudget,
-    id: 'get_budget_test_user_2',
-    user_id: 'get_budget_test_user_2',
-  });
+  testBudgets.push(
+    createBudgetSync({
+      id: 'get_budget_test_user_2',
+      user_id: 'get_budget_test_user_2',
+      user_name: 'test user',
+      event_name: 'event_name',
+      event_description: 'test description',
+      event_type: 'Other',
+    })
+  );
 
+  await clearCollection(database, Collections.Budgets);
   await database.addManyDocuments(Collections.Budgets, testBudgets);
   await waitForPendingWrites(db);
 });

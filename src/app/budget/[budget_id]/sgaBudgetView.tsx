@@ -1,25 +1,24 @@
-import {RSOBudgetViewSidebar} from './sidebar';
-import {Item, Budget, DataModel} from 'lib/data';
-import {
-  updateBudgetAction,
-  TESTupdateBudgetAction,
-  TESTcreateItemAction,
-  createItemAction,
-} from './actions';
+'use server';
+import {SGABudgetViewSidebar} from './sidebar';
+import {Item, Budget, DataModel, Comment} from 'lib/data';
+import * as review from './review_actions';
+import {ItemDisplay} from './itemDisplay';
 import {
   TESTtoggleDenyItemAction,
   toggleDenyItemAction,
   ItemRowActions,
 } from './itemRowActions';
-import {ItemDisplay} from './itemDisplay';
-import {NewItemForm} from './addItemForm';
+import {EventCommentThread} from './eventComments';
+import {createComment} from 'lib/data/utils';
 
-export async function RSOBudgetView({
+export async function SGABudgetView({
   budget_id,
+  user_id,
   dataModel: dataModel,
   TESTING_FLAG = false,
 }: {
   budget_id: string;
+  user_id: string;
   dataModel: DataModel;
   TESTING_FLAG?: boolean;
 }) {
@@ -32,42 +31,42 @@ export async function RSOBudgetView({
   // does not user server side functions so we need to decide the function at BUILD time meaning it can't be dynamic
   // So the createBudgetAction has Firebase fixed however, the TEST one allows us to set the dataModifier dynamically
   // at Runtime
-  let updateAction, itemAddAction;
+  let approveAction, denyAction, clearAction;
   const itemRowActions: ItemRowActions = {
-    edit: async () => {
-      'use server';
-    },
-    delete: async () => {
-      'use server';
-    },
+    toggleDeny: toggleDenyItemAction,
     comment: async () => {
       'use server';
     },
   };
   if (TESTING_FLAG) {
-    updateAction = TESTupdateBudgetAction.bind(null, dataModel);
-    itemAddAction = TESTcreateItemAction.bind(null, dataModel);
+    approveAction = review.TESTapproveBudgetAction.bind(null, dataModel);
+    denyAction = review.TESTdenyBudgetAction.bind(null, dataModel);
+    clearAction = review.TESTclearCommentsAction.bind(null, dataModel);
+    itemRowActions.toggleDeny = TESTtoggleDenyItemAction.bind(null, dataModel);
   } else {
-    updateAction = updateBudgetAction;
-    itemAddAction = createItemAction;
+    approveAction = review.approveBudgetAction;
+    denyAction = review.denyBudgetAction;
+    clearAction = review.clearCommentsAction;
   }
+
   return (
     <>
-      <RSOBudgetViewSidebar
+      <SGABudgetViewSidebar
         budget={budget}
-        item_count={items.length}
-        updateBudgetAction={updateAction}
+        items={items}
+        reviewActionController={{
+          approveBudget: approveAction,
+          denyBudget: denyAction,
+          clearComments: clearAction,
+        }}
       />
       <main className="ml-72 w-3/5 bg-white">
         <ItemDisplay
           items={items}
           budget={budget}
-          sgaUser={false}
+          sgaUser={true}
           itemRowActions={itemRowActions}
         />
-        {budget.current_status === 'created' && (
-          <NewItemForm budget_id={budget_id} createItemAction={itemAddAction} />
-        )}
       </main>
     </>
   );

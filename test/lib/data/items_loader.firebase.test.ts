@@ -1,5 +1,12 @@
-import {assert, beforeAll, test, describe} from 'vitest';
+import {assert, beforeEach, test, describe} from 'vitest';
 import {Budget, Item, Sort, DataModel, User} from 'lib/data';
+import {clearCollection} from '../../utils/database.util';
+import {
+  createItem,
+  createBudget,
+  createBudgetSync,
+  createUser,
+} from 'lib/data/utils';
 import {Collections} from 'lib/firebase';
 import {
   defaultTestBudget,
@@ -11,14 +18,11 @@ import {LocalDatabase} from '../../utils/database.local';
 const database = new LocalDatabase();
 const dataModel = new DataModel(database);
 
-beforeAll(async () => {
-  const testItems: Item[] = [1, 2, 3].map(number => {
-    return {
-      ...defaultTestItem,
-      budget_id: 'test_budget_for_items',
-      id: `item_${number}`,
-    };
-  });
+beforeEach(async () => {
+  await clearCollection(database, Collections.Users);
+  await clearCollection(database, Collections.Budgets);
+  await clearCollection(database, Collections.Items);
+
   const testBudget: Budget = {
     ...defaultTestBudget,
     id: 'test_budget_for_items',
@@ -43,11 +47,21 @@ beforeAll(async () => {
     testBudget,
     addItemTestBudget,
   ]);
-  await database.addManyDocuments(Collections.Items, testItems);
 });
 
 describe('Test getBudgetItems', async () => {
-  test('function gets all correct budgets user_1', async () => {
+  test('getItemsForBudget works', async () => {
+    // Add items
+    const testItems: Item[] = [1, 2, 3].map(number => {
+      return {
+        ...defaultTestItem,
+        budget_id: 'test_budget_for_items',
+        id: `item_${number}`,
+      };
+    });
+    await database.addManyDocuments(Collections.Items, testItems);
+
+    // Test if we can get those items
     const items: Item[] = await dataModel.getItemsForBudget(
       'test_budget_for_items',
       new Sort('id')
@@ -62,7 +76,19 @@ describe('Test getBudgetItems', async () => {
       assert.equal(item!.id, `item_${i++}`);
     });
   });
+
   test('function return empty array on nonexistent budget', async () => {
+    // Add items to a budget
+    const testItems: Item[] = [1, 2, 3].map(number => {
+      return {
+        ...defaultTestItem,
+        budget_id: 'test_budget_for_items',
+        id: `item_${number}`,
+      };
+    });
+    await database.addManyDocuments(Collections.Items, testItems);
+
+    // Test if we can get items from a non-existant budget
     const items: Item[] = await dataModel.getItemsForBudget(
       'budget_5',
       new Sort('id')
@@ -93,10 +119,8 @@ describe('Test getBudgetItems', async () => {
     const items: Item[] = [1, 2, 3].map(number => {
       return {
         ...defaultTestItem,
-        id: `item_add_item${number}`,
         budget_id: 'test_budget_for_add_items',
-        unit_price: 10.0,
-        quantity: 2,
+        id: `item_add_item${number}`,
       };
     });
     await dataModel.addItems(items);
@@ -104,7 +128,7 @@ describe('Test getBudgetItems', async () => {
       'test_budget_for_add_items'
     );
     // We add one to items.length because of the item we added in the test above
-    assert.equal(test_budget_upd.total_cost, (items.length + 1) * 10 * 2);
+    assert.equal(test_budget_upd.total_cost, items.length * 10 * 2);
 
     assert.deepEqual(items, items);
   });
