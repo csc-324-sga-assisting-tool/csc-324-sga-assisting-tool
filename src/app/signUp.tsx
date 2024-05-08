@@ -61,7 +61,7 @@ export function SignUp({
     <>
       <Button
         data-testid="sign-up-form-button"
-        className="flex max-w-lg gap-4 font-medium text-sm text-black underline-offset-auto bg-white "
+        className="flex max-w-lg gap-4 font-medium text-sm text-black hover:underline-offset-4 bg-white "
         onClick={() => setOpenModal(true)}
       >
         Don&apos;t have an account? Sign up
