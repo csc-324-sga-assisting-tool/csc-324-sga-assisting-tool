@@ -59,6 +59,7 @@ function DateDisplay({dateISO}: {dateISO: string}) {
     </span>
   );
 }
+
 // If the organizer is false, it will not be displayed
 export function BudgetDisplay(props: BudgetProps) {
   return (

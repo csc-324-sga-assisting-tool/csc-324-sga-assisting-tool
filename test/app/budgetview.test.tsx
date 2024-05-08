@@ -1,13 +1,16 @@
-import {expect, describe, it} from 'vitest';
+import {expect, describe, it, beforeEach} from 'vitest';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {LocalDatabase} from '../utils/database.local';
 import {userEvent} from '@testing-library/user-event';
-import {DataModel, User} from 'lib/data';
+import {DataModel, User, createUser, createBudget, createItem} from 'lib/data';
 import {Collections} from 'lib/firebase';
-import {BudgetView} from 'app/budget/[budget_id]/budgetview';
+import {RSOBudgetView} from 'app/budget/[budget_id]/budgetview';
 
-describe('Test Budget View works as expected', () => {
-  const userSGA: User = {
+const mockDatabase = new LocalDatabase();
+const mockDataprovider = new DataModel(mockDatabase);
+
+async function initializeUsers() {
+  const userSEPC = createUser({
     id: 'test_budget_view_user',
     name: 'John Doe',
     user_type: 'SEPC',
@@ -16,31 +19,74 @@ describe('Test Budget View works as expected', () => {
     pending_event: 3,
     planned_event: 5,
     completed_event: 2,
-  };
-  const mockDatabase = new LocalDatabase();
-  mockDatabase.emptyCollection(Collections.Budgets);
-  mockDatabase.addDocument(Collections.Users, userSGA);
+  });
 
-  const mockDataprovider = new DataModel(mockDatabase);
+  mockDatabase.emptyCollection(Collections.Users);
+  mockDatabase.addDocument(Collections.Users, userSEPC);
+}
+
+async function initializeBudgets() {
   mockDatabase.setCollection(Collections.Budgets, [
-    {
+    await createBudget({
+      dataModel: mockDataprovider,
       id: 'test_budget_view',
       user_id: 'test_budget_view_user',
-      user_name: 'John Doe',
       event_name: 'Test Event',
       event_description: 'Test Event Description',
-      current_status: 'created',
-      total_cost: 0,
-      status_history: [{status: 'created', when: '2024-3-1'}],
-      eent_location: 'Harris',
+      event_location: 'Harris',
       event_type: 'Harris',
       event_datetime: '2024-5-1',
-      items: [],
-    },
+    }),
+    await createBudget({
+      dataModel: mockDataprovider,
+      id: 'test_budget_view_2',
+      user_id: 'test_budget_view_user',
+      event_name: 'Test Event 2',
+      event_description: 'Test Event Description',
+      event_location: 'Harris',
+      event_type: 'Harris',
+      event_datetime: '2024-5-1',
+    }),
   ]);
-  // console.log(await mockDataprovider.getBudgets());
+}
+
+async function initializeItems(budgetID: string) {
+  const deniedItem = createItem({
+    budget_id: budgetID,
+    id: 'denied_item',
+    name: 'Item 1',
+    vendor: 'Amazon',
+    unit_price: 10,
+    quantity: 2,
+    current_status: 'denied',
+  });
+  const approvedItem = createItem({
+    budget_id: budgetID,
+    id: 'approved_item',
+    name: 'Item 2',
+    vendor: 'Amazon',
+    unit_price: 10,
+    quantity: 2,
+  });
+  await mockDatabase.emptyCollection(Collections.Items);
+  await mockDataprovider.addItem(deniedItem);
+  await mockDataprovider.addItem(approvedItem);
+}
+
+beforeEach(async () => {
+  await initializeUsers();
+  await initializeBudgets();
+  await initializeItems('test_budget_view_2');
+});
+
+describe('Test that Budget View works as expected', async () => {
   const props = {
     budget_id: 'test_budget_view',
+    dataModel: mockDataprovider,
+    TESTING_FLAG: true,
+  };
+  const props2 = {
+    budget_id: 'test_budget_view_2',
     dataModel: mockDataprovider,
     TESTING_FLAG: true,
   };
@@ -50,8 +96,8 @@ describe('Test Budget View works as expected', () => {
     const user = userEvent.setup();
 
     mockDatabase.emptyCollection(Collections.Items);
-    //render the dashboard
-    render(await BudgetView({...props}));
+    //render the daashboard
+    render(await RSOBudgetView({...props}));
     expect(
       screen.queryByTestId('new-item-form-button-add')
     ).toBeInTheDocument();
@@ -87,7 +133,7 @@ describe('Test Budget View works as expected', () => {
     const user = userEvent.setup();
     mockDatabase.emptyCollection(Collections.Items);
 
-    render(await BudgetView({...props}));
+    render(await RSOBudgetView({...props}));
     expect(
       screen.queryByTestId('new-item-form-button-add')
     ).toBeInTheDocument();
@@ -120,7 +166,7 @@ describe('Test Budget View works as expected', () => {
     // setup the userEvents library
     const user = userEvent.setup();
     // print(dataModel
-    render(await BudgetView({...props}));
+    render(await RSOBudgetView({...props}));
 
     // Check that the form fields are present*
     expect(
@@ -174,7 +220,7 @@ describe('Test Budget View works as expected', () => {
     await user.click(submitButton);
 
     const budgets = await mockDataprovider.getBudgets();
-    expect(budgets.length).toBe(1);
+    expect(budgets.length).toBe(2);
     expect(budgets[0].event_name).toBe(name);
     expect(budgets[0].event_description).toBe(description);
     expect(budgets[0].event_location).toBe(location);
@@ -185,7 +231,7 @@ describe('Test Budget View works as expected', () => {
   it('check if submit button works as intended', async () => {
     // setup the userEvents library
     const user = userEvent.setup();
-    render(await BudgetView({...props}));
+    render(await RSOBudgetView({...props}));
     expect(screen.queryByTestId('submit-budget-button')).toBeInTheDocument();
 
     await user.click(screen.getByTestId('submit-budget-button'));
@@ -193,5 +239,34 @@ describe('Test Budget View works as expected', () => {
 
     expect(budget.current_status).toBe('submitted');
     expect(budget.status_history.length).toBe(2);
+  });
+  it('does not display item status on submitted budget', async () => {
+    // Set the budget status to submit
+    const budget = await mockDataprovider.getBudget(props2.budget_id);
+    await mockDataprovider.changeBudgetStatus(budget, 'submitted');
+
+    // setup the userEvents library
+    render(await RSOBudgetView({...props2}));
+
+    // Check that the items do not say "Approved" or "Denied"
+    const deniedItem = screen.queryByTestId('item-denied');
+    const approvedItem = screen.queryByTestId('item-approved');
+    expect(deniedItem).toBeNull();
+    expect(approvedItem).toBeNull();
+  });
+
+  it('displays item status on denied budget', async () => {
+    // Set the budget status to submit
+    const budget = await mockDataprovider.getBudget(props2.budget_id);
+    await mockDataprovider.changeBudgetStatus(budget, 'denied');
+
+    // setup the userEvents library
+    render(await RSOBudgetView({...props2}));
+
+    // Check that the items do not say "Approved" or "Denied"
+    const deniedItem = screen.queryByTestId('item-denied');
+    const approvedItem = screen.queryByTestId('item-approved');
+    expect(deniedItem).toBeInTheDocument();
+    expect(approvedItem).toBeInTheDocument();
   });
 });
