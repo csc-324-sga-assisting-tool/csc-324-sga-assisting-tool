@@ -20,7 +20,6 @@ describe('Test Dashboard works as Expected', () => {
   const mockDatabase = new LocalDatabase();
   mockDatabase.addDocument(Collections.Users, mockUser);
 
-
   const mockDataprovider = new DataModel(mockDatabase);
   const props = {
     user: mockUser,
@@ -217,5 +216,42 @@ describe('Test Dashboard works as Expected', () => {
     expect(new Date(budgets[0].event_datetime!).getDate()).toBe(
       testDate.getDate()
     );
+  });
+
+  it('duplicates a budget successfully when duplicate button is clicked', async () => {
+    // setup initial budget
+    mockDatabase.setCollection(Collections.Budgets, [
+      {
+        id: 'test_budget',
+        user_id: 'test_user',
+        event_name: 'Test Event',
+        event_description: 'Test Event Description',
+        current_status: 'submitted',
+        total_cost: 123,
+        status_history: [{status: 'submitted', when: new Date().toISOString()}],
+        items: [],
+      },
+    ]);
+
+    // Render the Dashboard
+    render(await Dashboard({...props}));
+
+    // setup the userEvents library
+    const user = userEvent.setup();
+
+    // Click the duplicate button
+    console.log(screen.debug());
+    const duplicateButton = await screen.findByTestId(
+      'budget-view-duplicate-budget'
+    );
+    await user.click(duplicateButton);
+
+    // Fetch the budgets after duplication
+    const budgets = await mockDataprovider.getBudgets();
+
+    // Check that there are now two budgets
+    expect(budgets.length).toBe(2);
+    expect(budgets[1].id).toBe('test_budget-copy'); // Check the ID of the duplicated budget if it follows a naming convention
+    expect(budgets[1].event_name).toBe(budgets[0].event_name + ' - Copy'); // Check if the duplicated budget has '- Copy' in its name
   });
 });

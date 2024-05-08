@@ -8,8 +8,12 @@ import {
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
+import {forceAlphanumeric, normalizeID} from 'lib/util';
 
 export class DataModel {
+  static getBudgets() {
+    throw new Error('Method not implemented.');
+  }
   database: IDatabase;
   constructor(database: IDatabase = Database) {
     this.database = database;
@@ -80,6 +84,7 @@ export class DataModel {
   async addBudget(budget: Budget): Promise<void> {
     return this.database.addDocument(Collections.Budgets, budget);
   }
+
   async addItem(item: Item): Promise<void> {
     await this.database.addDocument(Collections.Items, item);
     try {
@@ -149,5 +154,34 @@ export class DataModel {
   async signInUser(email: string, password: string) {
     const auth = getAuth();
     await signInWithEmailAndPassword(auth, email, password);
+  }
+
+  async duplicateBudget(budget: Budget, newId: string): Promise<void> {
+    const today = new Date();
+    const budgetDate = budget.event_datetime
+      ? new Date(budget.event_datetime)
+      : today;
+    const newBudgetDate = budgetDate >= today ? budgetDate : today;
+    const newName = `${budget.event_name} - Copy`;
+
+    const newBudget: Budget = {
+      ...budget,
+      total_cost: 0,
+      id: newId,
+      current_status: 'created',
+      status_history: [{status: 'created', when: today.toISOString()}],
+      event_name: newName,
+      event_datetime: newBudgetDate.toISOString(),
+    };
+    await this.addBudget(newBudget);
+    const items = await this.getItemsForBudget(budget.id);
+    const duplicatedItems = items.map(item => ({
+      ...item,
+      id: `${item.id}${newId}`,
+      budget_id: newId,
+    }));
+    for (const item of duplicatedItems) {
+      await this.addItem(item);
+    }
   }
 }

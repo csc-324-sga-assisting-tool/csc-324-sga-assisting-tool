@@ -2,16 +2,14 @@
 
 import {Status, Budget} from 'lib/data';
 import {Color} from 'lib/color.types';
-import {FiCopy, FiEdit} from 'react-icons/fi';
+import {FiCopy, FiEdit, FiTrash2} from 'react-icons/fi';
 import Link from 'next/link';
+import {HiPlusCircle} from 'react-icons/hi';
+import {Button} from 'flowbite-react';
+import {deleteBudgetAction, duplicateBudgetAction} from './actions';
 
 export type BudgetProps = {
-  title: string;
-  id: string;
-  description: string;
-  status: Status;
-  lastStatusDate: string;
-  total: number;
+  budget: Budget;
   organizer?: string;
 };
 
@@ -61,8 +59,9 @@ function DateDisplay({dateISO}: {dateISO: string}) {
 }
 // If the organizer is false, it will not be displayed
 export function BudgetDisplay(props: BudgetProps) {
+  const budget: Budget = props.budget;
   return (
-    <Link href={`/budget/${props.id}`}>
+    <Link href={`/budget/${budget.id}`}>
       <div
         className="grid grid-cols-10 gap-4 bg-white hover:bg-gray=200 shadow-md rounded-lg pt-4 pb-4 m-5 ml-72 divide-x divide-solid max-w-3xl budgetCard"
         data-testid="BudgetDisplay"
@@ -76,30 +75,53 @@ export function BudgetDisplay(props: BudgetProps) {
         )}
         <div className="h-full items-center justify-center col-span-2 p-4">
           <span className="text-xl text-bold text-black justify-center h-full w-full">
-            {props.title}
+            {budget.event_name}
           </span>
         </div>
         <div className="col-span-3 grid grid-row-2 p-2">
-          <BudgetStatusDisplay status={props.status} />
+          <BudgetStatusDisplay status={budget.current_status} />
           <div>
-            <DateDisplay dateISO={props.lastStatusDate} />
+            <DateDisplay dateISO={budget.status_history[0]!.when} />
           </div>
         </div>
         <div className="col-span-3 p-2">
           <span className="text-lg text-black float-left">Cost: </span>
           <span className="text-lg text-black float-right text-bold">
-            $ {props.total}
+            $ {budget.total_cost}
           </span>
         </div>
-        <div className="col-span-1 p-2 items-center justify-center grid grid-row-2 divide-y divide-dashed">
-          <FiEdit />
-          <FiCopy />
+        <div className="col-span-1 items-center">
+          <DuplicateBudgetButton budget={budget} />
+        </div>
+        <div className="col-span-1 items-center">
+          <DeleteBudgetButton budget={budget} />
         </div>
       </div>
     </Link>
   );
 }
 
+function DuplicateBudgetButton({budget}: {budget: Budget}) {
+  return (
+    <Button
+      data-testid="budget-view-duplicate-budget"
+      onClick={() => duplicateBudgetAction(budget)}
+    >
+      <FiCopy className="text-pallete-4 hover:text-pallete-5" />
+    </Button>
+  );
+}
+function DeleteBudgetButton({budget}: {budget: Budget}) {
+  return (
+    <Button
+      data-testid="budget-view-delete-budget"
+      onClick={() => deleteBudgetAction(budget)}
+      className="text-palette-4 hover:text-palette-5"
+    >
+      <FiTrash2 />
+    </Button>
+  );
+}
 export function BudgetList(props: {
   budgets: Budget[];
   show_organizer: boolean;
@@ -108,14 +130,9 @@ export function BudgetList(props: {
     <>
       {props.budgets.map((budget: Budget) => (
         <BudgetDisplay
-          id={budget.id}
           key={budget.id}
+          budget={budget}
           organizer={props.show_organizer ? budget.user_name : undefined}
-          title={budget.event_name}
-          description={budget.event_description}
-          total={budget.total_cost}
-          status={budget.current_status}
-          lastStatusDate={budget.status_history[0]!.when}
         />
       ))}
     </>

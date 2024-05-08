@@ -83,3 +83,20 @@ export async function createBudgetAction(
   revalidatePath('/dashboard');
   return result;
 }
+
+export async function duplicateBudgetAction(budget: Budget) {
+  const modifier = new DataModel(Database);
+  const newId = forceAlphanumeric(
+    normalizeID(
+      `${budget.user_id}-${budget.event_name}-${new Date().getSeconds()}`
+    )
+  );
+  modifier.duplicateBudget(budget, newId);
+  revalidatePath('/dashboard');
+}
+
+// export async function deleteBudgetAction(budget: Budget) {
+//   const modifier = new DataModel(Database);
+//   await modifier.deleteBudget(budget); // Assuming this method is implemented in your DataModel, need to change this
+//   revalidatePath('/dashboard');
+// }
