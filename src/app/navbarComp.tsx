@@ -8,9 +8,9 @@ export function ComponentNav({buttonLabel}: {buttonLabel: string}) {
   return (
     <Navbar
       fluid
-      className="bg-pallete-1 items-center justify-between mx-auto md:w-auto p-3 order-1"
+      className="bg-pallete-1 items-center justify-between mx-auto w-screen p-3 order-1 fixed top-0"
     >
-      <Navbar.Brand href="/">
+      <Navbar.Brand href="/dashboard">
         <Image
           src="gbudget-logo.png"
           alt="Gbudget Logo"

@@ -6,6 +6,7 @@ import {userIsSGA} from 'lib/data/utils';
 import {revalidatePath} from 'next/cache';
 import {AuthModel} from 'lib/data/auth_model';
 import {redirect} from 'next/navigation';
+import {ComponentNav} from 'app/navbarComp';
 
 export default async function Page() {
   revalidatePath('/dashboard');
@@ -19,9 +20,15 @@ export default async function Page() {
     const isSGA = userIsSGA(user);
     console.log(`User id from session is: ${user.id}`);
     return isSGA ? (
-      <SGADashboard user={user} dataModel={dataModel} />
+      <main className="bg-grey-500 dark:bg-slate-800">
+        <ComponentNav buttonLabel={'Log Out'} />
+        <SGADashboard user={user} dataModel={dataModel} />
+      </main>
     ) : (
-      <Dashboard user={user} dataModel={dataModel} />
+      <main className="bg-grey-500 dark:bg-slate-800">
+        <ComponentNav buttonLabel={'Log Out'} />
+        <Dashboard user={user} dataModel={dataModel} />
+      </main>
     );
   } catch (error) {
     console.log(error!.toString());
