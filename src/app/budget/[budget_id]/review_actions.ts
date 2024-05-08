@@ -10,13 +10,12 @@ export async function TESTapproveBudgetAction(
 ): Promise<void> {
   // Change budget status
   await dataModel.changeBudgetStatus(budget, 'approved');
-
-  revalidatePath('/dashboard');
-  revalidatePath(`/budget/${budget.id}`);
 }
 export async function approveBudgetAction(budget: Budget): Promise<void> {
   await TESTapproveBudgetAction(new DataModel(Database), budget);
 
+  revalidatePath('/dashboard');
+  revalidatePath(`/budget/${budget.id}`);
   redirect('/dashboard');
 }
 
@@ -29,14 +28,13 @@ export async function TESTdenyBudgetAction(
 
   // Commit all the comments for each item
   await dataModel.pushAllBudgetComments(budget.id);
-
-  // Redirect to the dashboard
-  revalidatePath('/dashboard');
-  revalidatePath(`/budget/${budget.id}`);
 }
 export async function denyBudgetAction(budget: Budget): Promise<void> {
   await TESTdenyBudgetAction(new DataModel(Database), budget);
 
+  // Redirect to the dashboard
+  revalidatePath('/dashboard');
+  revalidatePath(`/budget/${budget.id}`);
   redirect('/dashboard');
 }
 

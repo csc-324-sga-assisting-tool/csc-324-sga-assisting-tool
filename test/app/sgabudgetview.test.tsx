@@ -108,7 +108,6 @@ describe('Test that SGA Budget View works as expected', async () => {
     item = await mockDataprovider.getItem('denied_item');
     expect(item.current_status).toBe('created');
   });
-  /*
 
   it('clicking deny budget button denies the whole budget', async () => {
     const user = userEvent.setup();
@@ -133,23 +132,15 @@ describe('Test that SGA Budget View works as expected', async () => {
   });
 
   it('approve budget is disabled with denied items', async () => {
-    const user = userEvent.setup();
+    // Get the items for the budget
+    const items = await mockDataprovider.getItemsForBudget(props.budget_id);
+    await mockDataprovider.changeItemStatus(items[0], 'denied');
+
     render(await SGABudgetView({...props}));
-
-    // Get a list of deny item buttons
-    const itemDenyButtons = await screen.findAllByTestId(/item-deny-button/);
-    expect(itemDenyButtons).toHaveLength(2);
-
-    // Deny the first item
-    await user.click(itemDenyButtons[0]);
 
     // Get the deny budget button
     const denyBudgetButton = screen.getByTestId('approve-budget-button');
-
-    // Attempt to approve the budget (it should be disabled)
-    await user.click(denyBudgetButton);
-    const budget = await mockDataprovider.getBudget(props.budget_id);
-    expect(budget.current_status).toBe('submitted');
+    // Check if it's disabled
+    expect(denyBudgetButton).toBeDisabled();
   });
-  */
 });
