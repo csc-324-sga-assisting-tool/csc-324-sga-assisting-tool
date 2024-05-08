@@ -1,4 +1,10 @@
-import {Budget, Item, User, StatusChange, Status} from '.';
+import {Comment, Budget, Item, Status, StatusChange, User} from '.';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import {IDatabase} from './database';
 import {Collections} from '../firebase/config';
 import {Filter, Sort, Database} from './database';
@@ -9,14 +15,12 @@ export class DataModel {
     this.database = database;
   }
 
+  /** BUDGETS **/
   // Get a budget by ID
   getBudget(budgetID: string): Promise<Budget> {
     return this.database.getDocument<Budget>(Collections.Budgets, budgetID);
   }
 
-  getUser(userID: string): Promise<User> {
-    return this.database.getDocument<User>(Collections.Users, userID);
-  }
   // Get a sorted and filtered list of budgets
   getBudgets(
     filters: Filter[] = [],
@@ -25,22 +29,6 @@ export class DataModel {
   ): Promise<Budget[]> {
     return this.database.getDocuments<Budget>(
       Collections.Budgets,
-      filters,
-      sort,
-      howMany
-    );
-  }
-  /* getItemsForBudget returns 'howMany' items in budget 'budgetID's'
-   */
-  async getItemsForBudget(
-    budgetID: string,
-    sort?: Sort,
-    filters: Filter[] = [],
-    howMany = 25
-  ): Promise<Item[]> {
-    filters.push(new Filter('budget_id', '==', budgetID));
-    return this.database.getDocuments<Item>(
-      Collections.Items,
       filters,
       sort,
       howMany
@@ -75,6 +63,23 @@ export class DataModel {
     user.planned_event += 1;
     await this.database.addDocument(Collections.Users, user);
     return this.database.addDocument(Collections.Budgets, budget);
+  }
+
+  /** ITEMS **/
+  // getItemsForBudget returns 'howMany' items in budget 'budgetID's'
+  async getItemsForBudget(
+    budgetID: string,
+    sort?: Sort,
+    filters: Filter[] = [],
+    howMany = 25
+  ): Promise<Item[]> {
+    filters.push(new Filter('budget_id', '==', budgetID));
+    return this.database.getDocuments<Item>(
+      Collections.Items,
+      filters,
+      sort,
+      howMany
+    );
   }
 
   async addItem(item: Item): Promise<void> {
@@ -121,6 +126,130 @@ export class DataModel {
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  // [This function was generated with copilot]
+  async getItem(itemID: string): Promise<Item> {
+    return this.database.getDocument<Item>(Collections.Items, itemID);
+  }
+
+  /** COMMENTS **/
+  // Get a comment by ID
+  getComment(commentID: string): Promise<Comment> {
+    return this.database.getDocument<Comment>(Collections.Comments, commentID);
+  }
+
+  // Adds a comment to an item
+  // The comment will not be added to the list of previous comments
+  // until pushItemComment is called.  If stageItemComment is called
+  // twice without a pushItemComment, the first comment will be lost.
+  // This will also add the item to the budget's list of denied items.
+  // [This function was generated with copilot and then edited]
+  async stageItemComment(itemID: string, comment: Comment): Promise<void> {
+    await this.database.addDocument(Collections.Comments, comment);
+    const item: Item = await this.database.getDocument<Item>(
+      Collections.Items,
+      itemID
+    );
+    item.commentID = comment.id;
+    await this.database.addDocument(Collections.Items, item);
+
+    const budget: Budget = await this.getBudget(item.budget_id);
+    budget.denied_items.push(item.id);
+    await this.database.addDocument(Collections.Budgets, budget);
+  }
+
+  // Deletes the item's staged comment.  If the comment is pushed, it can no longer
+  // be deleted.  This will also remove the item from the budget's list of
+  // denied items.
+  async popItemComment(itemID: string): Promise<void> {
+    const item = await this.getItem(itemID);
+    const budget = await this.getBudget(item.budget_id);
+    const comment = await this.getComment(item.commentID);
+    await this.database.deleteDocument(Collections.Comments, comment);
+    item.commentID = '';
+    budget.denied_items = budget.denied_items.filter(id => id !== itemID); // Copilot
+    await this.database.addDocument(Collections.Items, item);
+    await this.database.addDocument(Collections.Budgets, budget);
+  }
+
+  // Pushes the staged comment to the item's list of previous comments
+  // Clear the current comment.  Once a comment is pushed, it cannot
+  // be edited.  RSO comments are intended to be pushed when the budget
+  // is resubmitted.  SGA comments are intended to be pushed when the
+  // budget review is submitted (i.e. denied)
+  // TODO: Throw an error if there is no staged comment
+  async pushItemComment(itemID: string): Promise<void> {
+    const item: Item = await this.database.getDocument<Item>(
+      Collections.Items,
+      itemID
+    );
+    item.prev_commentIDs.push(item.commentID);
+    item.commentID = '';
+
+    // Remove the item from the budget's list of denied items
+    const budget = await this.getBudget(item.budget_id);
+    budget.denied_items = budget.denied_items.filter(id => id !== itemID); // Copilot
+    await this.database.addDocument(Collections.Budgets, budget);
+
+    return await this.database.addDocument(Collections.Items, item);
+  }
+
+  // Stage a comment for a budget
+  // See the comment on stageItemComment for more information
+  async stageBudgetComment(budgetID: string, comment: Comment): Promise<void> {
+    await this.database.addDocument(Collections.Comments, comment);
+    const budget: Budget = await this.database.getDocument<Budget>(
+      Collections.Budgets,
+      budgetID
+    );
+    budget.commentID = comment.id;
+    return await this.database.addDocument(Collections.Budgets, budget);
+  }
+
+  // Deletes the staged budget comment
+  async popBudgetComment(budgetID: string): Promise<void> {
+    const budget = await this.getBudget(budgetID);
+    const comment = await this.getComment(budget.commentID);
+    await this.database.deleteDocument(Collections.Comments, comment);
+    budget.commentID = '';
+    return this.database.addDocument(Collections.Budgets, budget);
+  }
+
+  // Push a comment for a budget
+  // TODO: Throw an error if there is no staged comment
+  // [This function was generated with copilot]
+  async pushBudgetComment(budgetID: string): Promise<void> {
+    const budget: Budget = await this.database.getDocument<Budget>(
+      Collections.Budgets,
+      budgetID
+    );
+    budget.prev_commentIDs.push(budget.commentID);
+    budget.commentID = '';
+    return await this.database.addDocument(Collections.Budgets, budget);
+  }
+
+  // Push all comments for a budget including item comments
+  // TODO: Throw an error if there is no staged comment
+  async pushAllBudgetComments(budgetID: string): Promise<void> {
+    const items = await this.getItemsForBudget(budgetID);
+    items.forEach(async item => {
+      await this.pushItemComment(item.id);
+    });
+    return await this.pushBudgetComment(budgetID);
+  }
+
+  // Clear all comments on items
+  async clearItemComments(budgetID: string): Promise<void> {
+    const items = await this.getItemsForBudget(budgetID);
+    items.forEach(async item => {
+      await this.popItemComment(item.id);
+    });
+  }
+
+  /** USERS **/
+  getUser(userID: string): Promise<User> {
+    return this.database.getDocument<User>(Collections.Users, userID);
   }
 
   async setUser(user: User): Promise<void> {

@@ -1,27 +1,35 @@
-import {assert, beforeAll, it, describe, expect} from 'vitest';
+import {assert, beforeEach, it, describe, expect} from 'vitest';
 import {getFirestore} from 'firebase/firestore';
-import {DataModel, User} from 'lib/data';
+import {DataModel, User, createUser} from 'lib/data';
 import {Collections} from 'lib/firebase';
-import {getLocalFirebase} from '../../utils/database.util';
+import {clearCollection, getLocalFirebase} from '../../utils/database.util';
+import {
+  createItem,
+  createBudget,
+  createBudgetSync,
+  createUser,
+  createComment,
+} from 'lib/data/utils';
 
 const db = getFirestore();
 const database = getLocalFirebase(db);
 
-beforeAll(async () => {
+beforeEach(async () => {
   const testUsers: User[] = [1, 2, 3].map(number => {
-    return {
+    return createUser({
       id: `test_user${number}`,
       name: 'test_user1',
-      total_budget: 2000,
       remaining_budget: 1000,
-      pending_event: 5,
-      completed_event: 10,
-      planned_event: 5,
+      total_budget: 2000,
       user_type: 'RSO',
-    };
+      pending_event: 5,
+      planned_event: 5,
+      completed_event: 10,
+    });
   });
 
-  database.addManyDocuments(Collections.Users, testUsers);
+  await clearCollection(database, Collections.Users);
+  await database.addManyDocuments(Collections.Users, testUsers);
 });
 
 describe('test firebase getUser', () => {
