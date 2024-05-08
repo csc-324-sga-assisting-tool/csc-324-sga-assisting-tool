@@ -42,7 +42,7 @@ export async function BudgetView({
         item_count={items.length}
         updateBudgetAction={updateAction}
       />
-      <main className="ml-72 w-3/5 bg-white">
+      <main className="ml-72 w-3/5 mt-16 bg-white">
         <ItemDisplay items={items} />
         {budget.current_status === 'created' && (
           <NewItemForm budget_id={budget_id} createItemAction={itemAddAction} />

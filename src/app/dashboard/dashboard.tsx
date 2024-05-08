@@ -31,7 +31,7 @@ export async function Dashboard({
     <>
       <RSODashboardSidebar user={user} />
 
-      <main className="w-128">
+      <main className="w-128 mt-16">
         <BudgetList budgets={budgets} show_organizer={false} />
       </main>
 
