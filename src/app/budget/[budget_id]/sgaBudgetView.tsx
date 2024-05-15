@@ -60,7 +60,7 @@ export async function SGABudgetView({
           clearComments: clearAction,
         }}
       />
-      <main className="ml-72 w-3/5 bg-white">
+      <main className="ml-72 w-3/5 mt-16 bg-white">
         <ItemDisplay
           items={items}
           budget={budget}

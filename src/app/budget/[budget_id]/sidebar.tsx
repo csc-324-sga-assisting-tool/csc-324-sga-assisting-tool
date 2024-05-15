@@ -52,7 +52,7 @@ function StatusDisplay({status, when}: {status: Status; when: string}) {
 function BudgetViewSidebar(props: PropsWithChildren<{}>) {
   return (
     <Sidebar
-      className="sidebar h-screen fixed"
+      className="sidebar h-screen top-16 fixed"
       aria-label="RSO Summary Sidebar"
     >
       <Sidebar.Items> {props.children} </Sidebar.Items>
