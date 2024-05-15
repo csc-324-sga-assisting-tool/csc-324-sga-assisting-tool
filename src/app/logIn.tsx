@@ -46,10 +46,10 @@ export function LogIn({
   };
 
   return (
-    <div className="place-self-center">
+    <div className="flex flex-col justify-center items-center h-screen w-screen p-8">
       <form
         data-testid="login-form"
-        className="bg-white flex max-w-lg flex-col gap-4  justify-items-center justify-self-center"
+        className="bg-white w-1/3 h-60 gap-4 p-4 "
         onSubmit={submit}
       >
         <div>

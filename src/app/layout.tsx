@@ -22,7 +22,6 @@ export default function RootLayout({
         <ThemeModeScript />
       </head>
       <body className={`${inter.className}`}>
-        <ComponentNav buttonLabel={'Log Out'} />
         <Suspense fallback={<p>Loading ...</p>}>{children}</Suspense>
       </body>
     </html>

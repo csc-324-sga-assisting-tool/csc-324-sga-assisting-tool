@@ -31,6 +31,9 @@ const config: Config = {
       'pallete-4': '#430A71',
       'pallete-5': '#300B59',
     },
+    container: {
+      center: true,
+    },
   },
   plugins: [require('flowbite/plugin')],
 };

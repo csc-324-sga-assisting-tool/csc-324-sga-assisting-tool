@@ -1,4 +1,5 @@
 'use server';
+import {ComponentNav} from 'app/navbarComp';
 import {RSOBudgetView} from './budgetview';
 import {SGABudgetView} from './sgaBudgetView';
 import {DataModel, Database} from 'lib/data';
@@ -16,13 +17,19 @@ export default async function Page({params}: {params: {budget_id: string}}) {
     const user = await dataModel.getUser(userId);
     const isSGA = userIsSGA(user);
     return isSGA ? (
-      <SGABudgetView
-        budget_id={params.budget_id}
-        user_id={userId}
-        dataModel={dataModel}
-      />
+      <>
+        <ComponentNav buttonLabel={'Log Out'} />
+        <SGABudgetView
+          budget_id={params.budget_id}
+          user_id={userId}
+          dataModel={dataModel}
+        />
+      </>
     ) : (
-      <RSOBudgetView budget_id={params.budget_id} dataModel={dataModel} />
+      <>
+        <ComponentNav buttonLabel={'Log Out'} />
+        <RSOBudgetView budget_id={params.budget_id} dataModel={dataModel} />
+      </>
     );
   } catch (error) {
     console.log(error!.toString());

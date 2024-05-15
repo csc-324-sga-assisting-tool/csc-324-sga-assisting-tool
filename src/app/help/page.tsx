@@ -3,6 +3,7 @@
 import {Card, Accordion} from 'flowbite-react';
 import Image from 'next/image';
 import {ComponentSlide} from 'app/help/tutorial';
+import {ComponentNav} from 'app/navbarComp';
 
 function ComponentCard() {
   return (
@@ -117,11 +118,14 @@ function ComponentAcc() {
 
 export default function Home() {
   return (
-    <main className="bg-pallete-2">
-      {/* <ComponentNav name ="Log Out"/> */}
-      {/* <SummarySidebar {...dummyUserSummary}/> */}
-      <ComponentCard />
-      <ComponentAcc />
+    <main className="bg-pallete-2 dark:bg-slate-800">
+      <div>
+        <ComponentNav buttonLabel={'Log Out'} />
+      </div>
+      <div className="mt-16">
+        <ComponentCard />
+        <ComponentAcc />
+      </div>
     </main>
   );
 }

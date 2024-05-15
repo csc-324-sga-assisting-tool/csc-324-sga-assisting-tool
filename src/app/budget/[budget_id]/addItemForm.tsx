@@ -65,7 +65,7 @@ export function NewItemForm({
         className="fixed bottom-0 right-0 p-6"
         onClick={() => setOpenModal(true)}
       >
-        <HiPlusCircle className="w-24 h-24" />
+        <HiPlusCircle className="w-24 h-24 hover:text-pallete-4 text-pallete-5" />
       </Button>
       <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
         <Modal.Header> Add an item </Modal.Header>
