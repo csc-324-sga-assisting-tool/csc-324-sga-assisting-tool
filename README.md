@@ -16,7 +16,8 @@ Students can create a budget request for their RSO or SECP events.  On the event
 
 The `src/` and `test/` folders are forther divided as follows:
 
-- `app/` : contains front-end code or test for front-end.  Each subfolder is a different page
+- `app/` : contains front-end code or test for front-end.
+  - Each subfolder is a different page
 - `lib/` : contains back-end code or test for back-end
 
 ## Style
